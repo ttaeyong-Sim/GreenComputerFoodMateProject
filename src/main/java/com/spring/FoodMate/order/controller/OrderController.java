@@ -261,7 +261,7 @@ public class OrderController {
         System.out.println("오더컨트롤러에서 디버깅중 : " + deliInfo.toString());
         
     	SessionDTO userInfo = (SessionDTO) session.getAttribute("sessionDTO");
-    	boolean result = orderService.updateOrdStatProcess(userInfo, deliInfo, 3);
+    	boolean result = orderService.updateOrdStatProcess(userInfo, deliInfo, 3); // 추가값을 받아오는지 아닌지 여기서 판단해서 할것
     	
         if (result) {
             response.put("status", "success");
@@ -274,8 +274,8 @@ public class OrderController {
         return response;  // 응답으로 Map을 반환
     }
 	
-	@RequestMapping(value = "/order/updateStatus", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> updateOrderStatusCustom(@RequestBody Map<String, Object> requestData, HttpSession session) {
+	@RequestMapping(value = "/order/updateStatusajax", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> updateOrderStatusAjax(@RequestBody Map<String, Object> requestData, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         
         try {

@@ -91,7 +91,7 @@ $(document).ready(function(){
         // 1️ 주문 상태 변경 요청
         $.ajax({
             type: "POST",
-            url: contextPath + "/order/updateStatus",
+            url: contextPath + "/order/updateStatusajax",
             data: JSON.stringify(orderStatusData),
             contentType: "application/json",
             success: function(response) {
@@ -393,9 +393,9 @@ $(document).ready(function(){ //페이지가 준비되면
     		</div>
     		
     		<div class="d-flex align-items-center gap-2">
-    			<input type="date" id="start-date" class="form-control w-auto" value="2025-01-06" />
+    			<input type="date" id="start-date" class="form-control w-auto" />
         		<span>~</span>
-        		<input type="date" id="end-date" class="form-control w-auto" value="2025-01-13" />
+        		<input type="date" id="end-date" class="form-control w-auto" />
     		
     			<!-- Search Button -->
       			<button type="button" id="search-date" class="btn btn-success">조회</button>
