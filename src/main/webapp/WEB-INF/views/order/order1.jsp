@@ -340,6 +340,7 @@
 </head>
 <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 function execDaumPostcode() {
 	  new daum.Postcode({
@@ -418,6 +419,60 @@ function execDaumPostcode() {
             }
         };
 });
+	function calculateTotals() {
+	    let totalPrice = 0;
+	    let totalShippingFee = 0;
+	    let uniqueSellers = new Set(); // 중복 판매자 방지를 위한 Set
+
+	    // 모든 주문 항목을 가져옴
+	    document.querySelectorAll(".order-item").forEach((item) => {
+	        let price = parseInt(item.getAttribute("data-price")); // 상품 가격
+	        let qty = parseInt(item.getAttribute("data-qty")); // 수량
+	        let nickname = item.getAttribute("data-nickname"); // 판매자 닉네임
+
+	        // 1️⃣ 총 상품 가격 계산
+	        totalPrice += price * qty;
+
+	        // 2️⃣ 중복되지 않은 판매자라면 배송비 추가
+	        if (!uniqueSellers.has(nickname)) {
+	            uniqueSellers.add(nickname);
+	            totalShippingFee += 3000; // 기본 배송비
+	        }
+	    });
+
+	    // 3️⃣ 사용 가능한 최대 포인트 가져오기 (JSP에서 받아옴)
+	    let maxPoint = parseInt(document.getElementById("user-point").innerText) || 0;
+	    
+	    // 4️⃣ 입력한 포인트 값 가져오기
+	    let usedPoint = parseInt(document.getElementById("orderer-point").value) || 0;
+
+	    // 5️⃣ 포인트가 최대 사용 가능 포인트 또는 총 결제 금액을 초과하면 제한
+	    if (usedPoint > maxPoint) {
+	        alert("보유한 적립금보다 많이 사용할 수 없습니다!");
+	        usedPoint = maxPoint;
+	        document.getElementById("orderer-point").value = maxPoint;
+	    }
+	    if (usedPoint > totalPrice) {
+	        alert("총 상품 금액보다 많은 포인트를 사용할 수 없습니다!");
+	        usedPoint = totalPrice;
+	        document.getElementById("orderer-point").value = totalPrice;
+	    }
+
+	    // 6️⃣ 최종 결제 금액 계산
+	    let finalPrice = totalPrice + totalShippingFee - usedPoint;
+
+	    // 7️⃣ 화면 업데이트
+	    document.getElementById("total-price").innerText = `₩ ${totalPrice.toLocaleString()}원`;
+	    document.getElementById("total-shipping-fee").innerText = `₩ ${totalShippingFee.toLocaleString()}원`;
+	    document.getElementById("point-discount").innerText = `- ₩ ${usedPoint.toLocaleString()}원`;
+	    document.getElementById("final-price").innerText = `₩ ${finalPrice.toLocaleString()}원`;
+	}
+
+	// 8️⃣ 페이지 로드 시 총 가격 & 배송비 계산
+	document.addEventListener("DOMContentLoaded", calculateTotals);
+
+	// 9️⃣ 사용자가 포인트 입력 시 다시 계산
+	document.getElementById("orderer-point-input").addEventListener("input", calculateTotals);
 </script>
 <body>
     <div class="container">
@@ -441,29 +496,22 @@ function execDaumPostcode() {
                     </tr>
                 </thead>
                 <tbody>
-                <c:set var="totalPrice" value="0" />
-                <c:set var="totalShippingFee" value="0" />
-				<c:set var="uniqueNicknames" value="," />
-				
                 <c:forEach var="orderitems" items="${orderItems}">
-                <c:set var="totalPrice" value="${totalPrice + (orderitems.price * orderitems.qty)}" />
-                <!-- 판매자 중복 체크 -->
-			    <c:if test="${not fn:contains(uniqueNicknames, orderitems.nickname)}">
-			        <c:set var="totalShippingFee" value="${totalShippingFee + 3000}" />
-			        <c:set var="uniqueNicknames" value="${uniqueNicknames},${orderitems.nickname}" />
-			    </c:if>
-                    <tr>
-                        <td class="product-info">
-                            <img src="${pageContext.request.contextPath}/resources/images/${orderitems.img_path}" alt="상품 이미지">
-                            <div id="product-option"><strong>상품명</strong>: ${orderitems.pdt_name}</div>
-                        </td>
-                        <td>${orderitems.qty}개</td>
-                        <td>₩ <fmt:formatNumber value="${orderitems.price * orderitems.qty}" type="number" groupingUsed="true" />원</td>
-                        <td>0p</td>
-                        <td>0원</td>
-                        <td>기본 3,000원</td>
-                    </tr>
-                    </c:forEach>
+		            <tr class="order-item"
+		                data-price="${orderitems.price}"
+		                data-qty="${orderitems.qty}"
+		                data-nickname="${orderitems.nickname}">
+		                <td class="product-info">
+		                    <img src="${pageContext.request.contextPath}/resources/images/${orderitems.img_path}" alt="상품 이미지">
+		                    <div id="product-option"><strong>상품명</strong>: ${orderitems.pdt_name}</div>
+		                </td>
+		                <td>${orderitems.qty}개</td>
+		                <td>₩ <fmt:formatNumber value="${orderitems.price * orderitems.qty}" type="number" groupingUsed="true" />원</td>
+		                <td>0p</td>
+		                <td>0원</td>
+		                <td>기본 3,000원</td>
+		            </tr>
+		        </c:forEach>
                 </tbody>
             </table>
         </div>
@@ -540,7 +588,7 @@ function execDaumPostcode() {
 		    <div class="form-group-pay">
 		        <label for="orderer-point">적립금 사용</label>
 		        <div class="point-container">
-		            <input type="text" id="orderer-point" placeholder="0">
+		            <input type="text" id="orderer-point-input" placeholder="0">
 		            <span class="currency">원</span>
 		            <input type="checkbox" id="use-all-points">
 		            <label for="use-all-points" class="checkbox-label">전액 사용하기</label>
@@ -557,23 +605,23 @@ function execDaumPostcode() {
 		        <div class="payment-detail">
 		            <label>상품 합계 금액</label>
 		            
-		            <p class="price">₩ <fmt:formatNumber value="${totalPrice}" type="number" groupingUsed="true" /></p>
+		            <p class="price" id="total-price">₩ <fmt:formatNumber value="${totalPrice}" type="number" groupingUsed="true" /></p>
 		        </div>
 		       	<div class="payment-detail">
 		            <label>포인트 할인</label>
-		            <p class="price">- ₩ 0</p>
+		            <p class="price" id="point-discount">- ₩ 0</p>
 		        </div>
 		        <div class="payment-detail">
 		            <label>쿠폰 할인</label>
-		            <p class="price">- ₩ 0</p>
+		            <p class="price" id="coupon-discount">- ₩ 0</p>
 		        </div>
 		        <div class="payment-detail">
 		            <label>배송비</label>
-		            <p class="price">₩ <fmt:formatNumber value="${totalShippingFee}" type="number" groupingUsed="true" /></p>
+		            <p class="price" id="total-shipping-fee">₩ <fmt:formatNumber value="${totalShippingFee}" type="number" groupingUsed="true" /></p>
 		        </div>
 		        <div class="payment-detail total">
 		            <label>최종 결제 금액</label>
-		            <p class="total-price">₩ <fmt:formatNumber value="${totalPrice + totalShippingFee}" type="number" groupingUsed="true" /></p>
+		            <p class="total-price" id="final-price">₩ <fmt:formatNumber value="${totalPrice + totalShippingFee}" type="number" groupingUsed="true" /></p>
 		        </div>
 		    </div>
 		</div>
