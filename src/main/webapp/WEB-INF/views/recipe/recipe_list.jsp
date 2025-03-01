@@ -412,7 +412,7 @@
 							            평점: ${recipe.rating}
 							        </c:when>
 							        <c:otherwise>
-							            미등록
+							            평점: 미등록
 							        </c:otherwise>
 							    </c:choose>
 							    <br> 

@@ -32,5 +32,9 @@ public class PointDAO {
     public List<PointDTO> getpointLogList(String id) {
         return sqlSession.selectList("mapper.point.getpointLogList", id);
     }
+    
+    public int inquiryPoints(String buyer_id) {
+    	return sqlSession.selectOne("mapper.point.inquiryPoints", buyer_id);
+    }
 
 }

@@ -14,6 +14,7 @@ import com.spring.FoodMate.recipe.dao.RecipeDAO;
 import com.spring.FoodMate.recipe.dto.RecipeCategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 import com.spring.FoodMate.recipe.dto.RecipeIngredientDTO;
+import com.spring.FoodMate.recipe.dto.RecipeQnaDTO;
 import com.spring.FoodMate.recipe.dto.RecipeRatingDTO;
 import com.spring.FoodMate.recipe.dto.RecipeStepDTO;
 import com.spring.FoodMate.recipe.exception.RecipeException;
@@ -187,8 +188,39 @@ public class RecipeServiceImpl implements RecipeService {
         recipeDAO.updateRecipeRating(ratingDTO);
     }
     
+    //후기 삭제
+    @Override
+    public void deleteRecipeRating(RecipeRatingDTO ratingDTO) {
+        recipeDAO.deleteRecipeRating(ratingDTO);
+    }
+    
     // 레시피 정보 가져오기
     public List<RecipeRatingDTO> selectRecipeReviewByrIDList(String byr_id) throws Exception {
         return recipeDAO.selectRecipeReviewByrIDList(byr_id);  // 레시피 목록 조회
+        
+    }
+    
+    //질문 저장
+    @Override
+    public void addRecipeQna(RecipeQnaDTO qnaDTO) throws Exception {
+        recipeDAO.addRecipeQna(qnaDTO);  // DAO 호출
+    }
+    
+    //질문만 조회
+    @Override
+    public List<RecipeQnaDTO> getQnasByRecipeId(int rcp_id) throws Exception {
+        return recipeDAO.getQnasByRecipeId(rcp_id);
+    }
+    
+    //답변만 조회
+    @Override
+    public List<RecipeQnaDTO> getAnswersByRecipeId(int rcp_id) throws Exception {
+        return recipeDAO.getAnswersByRecipeId(rcp_id);
+    }
+    
+    //답변 작성
+    @Override
+    public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception {
+        recipeDAO.addRecipeQnaAnswer(answerDTO);
     }
 }

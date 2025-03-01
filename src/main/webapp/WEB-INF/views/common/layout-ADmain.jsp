@@ -54,31 +54,24 @@
 		    text-align: center; /* 텍스트 중앙 정렬 */
 		    padding: 20px;
 		}
-
-        
+ 
         .container-fluid {
 		    flex: 1;
+		    padding-top: 155px; /* 헤더 높이만큼 여백 추가 */
 		}
 		
-        /* 헤더와 푸터 */
-        .header, .footer {
-        	top: 0;
-            left: 250px; /* 사이드바 만큼 왼쪽으로 밀기 */
-            background-color: #74b243;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            width: calc(100% - 250px); /* 사이드바만큼 너비 빼기 */
-            z-index: 1000;
-        }
-        
         .header {
-            top: 0;
-            left: 250px; /* 사이드바 만큼 왼쪽으로 밀기 */
-            margin-left: 500px; /* 왼쪽에서 50px 만큼 밀어냄 */
-        }
-        
+		    position: fixed; /* 화면에 고정 */
+		    top: 0;
+		    left: 250px; /* 사이드바 너비만큼 밀기 */
+		    width: calc(100% - 250px); /* 전체 화면에서 사이드바 너비만큼 제외 */
+		    background-color: #fa9820;
+		    color: white;
+		    text-align: center;
+		    padding: 10px;
+		    z-index: 101; /* 사이드바보다 위에 배치 */
+		}
+
 
         .footer {
             bottom: 0;
@@ -100,11 +93,6 @@
             </c:choose>
             </div>
         </div>
-        <c:if test="${showHeadermenu}">
-	        <div class="row">
-	           <%@ include file="adminheadermenu.jsp" %>
-	        </div>
-	    </c:if>
 </header>
 <body>
     <div class="container-fluid">
@@ -131,18 +119,5 @@
     </div>
 </body>
 <footer>
-        <!-- Footer -->
-        <div class="row">
-	    	<div class="col-12 footer">
-	        <c:choose>
-        		<c:when test="${smallFooter }">
-	                <%@ include file="footer_small.jsp" %>
-	            </c:when>
-	            <c:otherwise>
-	            	<%@ include file="footer.jsp" %>
-	            </c:otherwise>
-        	</c:choose>
-	        </div>
-        </div>
 </footer>
 </html>

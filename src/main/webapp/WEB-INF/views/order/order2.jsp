@@ -280,7 +280,7 @@
                     </tr>
                     <tr>
                         <th>포인트 사용</th>
-                        <td>- ₩ 0</td>
+                        <td>- ₩ <fmt:formatNumber value="${used_point}" type="number" groupingUsed="true" /></td>
                     </tr>
                     <tr>
                         <th>쿠폰 사용</th>
@@ -292,7 +292,7 @@
                     </tr>
                     <tr>
                         <th>결제 금액</th>
-                        <td><strong>₩ <fmt:formatNumber value="${totalPrice + totalShippingFee}" type="number" groupingUsed="true" /></strong></td>
+                        <td><strong>₩ <fmt:formatNumber value="${(totalPrice + totalShippingFee) - used_point}" type="number" groupingUsed="true" /></strong></td>
                     </tr>
                 </table>
             </div>

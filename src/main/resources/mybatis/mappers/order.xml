@@ -61,8 +61,8 @@
 	</select>
 	
 	<insert id="insertOrderList" parameterType="orderDTO">
-	    INSERT INTO FOODMATE_ORDER (ORD_ID, ORD_CODE, BYR_ID, SLR_ID, TOT_PDT_PRICE, SHIP_FEE, ORD_STAT, CREATE_DATE, DEL_CODE, WAYBILL_NUM)
-	    VALUES (FOODMATE_ORDER_SEQ.NEXTVAL, #{ord_code}, #{byr_id}, #{slr_id}, #{tot_Pdt_Price}, #{ship_Fee}, #{ord_Stat}, SYSDATE, #{del_Code}, #{waybill_Num})
+	    INSERT INTO FOODMATE_ORDER (ORD_ID, ORD_CODE, BYR_ID, SLR_ID, TOT_PDT_PRICE, USED_POINT, SHIP_FEE, ORD_STAT, CREATE_DATE, DEL_CODE, WAYBILL_NUM)
+	    VALUES (FOODMATE_ORDER_SEQ.NEXTVAL, #{ord_code}, #{byr_id}, #{slr_id}, #{tot_Pdt_Price}, #{used_point}, #{ship_Fee}, #{ord_Stat}, SYSDATE, #{del_Code}, #{waybill_Num})
 	</insert>
 	
 	<insert id="insertOrderDetail" parameterType="orderdetailDTO">

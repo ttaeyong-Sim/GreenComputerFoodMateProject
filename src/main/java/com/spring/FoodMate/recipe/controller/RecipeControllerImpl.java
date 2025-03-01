@@ -27,6 +27,7 @@ import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeCategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 import com.spring.FoodMate.recipe.dto.RecipeIngredientDTO;
+import com.spring.FoodMate.recipe.dto.RecipeQnaDTO;
 import com.spring.FoodMate.recipe.dto.RecipeRatingDTO;
 import com.spring.FoodMate.recipe.dto.RecipeStepDTO;
 import com.spring.FoodMate.recipe.service.RecipeService;
@@ -122,6 +123,15 @@ public class RecipeControllerImpl implements RecipeController {
         List<RecipeRatingDTO> ratingList = recipeService.getRatingsByRecipeId(rcp_id);
         mav.addObject("ratingList", ratingList);
         
+        // 레시피 질문 조회
+        List<RecipeQnaDTO> qnaList = recipeService.getQnasByRecipeId(rcp_id);
+        mav.addObject("qnaList", qnaList);
+        
+        // 레시피 답변 조회 (parent_id가 있는 경우)
+        List<RecipeQnaDTO> answerList = recipeService.getAnswersByRecipeId(rcp_id);
+        mav.addObject("answerList", answerList);
+
+
         mav.setViewName("common/layout");
         mav.addObject("showNavbar", true);
         mav.addObject("title", "레시피 상세");
@@ -382,7 +392,86 @@ public class RecipeControllerImpl implements RecipeController {
 	    // ✅ rcp_id는 리다이렉트할 때만 사용
 	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
 	}
+	
+	// 레시피 후기 삭제 처리
+	@RequestMapping("/recipe/deleteRecipeRating")
+	public String deleteRecipeRating(
+	        @RequestParam("cmt_rcp_rating_id") int cmt_rcp_rating_id,  // 삭제할 댓글 ID
+	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID (리다이렉트용)
+	        RedirectAttributes redirectAttributes) {
 
+	    try {
+	    	RecipeRatingDTO ratingDTO = new RecipeRatingDTO();
+	    	ratingDTO.setCmt_rcp_rating_id(cmt_rcp_rating_id);
+	    	
+	        // 서비스 호출하여 후기 삭제
+	        recipeService.deleteRecipeRating(ratingDTO);
+
+	        
+	        // 성공 메시지 추가
+	        redirectAttributes.addFlashAttribute("message", "후기가 성공적으로 삭제되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();  // 예외 출력
+	        redirectAttributes.addFlashAttribute("error", "후기 삭제 중 오류가 발생했습니다.");
+	    }
+
+	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
+	}
+
+	//레시피 질문 등록
+	@RequestMapping("/recipe/addRecipeQna")
+	public String addRecipeQna(
+	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID
+	        @RequestParam("comments") String comments,  // 질문 댓글
+	        HttpSession session, 
+	        RedirectAttributes redirectAttributes) {
+
+	    try {
+	        // 세션에서 로그인한 사용자 정보 받기
+	        BuyerDTO buyerDTO = (BuyerDTO) session.getAttribute("buyerInfo");
+	        String byr_id = buyerDTO.getByr_id();  // 댓글 작성자의 ID
+
+	        // RecipeQnaDTO에 데이터 세팅
+	        RecipeQnaDTO qnaDTO = new RecipeQnaDTO();
+	        qnaDTO.setRcp_id(rcp_id);
+	        qnaDTO.setByr_id(byr_id);
+	        qnaDTO.setComments(comments);
+
+	        // 서비스 호출하여 DB에 질문 등록
+	        recipeService.addRecipeQna(qnaDTO);
+
+	        // 성공 메시지 추가
+	        redirectAttributes.addFlashAttribute("qna_message", "질문이 성공적으로 등록되었습니다.");
+	    } catch (Exception e) {
+	        // 오류 발생 시
+	        redirectAttributes.addFlashAttribute("qna_error", "질문 등록 중 오류가 발생했습니다.");
+	    }
+	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
+	}
+	
+	@RequestMapping("/recipe/addRecipeQnaAnswer")
+	public String addRecipeQnaAnswer(@RequestParam("rcp_id") int rcp_id,  // 레시피 ID
+									 @RequestParam("parent_id") int parentId, 
+	                                 @RequestParam("comments") String comments, 
+	                                  HttpSession session) throws Exception {
+	    
+	    // 세션에서 로그인한 사용자 정보 가져오기
+	    BuyerDTO buyerInfo = (BuyerDTO) session.getAttribute("buyerInfo");
+	    
+	    // RecipeQnaDTO 객체 생성 및 값 설정
+	    RecipeQnaDTO answerDTO = new RecipeQnaDTO();
+	    answerDTO.setParent_id(parentId);  // 답변ID = 해당 질문의 ID를 담음 (parent_id)
+	    answerDTO.setComments(comments);   // 답변 내용
+	    answerDTO.setByr_id(buyerInfo.getByr_id());  // 답변 작성자 ID
+	    answerDTO.setRcp_id(rcp_id);
+	    //System.out.println("댓글아이디 :" + parentId); 정상적으로 넘어옴
+	    // 답변을 추가하는 서비스 메소드 호출
+	    recipeService.addRecipeQnaAnswer(answerDTO);
+	    //System.out.println("리다이렉트할 rcp_id: " + rcp_id); 정상적으로 넘어옴
+	    // 답변 후 해당 질문 페이지로 리다이렉트
+	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
+	    
+	}
 
 }
 

@@ -11,21 +11,21 @@
 <title>상단부</title>
 </head>
 <body>
-<div class="container-fluid bg-green text-white py-3">
+<div class="container-fluid bg-orange text-white py-3">
 	<div class="row align-items-center">
 		<div class="col-md-1 text-center"> <!-- 로고구간 -->
 			
 		</div>
 			<div class="col-md-8 d-flex align-items-center justify-content-start">
 			    <a href="${contextPath}/admin/adminMain.do" class="d-flex align-items-center">
-			        <img src="${contextPath}/resources/images/logo.png" alt="Logo" class="img-fluid me-2" style="max-width: 130px;"/>
+			        <img src="${contextPath}/resources/images/foodmatelogo.png" alt="Logo" class="img-fluid me-2" style="max-width: 130px;"/>
 			    </a>
-			    <h1 class="display-6 mb-0">FoodMate</h1>
+			    <h1 class="display-6 ml-3 mb-0">FoodMate</h1>
 			    
 			</div>
         <div class="col-md-2 text-end">
-        <a href="${contextPath}/main.do" class="btn btn-primary text-white">사용자 페이지</a>
-        <span>관리자 ID : 장원영 </span>
+        <a href="${contextPath}/main.do" class="btn btn-primary text-white">사용자 페이지</a><br>
+        <span>관리자 ID : 장원영 </span><br>
         <a href="#" class="btn btn-danger text-white">로그아웃</a> 
       </div>
 </div>

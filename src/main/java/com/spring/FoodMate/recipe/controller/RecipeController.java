@@ -75,4 +75,28 @@ public interface RecipeController {
 	        @RequestParam("rating") int rating,  // 수정할 별점
 	        @RequestParam("comments") String comments,  // 수정할 댓글
 	        RedirectAttributes redirectAttributes);
+	
+	// 레시피 후기 삭제 처리
+	@RequestMapping("/recipe/deleteRecipeRating")
+	public String deleteRecipeRating(
+	        @RequestParam("cmt_rcp_rating_id") int cmt_rcp_rating_id,  // 삭제할 댓글 ID
+	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID (리다이렉트용)
+	        RedirectAttributes redirectAttributes);
+
+	//레시피 질문 작성
+	@RequestMapping("/recipe/addRecipeQna")
+	public String addRecipeQna(
+	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID
+	        @RequestParam("comments") String comments,  // 질문 댓글
+	        HttpSession session, 
+	        RedirectAttributes redirectAttributes);
+	
+	//레시피 답변 작성
+	@RequestMapping("/recipe/addRecipeQnaAwnser")
+	public String addRecipeQnaAnswer( @RequestParam("rcp_id") int rcp_id,
+									  @RequestParam("parent_id") int parentId, 
+	                                  @RequestParam("comments") String comments, 
+	                                  HttpSession session) throws Exception;
+	
+	
 }

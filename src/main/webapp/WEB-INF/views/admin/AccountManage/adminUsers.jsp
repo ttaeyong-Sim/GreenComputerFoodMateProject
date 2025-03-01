@@ -129,7 +129,6 @@
 
         <!-- 탭 UI -->
         <div class="tabs">
-        
             <div class="tab-item" data-tab="all">전체 사용자</div> <!-- 전체 사용자 탭 추가 -->
             <div class="tab-item active" data-tab="active">활동 중인 사용자</div>
             <div class="tab-item" data-tab="withdrawal">탈퇴 신청 사용자</div>
@@ -300,14 +299,26 @@
     </div>
 
     <script>
-        // 탭 클릭 시 해당 탭으로 이동
+    $(document).ready(function() {
+        var tab = "${tab}"; // 서버에서 받아온 tab 값
+
+        if (tab) {
+            activateTab(tab);
+        }
+
         $(".tab-item").on("click", function() {
             var tabId = $(this).data("tab");
-            $(".tab-item").removeClass("active");
-            $(this).addClass("active");
-            $(".tab-pane").removeClass("active");
-            $("#" + tabId).addClass("active");
+            activateTab(tabId);
+            history.pushState(null, null, "?tab=" + tabId);
         });
+
+        function activateTab(tabName) {
+            $(".tab-item").removeClass("active");
+            $(".tab-pane").removeClass("active");
+            $(".tab-item[data-tab='" + tabName + "']").addClass("active");
+            $("#" + tabName).addClass("active");
+        }
+    });
     </script>
 </body>
 </html>

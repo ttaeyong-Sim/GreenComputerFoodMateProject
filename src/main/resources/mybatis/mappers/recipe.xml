@@ -61,7 +61,7 @@
 	        R.STATUS, 
 	        R.CREATE_DATE,
 	        COUNT(rr.rcp_id) AS REVIEW_COUNT,
-	        ROUND(COALESCE(AVG(RR.RATING), 0), 0) AS RATING <!-- 평점이 없으면 0을 대신하고, 평균 평점 계산 (소수 첫째 자리에서 둘째자리를 기준 반올림)-->
+	        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING <!-- 평점이 없으면 0을 대신하고, 평균 평점 계산 (소수 첫째 자리에서 둘째자리를 기준 반올림)-->
 	    FROM FOODMATE_RECIPE R
 	    LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID  -- 닉네임 조인
 	    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID  -- 평점 조인
@@ -220,7 +220,7 @@
 	</select>
 	
 	<!-- 레시피 후기 수정-->
-	<update id="updateRecipeRating" parameterType="RecipeRatingDTO">>
+	<update id="updateRecipeRating" parameterType="RecipeRatingDTO">
     UPDATE FOODMATE_RECIPE_RATING
     SET 
         RATING = #{rating}, 
@@ -228,6 +228,91 @@
         UPDATE_DATE = SYSDATE
     WHERE CMT_RCP_RATING_ID = #{cmt_rcp_rating_id}
 	</update>
+	
+	<!-- 레시피 후기 삭제 -->
+    <delete id="deleteRecipeRating" parameterType="RecipeRatingDTO">
+    DELETE FROM FOODMATE_RECIPE_RATING
+    WHERE CMT_RCP_RATING_ID = #{cmt_rcp_rating_id}
+	</delete>
+	
+	<!-- 레시피 질문 등록 -->
+	<insert id="addRecipeQna" parameterType="RecipeQnaDTO">
+    INSERT INTO FOODMATE_RECIPE_QNA (
+        CMT_RCP_QNA_ID, 
+        RCP_ID, 
+        BYR_ID, 
+        COMMENTS, 
+        CREATE_DATE
+    ) VALUES (
+        FOODMATE_RECIPE_QNA_SEQ.NEXTVAL, 
+        #{rcp_id},  
+        #{byr_id},  
+        #{comments},  <!-- 질문 댓글 -->
+        SYSDATE 
+    )
+	</insert>
+	
+	<resultMap id="RecipeQnaMap" type="RecipeQnaDTO">
+    <result property="cmt_rcp_qna_id" column="CMT_RCP_QNA_ID"/>
+    <result property="rcp_id" column="RCP_ID"/>
+    <result property="byr_id" column="BYR_ID"/>
+    <result property="comments" column="COMMENTS"/>
+    <result property="parent_id" column="PARENT_ID"/>
+    <result property="create_date" column="CREATE_DATE"/>
+    <result property="update_date" column="UPDATE_DATE"/>
+    <result property="nickname" column="NICKNAME"/>
+    <result property="img_path" column="IMG_PATH"/>
+	</resultMap>
 
+	<!-- 레시피 질문/답변테이블에서 parent_id가 NULL 또는 0인 질문만 조회 -->
+	<select id="getQnasByRecipeId" resultMap="RecipeQnaMap">
+	    SELECT 
+	        rq.CMT_RCP_QNA_ID, 
+	        rq.RCP_ID, 
+	        rq.BYR_ID, 
+	        rq.COMMENTS, 
+	        rq.PARENT_ID,
+	        rq.CREATE_DATE, 
+	        rq.UPDATE_DATE,  
+	        bp.NICKNAME, 
+	        bp.IMG_PATH
+	    FROM FOODMATE_RECIPE_QNA rq
+	    JOIN FOODMATE_BUYER_PROFILE bp 
+	    ON rq.BYR_ID = bp.BYR_ID
+	    WHERE rq.RCP_ID = #{rcp_id} 
+	    AND (rq.PARENT_ID IS NULL OR rq.PARENT_ID = 0)
+	    ORDER BY rq.CREATE_DATE DESC
+	</select>
+	
+	<!-- 레시피 질문/답변테이블에서 parent_id가 있는 답변만 조회 -->
+	<select id="getAnswersByRecipeId" resultMap="RecipeQnaMap">
+	    SELECT 
+	        rq.CMT_RCP_QNA_ID, 
+	        rq.RCP_ID, 
+	        rq.BYR_ID, 
+	        rq.COMMENTS, 
+	        rq.PARENT_ID,
+	        rq.CREATE_DATE, 
+	        rq.UPDATE_DATE,  
+	        bp.NICKNAME, 
+	        bp.IMG_PATH
+	    FROM FOODMATE_RECIPE_QNA rq
+	    JOIN FOODMATE_BUYER_PROFILE bp 
+	    ON rq.BYR_ID = bp.BYR_ID
+	    WHERE rq.RCP_ID = #{rcp_id} 
+	    AND rq.PARENT_ID IS NOT NULL 
+	    ORDER BY rq.CREATE_DATE ASC
+	</select>
+	
+	<!-- 레시피 답변 등록 -->
+	<insert id="addRecipeQnaAnswer" parameterType="RecipeQnaDTO">
+    INSERT INTO FOODMATE_RECIPE_QNA (CMT_RCP_QNA_ID, RCP_ID, BYR_ID, COMMENTS, PARENT_ID, CREATE_DATE)
+    VALUES (FOODMATE_RECIPE_QNA_SEQ.NEXTVAL, 
+            #{rcp_id}, 
+            #{byr_id}, 
+            #{comments}, 
+            #{parent_id}, 
+            SYSDATE)
+	</insert>
 
 </mapper>

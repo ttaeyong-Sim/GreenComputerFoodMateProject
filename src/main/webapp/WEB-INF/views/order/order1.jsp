@@ -342,6 +342,7 @@
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+var contextPath = '${contextPath}';
 function execDaumPostcode() {
 	  new daum.Postcode({
 	    oncomplete: function(data) {
@@ -419,6 +420,7 @@ function execDaumPostcode() {
             }
         };
 });
+	
 	function calculateTotals() {
 	    let totalPrice = 0;
 	    let totalShippingFee = 0;
@@ -426,8 +428,8 @@ function execDaumPostcode() {
 
 	    // 모든 주문 항목을 가져옴
 	    document.querySelectorAll(".order-item").forEach((item) => {
-	        let price = parseInt(item.getAttribute("data-price")); // 상품 가격
-	        let qty = parseInt(item.getAttribute("data-qty")); // 수량
+	        let price = parseInt(item.getAttribute("data-price")) || 0; // 상품 가격
+	        let qty = parseInt(item.getAttribute("data-qty")) || 0; // 수량
 	        let nickname = item.getAttribute("data-nickname"); // 판매자 닉네임
 
 	        // 1️⃣ 총 상품 가격 계산
@@ -441,39 +443,72 @@ function execDaumPostcode() {
 	    });
 
 	    // 3️⃣ 사용 가능한 최대 포인트 가져오기 (JSP에서 받아옴)
-	    let maxPoint = parseInt(document.getElementById("user-point").innerText) || 0;
-	    
-	    // 4️⃣ 입력한 포인트 값 가져오기
-	    let usedPoint = parseInt(document.getElementById("orderer-point").value) || 0;
+		let maxPoint = parseInt(document.getElementById("available-points").innerText.replace(/[^0-9]/g, "")) || 0;
 
-	    // 5️⃣ 포인트가 최대 사용 가능 포인트 또는 총 결제 금액을 초과하면 제한
+	    // 4️⃣ 입력한 포인트 값 가져오기
+	    let pointInput = document.getElementById("orderer-point-input");
+	    let usedPoint = parseInt(pointInput.value.replace(/[^0-9]/g, "")) || 0;
+
+	    // 5️⃣ 포인트 사용 가능 여부 확인
 	    if (usedPoint > maxPoint) {
 	        alert("보유한 적립금보다 많이 사용할 수 없습니다!");
 	        usedPoint = maxPoint;
-	        document.getElementById("orderer-point").value = maxPoint;
+	        pointInput.value = maxPoint;
 	    }
 	    if (usedPoint > totalPrice) {
 	        alert("총 상품 금액보다 많은 포인트를 사용할 수 없습니다!");
 	        usedPoint = totalPrice;
-	        document.getElementById("orderer-point").value = totalPrice;
+	        pointInput.value = totalPrice;
 	    }
 
 	    // 6️⃣ 최종 결제 금액 계산
 	    let finalPrice = totalPrice + totalShippingFee - usedPoint;
-
-	    // 7️⃣ 화면 업데이트
-	    document.getElementById("total-price").innerText = `₩ ${totalPrice.toLocaleString()}원`;
-	    document.getElementById("total-shipping-fee").innerText = `₩ ${totalShippingFee.toLocaleString()}원`;
-	    document.getElementById("point-discount").innerText = `- ₩ ${usedPoint.toLocaleString()}원`;
-	    document.getElementById("final-price").innerText = `₩ ${finalPrice.toLocaleString()}원`;
+		
+	    document.getElementById("total-price").innerText = totalPrice.toLocaleString();
+        document.getElementById("total-shipping-fee").innerText = totalShippingFee.toLocaleString();
+        document.getElementById("point-discount").innerText = usedPoint.toLocaleString();
+        document.getElementById("point-discount-view").innerText = usedPoint.toLocaleString();
+        document.getElementById("final-price").innerText = finalPrice.toLocaleString();
+	    
 	}
+	
+	document.addEventListener("DOMContentLoaded", function() {
+	    let checkbox = document.getElementById("use-all-points");
+	    let inputField = document.getElementById("orderer-point-input");
+	    let maxPointsElement = document.getElementById("available-points");
+
+	    if (!checkbox || !inputField || !maxPointsElement) {
+	        console.error("필요한 요소가 존재하지 않습니다.");
+	        return;
+	    }
+
+	    checkbox.addEventListener("change", function() {
+	        let maxPoints = parseInt(maxPointsElement.innerText.replace(/[^0-9]/g, "")) || 0;
+
+	        if (this.checked) {
+	            inputField.value = maxPoints; // 최대 포인트 입력
+	            calculateTotals();
+	        } else {
+	            inputField.value = ""; // 체크 해제 시 입력 초기화
+	            calculateTotals();
+	        }
+
+	    });
+	});
+
 
 	// 8️⃣ 페이지 로드 시 총 가격 & 배송비 계산
-	document.addEventListener("DOMContentLoaded", calculateTotals);
+	document.addEventListener("DOMContentLoaded", () => {
+	    calculateTotals();
 
-	// 9️⃣ 사용자가 포인트 입력 시 다시 계산
-	document.getElementById("orderer-point-input").addEventListener("input", calculateTotals);
+	    // 9️⃣ 포인트 입력 필드의 `input` 이벤트 리스너 추가
+	    let pointInput = document.getElementById("orderer-point-input");
+	    if (pointInput) {
+	        pointInput.addEventListener("input", calculateTotals);
+	    }
+	});
 </script>
+
 <body>
     <div class="container">
         <!-- 주문 및 결제 -->
@@ -507,7 +542,7 @@ function execDaumPostcode() {
 		                </td>
 		                <td>${orderitems.qty}개</td>
 		                <td>₩ <fmt:formatNumber value="${orderitems.price * orderitems.qty}" type="number" groupingUsed="true" />원</td>
-		                <td>0p</td>
+		                <td><span id=point-discount-view>0</span>p</td>
 		                <td>0원</td>
 		                <td>기본 3,000원</td>
 		            </tr>
@@ -592,7 +627,7 @@ function execDaumPostcode() {
 		            <span class="currency">원</span>
 		            <input type="checkbox" id="use-all-points">
 		            <label for="use-all-points" class="checkbox-label">전액 사용하기</label>
-		            <span class="point-info">(보유 적립금 : <span id="available-points">${buyerInfo.points}</span> 원)</span>
+		            <span class="point-info">(보유 적립금 : <span id="available-points">${buyerInfo.points}</span>원)</span>
 		        </div>
 		    </div>
 		</div>
@@ -605,23 +640,23 @@ function execDaumPostcode() {
 		        <div class="payment-detail">
 		            <label>상품 합계 금액</label>
 		            
-		            <p class="price" id="total-price">₩ <fmt:formatNumber value="${totalPrice}" type="number" groupingUsed="true" /></p>
+		            <p class="price">₩ <span id="total-price"> 0</span>원</p>
 		        </div>
 		       	<div class="payment-detail">
 		            <label>포인트 할인</label>
-		            <p class="price" id="point-discount">- ₩ 0</p>
+		            <p class="price">- ₩ <span id="point-discount"> 0</span>원</p>
 		        </div>
 		        <div class="payment-detail">
 		            <label>쿠폰 할인</label>
-		            <p class="price" id="coupon-discount">- ₩ 0</p>
+		            <p class="price">- ₩ <span id="coupon-discount"> 0</span>원</p>
 		        </div>
 		        <div class="payment-detail">
 		            <label>배송비</label>
-		            <p class="price" id="total-shipping-fee">₩ <fmt:formatNumber value="${totalShippingFee}" type="number" groupingUsed="true" /></p>
+		            <p class="price">₩ <span id="total-shipping-fee"> </span>원</p>
 		        </div>
 		        <div class="payment-detail total">
 		            <label>최종 결제 금액</label>
-		            <p class="total-price" id="final-price">₩ <fmt:formatNumber value="${totalPrice + totalShippingFee}" type="number" groupingUsed="true" /></p>
+		            <p class="total-price">₩ <span id="final-price"> 0</span>원</p>
 		        </div>
 		    </div>
 		</div>
@@ -680,6 +715,7 @@ function execDaumPostcode() {
         		        merchantUid: "ORD-" + new Date().getTime(), // 예시: 주문번호 생성
         		        payMethod: "card", // 결제방식 (ex: 카드, 계좌이체)
         		        pgId: "imp11122", // PG사 ID
+        		        used_point: $("#orderer-point-input").val(),
         		        orderAddress: {
         		            postalCode: $("#postal_Code").val(),
         		            addr: $("#addr").val(),
@@ -749,6 +785,7 @@ function execDaumPostcode() {
 		        		        merchantUid: rsp.merchant_uid,
 		        		        payMethod: rsp.pay_method, // 결제방식 (ex: 카드, 계좌이체)
 		        		        pgId: rsp.imp_uid, // PG사 ID
+		        		        used_point: $("#orderer-point-input").val(), // 사용한 포인트 값
 		        		        orderAddress: {
 		        		            postalCode: $("#postal_Code").val(),
 		        		            addr: $("#addr").val(),

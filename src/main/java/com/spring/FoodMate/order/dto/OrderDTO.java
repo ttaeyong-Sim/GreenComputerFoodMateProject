@@ -11,6 +11,7 @@ public class OrderDTO {
     private String byr_id; // 구매자 ID
     private String slr_id; // 판매자 ID
     private int tot_Pdt_Price; // 총 상품 가격
+    private int used_point; // 사용한 포인트
     private int ship_Fee; // 배송비
     private int ord_Stat; // 주문 상태 0 : 결제 대기 / 1 : 결제 완료, 배송 준비 / 2 : 배송 중 / 3 : 배송 완료 / 4 : 구매 확정 / 5 : 주문 취소 / 6 : 반품
     private LocalDateTime create_Date; // 생성 날짜
@@ -135,6 +136,14 @@ public class OrderDTO {
 
 	public void setPoint_price(int point_price) {
 		this.point_price = point_price;
+	}
+
+	public int getUsed_point() {
+		return used_point;
+	}
+
+	public void setUsed_point(int used_point) {
+		this.used_point = used_point;
 	}
 
 	@Override

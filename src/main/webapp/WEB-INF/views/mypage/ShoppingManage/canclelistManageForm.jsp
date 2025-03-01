@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>취소/반품/교환 신청</title>
+<title>취소/반품/교환 내역</title>
 <link href="<c:url value="/resources/css/tablepage.css" />" rel="stylesheet">
 <style>
 		.table-custom {
@@ -37,7 +37,7 @@
 <body>
 <div class="container mt-1">
 	<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-      		<h5 class="mb-0 fw-bold">취소/반품/교환 신청</h5>
+      		<h5 class="mb-0 fw-bold">취소/반품/교환 내역</h5>
     </div>
         <div class="border p-4 rounded mb-3" style="margin: 0 auto;">
     	<div class="d-flex align-items-center gap-3 flex-wrap">
@@ -67,8 +67,8 @@
 				<td>날짜/주문번호</td>
 				<td>상품명/옵션</td>
 				<td>상품금액/수량</td>
-				<td>주문상태</td>
-				<td>신청하기</td>
+				<td>처리현황</td>
+				<td>확인/취소</td>
 			</tr>
 		</thead>
       	<tbody>
@@ -80,12 +80,9 @@
           [2025설날] 2025 명란시대 짜지않고 맛있는 명품 선동명란 명란젓 선물세트 350g/800g
           </td>
           <td>39,800원 (1개)</td>
-          <td>상품 준비중</td>
+          <td>취소 완료</td>
           <td>
-            <div class="d-flex flex-column gap-1">
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>반품신청</button>
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>교환신청</button>
-		  	</div>
+            <button class="btn btn-outline-secondary btn-sm" disabled>취소하기</button>
           </td>
         </tr>
         <tr>
@@ -96,19 +93,15 @@
           파커아사히 항균도마 셰프 프로 블랙 중/대
           </td>
           <td>212,000원 (1개)</td>
-          <td>상품 준비중</td>
+          <td>판매자 확인중</td>
           <td>
-            <div class="d-flex flex-column gap-1">
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>취소하기</button>
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>반품신청</button>
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>교환신청</button>
-		  	</div>
+          	<button class="btn btn-outline-secondary btn-sm" disabled>취소하기</button>
           </td>
         </tr>
 		</tbody>
 	</table>
 	<div class="text-end">
-	  <a href="${contextPath}/mypage/ShoppingManage/canclelistManageForm.do" class="btn btn-dark">내역보기</a>
+	  <a href="${contextPath}/mypage/ShoppingManage/canclelistrequestManageForm.do" class="btn btn-dark">신청하기</a>
 	</div>
 	<nav aria-label="Page navigation">
 	  <ul class="pagination justify-content-center">

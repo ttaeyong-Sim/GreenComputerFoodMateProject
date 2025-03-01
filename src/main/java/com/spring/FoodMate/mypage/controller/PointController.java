@@ -65,11 +65,53 @@ public class PointController {
 			message  = "<script>";
 		    message += " alert('포인트 적립을 성공했습니다.');";
 		    message += " </script>";
+		    
+		    buyerInfo.setPoints(pointService.inquiryPoints(byr_id));
+		    session.setAttribute("buyerInfo", buyerInfo);
 			
         } catch (Exception e) {
         	e.printStackTrace();
         	message  = "<script>";
 		    message += " alert('포인트 적립을 실패했습니다.');";
+		    message += " </script>";
+        }
+		resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);
+		return resEntity;
+    }
+	
+	@RequestMapping(value="/mypage/usedPoint" ,method = RequestMethod.POST)
+	public ResponseEntity usedPoint(@RequestBody Map<String, Object> pointData,
+			                HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("utf-8");
+		HttpSession session = request.getSession();
+		BuyerDTO buyerInfo = (BuyerDTO) session.getAttribute("buyerInfo"); // 세션에서 buyerInfo 가져오기
+		String byr_id = null;
+		String message = null;
+		ResponseEntity resEntity = null;
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+		
+		if (buyerInfo != null) {
+		    byr_id = buyerInfo.getByr_id(); // byr_id 값 추출
+		}
+		
+		try {
+			PointDTO pointDTO = new PointDTO();
+			pointDTO.setByr_id(byr_id);
+			pointDTO.setAmount((int) pointData.get("amount"));
+			pointDTO.setDescription((int) pointData.get("amount") + "원 사용");
+			pointDTO.setPoint_type((String) pointData.get("point_type"));
+			
+			pointService.usePoint(pointDTO);
+			
+			message  = "<script>";
+		    message += " </script>";
+			
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	message  = "<script>";
+		    message += " alert('포인트 사용을 실패했습니다.');";
 		    message += " </script>";
         }
 		resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);

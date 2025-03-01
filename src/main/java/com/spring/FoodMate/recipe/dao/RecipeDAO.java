@@ -8,6 +8,7 @@ import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeCategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 import com.spring.FoodMate.recipe.dto.RecipeIngredientDTO;
+import com.spring.FoodMate.recipe.dto.RecipeQnaDTO;
 import com.spring.FoodMate.recipe.dto.RecipeRatingDTO;
 import com.spring.FoodMate.recipe.dto.RecipeStepDTO;
 
@@ -56,4 +57,19 @@ public interface RecipeDAO {
 	public void updateRecipeRating(RecipeRatingDTO ratingDTO);
 
 	public List<RecipeRatingDTO> selectRecipeReviewByrIDList(String byr_id) throws Exception;
+	
+	//레시피 후기 삭제
+	public void deleteRecipeRating(RecipeRatingDTO ratingDTO);
+	
+	//레시피 질문 저장
+	public void addRecipeQna(RecipeQnaDTO qnaDTO) throws Exception;
+	
+	//레시피 질문만 조회
+	public List<RecipeQnaDTO> getQnasByRecipeId(int rcp_id) throws Exception;
+	
+	//레시피 답변만 조회
+	public List<RecipeQnaDTO> getAnswersByRecipeId(int rcp_id) throws Exception;
+	
+	//레시피 답변 작성
+	public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception;
 }

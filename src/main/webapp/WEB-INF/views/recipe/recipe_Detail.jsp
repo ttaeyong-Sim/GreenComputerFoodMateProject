@@ -17,8 +17,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/recipe_Detail.css">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
-
+	
 <body>
 
 <div class="container recipe-container">
@@ -124,7 +125,7 @@
                 <a href="https://www.facebook.com/" target="_blank" class="share-icon ms-3">
                     <img src="${pageContext.request.contextPath}/resources/images/facebook.png" alt="페이스북" class="social-icon">
                 </a>
-            </div>
+    </div>
 
    	<div class="comment-section">
 	    <h2 class="recipe-section-title">레시피 평</h2>
@@ -203,137 +204,315 @@
 							        <span class="star_filled">☆</span> <!-- 빈 별 -->
 							    </c:forEach>
 							</div>			
-							<br><br>	
+												<br>
 												<!--▼후기 댓글 내용-->
 												<p>${rating.comments}</p>
 	                </div>
+	                	
 	            </div>
-					
-	            <div class="comment-content">
-				        <!-- 수정 버튼 (작성자만 보이도록 조건 추가) -->
+	     
+	            <div class="comment-content">	            	
+				    <!-- 수정 버튼 (작성자만 보이도록 조건 추가) -->
 				    <c:if test="${rating.byr_id eq buyerInfo.byr_id}">
-				        <button class="w-btn-outline w-btn-red-outline" type="button" onclick="editComment('${rating.cmt_rcp_rating_id}', '${rating.comments}')">후기 수정</button>
-				    </c:if>
+                    <button class="w-btn-outline w-btn-red-outline" type="button" data-id="${rating.cmt_rcp_rating_id}" onclick="editComment(${rating.cmt_rcp_rating_id})">후기 수정</button>
+                    <button class="w-btn-outline w-btn-red-outline" type="button" data-id="${rating.cmt_rcp_rating_id}" onclick="confirmDelete(${rating.cmt_rcp_rating_id}, ${rating.rcp_id})">후기 삭제</button>
+				    </c:if>			
 				    
+					    <div id="edit_ratingForm-${rating.cmt_rcp_rating_id}" class="edit-form" style="display:none;">
+			                	<!-- 후기 수정 폼 -->
+							    <form method="post" action="${pageContext.request.contextPath}/recipe/updateRecipeRating">
+							    	
+							    	<input type="hidden" name="rcp_id" value="${rating.rcp_id}">	    
+								    <input type="hidden" name="cmt_rcp_rating_id" value="${rating.cmt_rcp_rating_id}">
+	        						<!-- 선택된 평점 값 hidden 처리로 서버에 넘기기 -->
+	        						<input type="hidden" id="edit_rating" name="rating" value="${rating.rating}" readonly>
+							        <!-- 평점 숫자로 표시 -->
+							        <div class="edit_rating-display">
+							            <span id="edit_rating-text">${rating.rating}</span> / <span>5</span>
+							        </div>
+							
+							        <!-- 평점 별 선택 -->
+									<div>
+									    <c:forEach var="i" begin="1" end="5">
+									        <span class="edit_star" onclick="edit_setRating(${i})">★</span>
+									    </c:forEach>
+									</div>							
+							
+							        <!-- 댓글 입력 -->
+							        <div>         
+							            <label for="comments"></label>
+							            <textarea id="comments" class="form-control" rows="3" name="comments" placeholder="수정할 내용을 입력하세요" required></textarea>                     
+							            	<button class="w-btn-outline w-btn-red-outline" type="submit">수정완료</button>
+							        </div>
+							    </form>
+				  		 </div>
+				    	    
 				</div>
-				
-				<!-- 댓글 수정 폼 (초기에 숨김 처리) -->
-				<div class="edit-form" id="edit-form-${rating.cmt_rcp_rating_id}" style="display: none;">
-				    <textarea id="edit-text-${rating.cmt_rcp_rating_id}" class="form-control" rows="3">${rating.comments}</textarea>
-				    <button type="button" class="w-btn-red-outline" onclick="submitEdit('${rating.cmt_rcp_rating_id}')">수정 완료</button>
-				    <button type="button" class="w-btn-gray-outline" onclick="cancelEdit('${rating.cmt_rcp_rating_id}')">취소</button>
-				</div>
-				<hr class="comment-separator">
-	        </div>
+			</div>
 	    </c:forEach>
 	</div>
 	
 
-<script>
-    function setRating(value, isEdit = false) {
-        let stars = document.querySelectorAll('.star'); // 모든 별(span) 요소 가져오기
+		<script>
+		    function setRating(value, isEdit = false) {
+		        let stars = document.querySelectorAll('.star'); // 모든 별(span) 요소 가져오기
+		
+		        // 별 색상 업데이트
+		        stars.forEach((star, index) => {
+		            star.style.color = index < value ? "gold" : "gray";
+		        });
+		
+		        // 별점 숫자 및 hidden input 업데이트 (수정 모드가 아닐 때만)
+		        if (!isEdit) {
+		            document.getElementById('rating-text').textContent = value; // 별점 숫자 업데이트
+		            document.getElementById('rating').value = value; // hidden input 값 저장
+		        }
+		    }	
+		    
 
-        // 별 색상 업데이트
-        stars.forEach((star, index) => {
-            star.style.color = index < value ? "gold" : "gray";
-        });
-
-        // 별점 숫자 및 hidden input 업데이트 (수정 모드가 아닐 때만)
-        if (!isEdit) {
-            document.getElementById('rating-text').textContent = value; // 별점 숫자 업데이트
-            document.getElementById('rating').value = value; // hidden input 값 저장
-        }
-    }
-
- // 댓글 수정 폼을 보이도록 하는 함수
-    function editComment(commentId, currentComment) {
-    	console.log(commentId, );
-		 // 기존 댓글 내용 숨기기
-        document.getElementById(`content-`).style.display = 'none';
-        // 수정 폼 보이기
-        const editForm = document.getElementById(`edit-form-`);
-        editForm.style.display = 'block';
-        // 수정할 댓글 내용 미리 넣어주기
-        document.getElementById(`edit-text-`).value = currentComment;
-    }
-
-    // 댓글 수정 완료 처리 (AJAX로 서버에 전달)
-    function submitEdit(commentId) {
-        const commentText = document.getElementById(`edit-text-`).value;
-
-        // AJAX 요청 보내기 (jQuery의 $.ajax() 사용)
-        $.ajax({
-            url: "${pageContext.request.contextPath}/recipe/updateRecipeRating",
-            type: "POST",
-            data: {
-                cmt_rcp_rating_id: commentId,
-                comments: commentText
-            },
-            success: function(response) {
-                if (response === "success") {
-                    // 서버 응답이 "success"라면 댓글 수정
-                    document.getElementById(`content`).querySelector('p').textContent = commentText;
-
-                    // 수정 폼 숨기기
-                    document.getElementById(`edit-form`).style.display = 'none';
-                    // 기존 댓글 내용 보이기
-                    document.getElementById(`content`).style.display = 'block';
-                } else {
-                    alert("수정에 실패했습니다. 다시 시도해주세요.");
-                }
-            },
-            error: function() {
-                alert("서버와의 연결에 문제가 발생했습니다. 다시 시도해주세요.");
-            }
-        });
-    }
-
-    // 수정 취소 시 기존 내용 보이기
-    function cancelEdit(commentId) {
-        // 기존 내용 보이기
-        document.getElementById(`content-${commentId}`).style.display = 'block';
-        // 수정 폼 숨기기
-        document.getElementById(`edit-form-${commentId}`).style.display = 'none';
-    }
-    // 페이지 로드 시 기존 별점 반영 (수정 모드)
-    window.onload = function () {
-        let currentRating = document.getElementById("rating").value;
-        if (currentRating) {
-            setRating(currentRating, true);
-        }
-    }
-</script>
+		    
+		 // 수정 상태에서 별점 선택
+		    function edit_setRating(value, isEdit = false) {
+		        let edit_stars = document.querySelectorAll('.edit_star'); // 모든 별(span) 요소 가져오기
+		
+		        // 별 색상 업데이트
+		        edit_stars.forEach((edit_star, index) => {
+		        	edit_star.style.color = index < value ? "gold" : "gray";
+		        });
+		
+		        // 별점 숫자 및 hidden input 업데이트 (수정 모드가 아닐 때만)
+		        if (!isEdit) {
+		            document.getElementById('edit_rating-text').textContent = value; // 별점 숫자 업데이트
+		            document.getElementById('edit_rating').value = value; // hidden input 값 저장
+		        }
+		    }
+		    
+			 // 수정 폼이 열릴 때 기본 별점 설정
+		    function loadEditForm(ratingValue) {
+		        edit_setRating(ratingValue); // 기본 별점을 채워준다.
+		    }
+			 
+		    function editComment(ratingId) {
+	            // 해당 답변 폼 ID 찾기
+	            var form = document.getElementById("edit_ratingForm-" + ratingId);
+	            
+	            // 현재 폼이 보이는 상태라면 숨기고, 숨겨져 있다면 보이게 함
+	            if (form.style.display === "none" || form.style.display === "") {
+	                form.style.display = "block"; // 폼 보이게 하기
+	                var ratingValue = document.getElementById("edit_rating-" + ratingId).value; // 해당 후기의 별점 값 가져오기
+	                loadEditForm(ratingValue); // 수정 폼에 기본 별점 채우기
+	            } else {
+	                form.style.display = "none";  // 폼 숨기기
+	            }
+	        }
+		    
+		 // 후기 삭제 확인 함수
+		    function confirmDelete(cmt_rcp_rating_id, rcp_id) {
+		        // 사용자가 삭제를 확인했는지 확인
+		        const isConfirmed = confirm("정말로 이 후기를 삭제하시겠습니까?");
+		        
+		        if (isConfirmed) {
+		            // 삭제 요청을 서버로 전송
+		            window.location.href = "${pageContext.request.contextPath}/recipe/deleteRecipeRating?cmt_rcp_rating_id=" + cmt_rcp_rating_id + "&rcp_id=" + rcp_id;
+		        }
+		    }
+		    
+			</script>
+			
 
             
-            <!-- 레시피QNA -->
-            <div class="comment-section">
-                <h2 class="recipe-section-title">레시피 관련 질문</h2> 
-                <br>             
-                <textarea class="form-control" rows="3" placeholder="질문을 남겨주세요..."></textarea>                      
-                <button class="w-btn-outline w-btn-red-outline" type="button">질문 작성</button>
+           <!-- 레시피QNA -->
+			<div class="comment-section">
+			    <h2 class="recipe-section-title">레시피 관련 질문</h2>
+			
+			    <c:if test="${not empty qna_message}">
+			        <script>
+			            alert("${qna_message}");
+			        </script>
+			    </c:if>
+			    <c:if test="${not empty qna_error}">
+			        <script>
+			            alert("${qna_error}");
+			        </script>
+			    </c:if>
+			
+			    <!-- 질문 작성 폼 -->
+			    <form method="post" action="${pageContext.request.contextPath}/recipe/addRecipeQna?rcp_id=${param.rcp_id}">
+			        <div>
+			            <textarea class="form-control" rows="3" name="comments" placeholder="레시피에 대한 질문을 남겨주세요..." required></textarea>
+			        </div>
+			        <button class="w-btn-outline w-btn-red-outline" type="submit">질문 작성</button>
+			    </form>
+			    <hr class="comment-separator">
+			</div>
+			
+			<!-- <h2>디버깅용 - 총 원본질문 개수(parent_id가 null인거만 카운트함): ${fn:length(qnaList)}</h2> -->
+			<!-- <h2>디버깅용 - 총 답변 개수(원본 질문 제외한 모든 답변): ${fn:length(answerList)}</h2> -->
+	
+	
 
-                <div class="mt-4">
-                    <!-- 댓글 1 -->
-                    <div class="comment">
-                        <div class="comment-header">
-                            <div class="profile-image">
-                                <img src="${pageContext.request.contextPath}/resources/images/profile1.png" alt="Profile Image">
-                            </div>
-                            <div class="comment-details">
-                                <span class="username">양초딩</span>
-                                <span class="date-time">2025-01-06 10:10:56</span>
-                            </div>
-                        </div>
-                        <div class="comment-content">
-                            <p>양념장 더넣어도되나요?</p>
-                        </div>
-                        <hr class="comment-separator">
-                    </div>
-            </div>   
-        </div>    
-</div>
-
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<!-- ▲질문 작성 -->	
+<!-- ===================================================================================================================== -->	
+<!-- ▼내용 출력 및 답글 작성 -->
+	
+	
+			
+			<!-- ▼ 원본 질문 리스트 -->
+			<div class="comment-list mt-4">  
+			    <c:forEach var="qna" items="${qnaList}">
+			        <div class="comment">
+			            <div class="comment-header"> <!-- 프로필 , 닉네임 , 작성/수정일자 -->
+			                <div class="profile-image">
+			                    <img src="${pageContext.request.contextPath}/resources/images/${qna.img_path}" alt="Profile Image">
+			                </div>
+			                <div class="comment-details">
+			                    <span class="username">${qna.nickname}</span>
+			                    <span class="date-time"> <!-- ▼수정하고나면 수정한 시간으로 초기화 -->
+			                        <c:if test="${empty qna.update_date}">
+			                            <fmt:formatDate value="${qna.create_date}" pattern="yyyy-MM-dd HH:mm" />
+			                        </c:if>
+			                        <c:if test="${not empty qna.update_date}">
+			                            <fmt:formatDate value="${qna.update_date}" pattern="yyyy-MM-dd HH:mm" />(수정됨)
+			                        </c:if>
+			                    </span>
+			                    	<!-- ▼질문 내용 -->
+			                    <p>${qna.comments}</p>
+			                    
+			                </div>
+			            </div>
+			
+			            <div class="comment-content"> <!-- 답글/수정/삭제 버튼 -->
+			                <c:if test="${not empty buyerInfo}">
+			                    <a href="javascript:void(0);" class="w-btn-outline w-btn-red-outline" onclick="toggleAnswerForm(${qna.cmt_rcp_qna_id})">답글</a>
+			                    <c:if test="${qna.byr_id eq buyerInfo.byr_id}">
+			                        <button class="w-btn-outline w-btn-red-outline" type="button" onclick="editQna('${qna.cmt_rcp_qna_id}', '${qna.comments}')">질문 수정</button>
+			                        <button class="w-btn-outline w-btn-red-outline" type="button" onclick="deleteQna('${qna.cmt_rcp_qna_id}')">질문 삭제</button>
+			                    </c:if>
+			                </c:if>
+			            </div>
+			
+			            <!-- 원본 질문에 대한 답글 작성 폼 -->
+			            <div id="answerForm-${qna.cmt_rcp_qna_id}" class="answer-form" style="display:none;">
+			                <form method="post" action="${pageContext.request.contextPath}/recipe/addRecipeQnaAnswer">
+			                    <input type="hidden" name="rcp_id" value="${param.rcp_id}">
+			                    <input type="hidden" name="parent_id" value="${qna.cmt_rcp_qna_id}">
+			                    <textarea class="form-control" rows="4" name="comments" placeholder="답변을 남겨주세요"></textarea>
+			                    <button type="submit" class="w-btn-outline w-btn-red-outline">작성완료</button>
+			                </form>
+			            </div>
+			
+			            <!-- 원본 질문에 대한 답변 리스트 -->
+			            <div class="answer-list" id="answerList-${qna.cmt_rcp_qna_id}">
+			                <c:forEach var="answer" items="${answerList}">
+			                    <c:if test="${answer.parent_id == qna.cmt_rcp_qna_id}">
+			                        <div class="answer">
+			                            <div class="answer-header">
+			                                <span class="username">${answer.nickname}</span>
+			                                <span class="date-time"> <!-- ▼수정하고나면 수정한 시간으로 초기화 -->
+			                                    <c:if test="${empty answer.update_date}">
+			                                        <fmt:formatDate value="${answer.create_date}" pattern="yyyy-MM-dd HH:mm" />
+			                                    </c:if>
+			                                    <c:if test="${not empty answer.update_date}">
+			                                        <fmt:formatDate value="${answer.update_date}" pattern="yyyy-MM-dd HH:mm" />(수정됨)
+			                                    </c:if>
+			                                </span>
+			                            </div>
+			                            	<!-- ▼원본 질문의 답글 내용 -->
+			                            <p>${answer.comments}</p>
+			                           
+			
+			                            <div class="answer-content">
+			                            			<!-- ▼답글 작성 버튼 ( 모든 사용자가 해당 댓글에 답글을 남길 수 있으니 로그인 되어있는지만 체크하면됨 ) -->
+			                                	<c:if test="${not empty buyerInfo}"> 
+			                                    <a href="javascript:void(0);" class="w-btn-outline w-btn-red-outline" onclick="toggleAnswerForm(${answer.cmt_rcp_qna_id})">답글</a>
+			                                    	<!-- ▼질문 수정, 삭제 버튼 ( 해당 댓글의 작성자만 수정 및 삭제할 수 있도록 조건 처리) -->	
+			                                    <c:if test="${answer.byr_id eq buyerInfo.byr_id}">
+			                                        <button class="w-btn-outline w-btn-red-outline" type="button" onclick="editAnswer('${answer.cmt_rcp_qna_id}', '${answer.comments}')">수정</button>
+			                                        <button class="w-btn-outline w-btn-red-outline" type="button" onclick="deleteAnswer('${answer.cmt_rcp_qna_id}')">삭제</button>
+			                                    </c:if>
+			                                </c:if>
+			
+			                                <!-- 답글의 댓글 작성 폼 -->
+			                                <div id="answerForm-${answer.cmt_rcp_qna_id}" class="answer-form" style="display:none;">
+			                                    <form method="post" action="${pageContext.request.contextPath}/recipe/addRecipeQnaAnswer">
+			                                        <input type="hidden" name="rcp_id" value="${param.rcp_id}">
+			                                        <input type="hidden" name="parent_id" value="${answer.cmt_rcp_qna_id}">
+			                                        <textarea class="form-control" rows="4" name="comments" placeholder="답변에 대한 답글을 남겨주세요"></textarea>
+			                                        <button type="submit" class="w-btn-outline w-btn-red-outline">작성완료</button>
+			                                    </form>
+			                                </div>
+			
+			                                <!-- 답글의 댓글 리스트 -->
+			                                <div class="sub-answer-list">
+			                                    <c:forEach var="subAnswer" items="${answerList}">
+			                                        <c:if test="${subAnswer.parent_id == answer.cmt_rcp_qna_id}">
+			                                            <div class="sub-answer" style="margin-left: 20px;"> <!-- 들여쓰기 (구분하기위한 임시 작업- 추후 모든 답글은 한라인으로 세로로 나열할 예정) -->
+			                                                <div class="answer-header">
+			                                                    <span class="username">${subAnswer.nickname}</span>
+			                                                    <span class="date-time"> <!-- ▼수정하고나면 수정한 시간으로 초기화 -->
+			                                                        <c:if test="${empty subAnswer.update_date}">
+			                                                            <fmt:formatDate value="${subAnswer.create_date}" pattern="yyyy-MM-dd HH:mm" />
+			                                                        </c:if>
+			                                                        <c:if test="${not empty subAnswer.update_date}">
+			                                                            <fmt:formatDate value="${subAnswer.update_date}" pattern="yyyy-MM-dd HH:mm" />(수정됨)
+			                                                        </c:if>
+			                                                    </span>
+			                                                </div>
+			                                                	<!-- ▼답글 내용 -->
+			                                                <p>${subAnswer.comments}</p>
+			
+			                                                <div class="answer-content">			                                                   
+			                                                    	<!-- ▼답글의 답글 작성 버튼 ( 모든 사용자가 해당 댓글에 답글을 남길 수 있으니 로그인 되어있는지만 체크하면됨 ) 
+								                                	<c:if test="${not empty buyerInfo}"> 
+								                                    <a href="javascript:void(0);" class="w-btn-outline w-btn-red-outline" onclick="toggleAnswerForm(${subAnswer.cmt_rcp_qna_id})">답글</a>
+								                                    </c:if>
+								                                    -->
+								                                    
+								                                    <!-- ▼ 수정, 삭제 버튼 ( 해당 댓글의 작성자만 수정 및 삭제할 수 있도록 조건 처리) -->	
+			                                                        <c:if test="${subAnswer.byr_id eq buyerInfo.byr_id}">
+			                                                            <button class="w-btn-outline w-btn-red-outline" type="button" onclick="editAnswer('${subAnswer.cmt_rcp_qna_id}', '${subAnswer.comments}')">수정</button>
+			                                                            <button class="w-btn-outline w-btn-red-outline" type="button" onclick="deleteAnswer('${subAnswer.cmt_rcp_qna_id}')">삭제</button>
+			                                                        </c:if>
+			                                                </div>
+			                                                
+			                                                <!-- Sub답변 작성 폼 (무한대댓글기능 구현 후 처리) 
+							                                <div id="answerForm-${subAnswer.cmt_rcp_qna_id}" class="answer-form" style="display:none;">
+							                                    <form method="post" action="${pageContext.request.contextPath}/recipe/addRecipeQnaAnswer">
+							                                        <input type="hidden" name="rcp_id" value="${param.rcp_id}">
+							                                        <input type="hidden" name="parent_id" value="${subAnswer.cmt_rcp_qna_id}">
+							                                        <textarea class="form-control" rows="4" name="comments" placeholder="답변에 대한 답글을 남겨주세요"></textarea>
+							                                        <button type="submit" class="w-btn-outline w-btn-red-outline">작성완료</button>
+							                                    </form>
+							                                </div>
+			                                                -->
+			                                                
+			                                            </div>
+			                                        </c:if>
+			                                    </c:forEach>
+			                                </div>
+			                            </div>
+			                        </div>
+			                    </c:if>
+			                </c:forEach>
+			            </div>
+			        </div>
+			    </c:forEach>
+			</div>
+		</div>
+	</div>
+    <script>
+        function toggleAnswerForm(qnaId) {
+            // 해당 답변 폼 ID 찾기
+            var form = document.getElementById("answerForm-" + qnaId);
+            
+            // 현재 폼이 보이는 상태라면 숨기고, 숨겨져 있다면 보이게 함
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block"; // 폼 보이게 하기
+            } else {
+                form.style.display = "none";  // 폼 숨기기
+            }
+        }
+    </script>
     <script>
         // Swiper 초기화
         const swiper = new Swiper(".swiper-container", {
@@ -356,6 +535,6 @@
             }
         });
     </script>
-</div>
+    
 </body>
 </html>

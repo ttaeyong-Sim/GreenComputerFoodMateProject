@@ -11,6 +11,12 @@
 		]]>
 	</select>
 	
+	<select id="inquiryPoints" parameterType="String" resultType="int">
+		<![CDATA[
+			select POINTS from FOODMATE_BUYER where byr_id = #{byr_id}
+		]]>
+	</select>
+	
 	<insert id="addPointlog" parameterType="pointDTO">
 		<![CDATA[
 			insert into FOODMATE_POINT_HISTORY(

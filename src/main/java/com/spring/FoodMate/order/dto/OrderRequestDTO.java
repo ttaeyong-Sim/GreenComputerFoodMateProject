@@ -14,6 +14,7 @@ public class OrderRequestDTO {
     private String merchantUid;
     private String payMethod;
     private String pgId;
+    private int used_point;
     private OrderAddressDTO orderAddress;
 
     public OrderRequestDTO() {}
@@ -32,4 +33,12 @@ public class OrderRequestDTO {
 
     public OrderAddressDTO getOrderAddress() { return orderAddress; }
     public void setOrderAddress(OrderAddressDTO orderAddress) { this.orderAddress = orderAddress; }
+
+	public int getUsed_point() {
+		return used_point;
+	}
+
+	public void setUsed_point(int used_point) {
+		this.used_point = used_point;
+	}
 }

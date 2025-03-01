@@ -29,7 +29,7 @@
         <div class="row align-items-center">
             <!-- 왼쪽: 로고와 설명 (내부 중앙 정렬) -->
             <div class="col-md-2 d-flex flex-column align-items-center text-center">
-            	<a href="${contextPath}/admin/adminMain2.do">
+            	<a href="${contextPath}/admin/adminMain">
             		<img src="${contextPath}/resources/images/foodmatelogo.png" alt="Logo" class="mb-2" style="width: 160px; height: auto;">
             	</a>
                 <p class="mb-0">

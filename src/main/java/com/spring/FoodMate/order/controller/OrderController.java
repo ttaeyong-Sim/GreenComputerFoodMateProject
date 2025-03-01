@@ -29,7 +29,9 @@ import com.spring.FoodMate.common.SessionDTO;
 import com.spring.FoodMate.common.UtilMethod;
 import com.spring.FoodMate.common.exception.UnauthorizedException;
 import com.spring.FoodMate.member.dto.BuyerDTO;
+import com.spring.FoodMate.mypage.dto.PointDTO;
 import com.spring.FoodMate.mypage.service.DeliveryService;
+import com.spring.FoodMate.mypage.service.PointService;
 import com.spring.FoodMate.order.dto.OrderAddressDTO;
 import com.spring.FoodMate.order.dto.OrderDTO;
 import com.spring.FoodMate.order.dto.OrderDTOoutput;
@@ -49,6 +51,8 @@ public class OrderController {
 	DeliveryService deliveryService;
 	@Autowired
 	CartService cartService;
+	@Autowired
+	PointService pointService;
 	
 	
 	private final Dotenv dotenv = Dotenv.load();
@@ -87,6 +91,7 @@ public class OrderController {
 		return mav;
 	}
 	
+	
 	@RequestMapping("/order/setOrderItems")
 	public String setOrderItems(@RequestBody OrderRequestDTO orderRequestDTO, HttpSession session) throws Exception {
 		
@@ -95,20 +100,23 @@ public class OrderController {
 		 
 		// 받은 cartIds를 이용해 실제 주문 아이템 가져오기
 	    List<CartDTO> cartItems = orderService.getCartItems(orderRequestDTO.getCartItems());
-
+	    int used_point = orderRequestDTO.getUsed_point();
 	    // FlashAttribute에 저장하여 order2에서도 사용 가능
 	    session.setAttribute("orderItems", cartItems);
+	    session.setAttribute("used_point", used_point);
 	    
 	    Map<String, List<CartDTO>> groupedBySeller = cartItems.stream()
 	    	    .collect(Collectors.groupingBy(cart -> cart.getSlr_id()));
 	    
 	    List<OrderDTO> orderList = new ArrayList<>();
 	    List<Integer> orderNumberList = new ArrayList<>();
+	    String byrId = buyerInfo.getByr_id();
 	    
 	    // 주문 정보 등록
 	    for (String slrId : groupedBySeller.keySet()) {
 	        List<CartDTO> sellerCartList = groupedBySeller.get(slrId);
 
+	        
 	        int totalProductPrice = sellerCartList.stream()
 	            .mapToInt(cart -> cart.getPrice() * cart.getQty())
 	            .sum();
@@ -119,9 +127,10 @@ public class OrderController {
 
 	        OrderDTO order = new OrderDTO();
 	        order.setOrd_code(orderRequestDTO.getMerchantUid());
-	        order.setByr_id(buyerInfo.getByr_id());
+	        order.setByr_id(byrId);
 	        order.setSlr_id(slrId);
-	        order.setTot_Pdt_Price(totalProductPrice);
+	        order.setTot_Pdt_Price(totalProductPrice - used_point);
+	        order.setUsed_point(used_point);
 	        order.setShip_Fee(shippingFee);
 	        order.setOrd_Stat('1'); // '1' = 결제완료 상태
 	        order.setCreate_Date(LocalDateTime.now());
@@ -136,7 +145,7 @@ public class OrderController {
 	    for (String slrId : groupedBySeller.keySet()) {
 	    	Map<String, Object> ordMap = new HashMap<>();
 	    	ordMap.put("slr_id", slrId);
-	    	ordMap.put("byr_id", buyerInfo.getByr_id());
+	    	ordMap.put("byr_id", byrId);
 	    	ordMap.put("ord_code", orderRequestDTO.getMerchantUid());
 	    	int ordid = orderService.getOrdId(ordMap);
 	    	
@@ -176,6 +185,17 @@ public class OrderController {
 	    }
 	    
 	    cartService.deleteCartByrID(buyerInfo.getByr_id());
+	    
+		PointDTO pointDTO = new PointDTO();
+		pointDTO.setByr_id(byrId);
+		pointDTO.setAmount(used_point);
+		pointDTO.setDescription(used_point + "원 사용");
+		pointDTO.setPoint_type("상품 구매 사용");
+	    pointService.usePoint(pointDTO);
+	    
+	    
+	    buyerInfo.setPoints(pointService.inquiryPoints(byrId));
+	    session.setAttribute("buyerInfo", buyerInfo);
 	    
 	    // 주문 완료 페이지로 리다이렉트
 	    return "redirect:/order/order2";

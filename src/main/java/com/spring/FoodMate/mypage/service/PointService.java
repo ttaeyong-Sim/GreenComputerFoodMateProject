@@ -38,6 +38,10 @@ public class PointService {
         return pointDAO.getpointLogList(id);
     }
 	
+	public int inquiryPoints(String id) {
+		return pointDAO.inquiryPoints(id);
+	}
+	
 		
 //		// 주문목록이 없을경우 빈리스트를 반환해서 페이지 500에러 방지
 //		if (list == null || list.isEmpty()) {

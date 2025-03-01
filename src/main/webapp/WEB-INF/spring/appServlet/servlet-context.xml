@@ -31,6 +31,7 @@
     <beans:bean id="SellerInterceptor" class="com.spring.FoodMate.interceptor.SellerInterceptor"/>
     <beans:bean id="MypageInterceptor" class="com.spring.FoodMate.interceptor.MypageInterceptor"/>
     <beans:bean id="MemberInterceptor" class="com.spring.FoodMate.interceptor.MemberInterceptor"/>
+    <beans:bean id="AdminInterceptor" class="com.spring.FoodMate.interceptor.AdminInterceptor"/>
     
     <mvc:interceptors>
     	<!-- 인터셉터 추가할때마다 위쪽엔 빈 등록하고 여기선 <mvc:interceptor> 태그로 적용시킬 주소 지정하면됨 -->
@@ -45,6 +46,7 @@
             <mvc:mapping path="/product/startcompare"/>
             <mvc:mapping path="/recipe/recipe_Add"/>
             <mvc:mapping path="/recipe/addRecipeRating"/>
+			<mvc:mapping path="/recipe/addRecipeQna"/>
         	<beans:ref bean="BuyerInterceptor"/>    
         </mvc:interceptor>
         <mvc:interceptor>
@@ -62,6 +64,10 @@
             <mvc:mapping path="/member/**"/>
             <mvc:exclude-mapping path="/member/logout"/>
         	<beans:ref bean="MemberInterceptor"/>    
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"/>
+        	<beans:ref bean="AdminInterceptor"/>    
         </mvc:interceptor>
     </mvc:interceptors>
 

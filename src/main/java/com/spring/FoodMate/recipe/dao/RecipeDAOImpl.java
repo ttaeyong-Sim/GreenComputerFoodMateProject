@@ -12,6 +12,7 @@ import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeCategoryDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 import com.spring.FoodMate.recipe.dto.RecipeIngredientDTO;
+import com.spring.FoodMate.recipe.dto.RecipeQnaDTO;
 import com.spring.FoodMate.recipe.dto.RecipeRatingDTO;
 import com.spring.FoodMate.recipe.dto.RecipeStepDTO;
 
@@ -136,6 +137,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         return sqlSession.selectList("mapper.recipe.getRatingsByRecipeId", rcp_id);
     }
 	
+	//레시피 후기 수정
 	@Override
 	public void updateRecipeRating(RecipeRatingDTO ratingDTO) {
 	    sqlSession.update("mapper.recipe.updateRecipeRating", ratingDTO);
@@ -145,5 +147,34 @@ public class RecipeDAOImpl implements RecipeDAO {
 	public List<RecipeRatingDTO> selectRecipeReviewByrIDList(String byr_id) throws Exception {
         return sqlSession.selectList("mapper.recipe.selectRecipeReviewByrIDList", byr_id);  // 레시피 목록 조회
     }
+	//레시피 후기 삭제
+	@Override
+	public void deleteRecipeRating(RecipeRatingDTO ratingDTO) {
+	    sqlSession.delete("mapper.recipe.deleteRecipeRating", ratingDTO);
+	}
+	
+	//레시피 질문 저장
+	@Override
+	public void addRecipeQna(RecipeQnaDTO qnaDTO) throws Exception {
+	    sqlSession.insert("mapper.recipe.addRecipeQna", qnaDTO);  // 맵퍼 호출
+	}
+	
+	//레시피 질문만 조회
+	@Override
+	public List<RecipeQnaDTO> getQnasByRecipeId(int rcp_id) throws Exception {
+	    return sqlSession.selectList("mapper.recipe.getQnasByRecipeId", rcp_id);
+	}
+	
+	//레시피 답변만 조회
+	@Override
+	public List<RecipeQnaDTO> getAnswersByRecipeId(int rcp_id) throws Exception {
+	    return sqlSession.selectList("mapper.recipe.getAnswersByRecipeId", rcp_id);
+	}
+	
+	//레시피 답변 작성
+	@Override
+	public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception {
+	    sqlSession.insert("mapper.recipe.addRecipeQnaAnswer", answerDTO);
+	}
 	
 }

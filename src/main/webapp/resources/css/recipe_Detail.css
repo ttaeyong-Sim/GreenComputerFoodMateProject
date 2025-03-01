@@ -438,6 +438,20 @@ textarea.form-control {
     border-top: 1px solid #ddd;
 }
 
+
+
+
+
+.profile-image  {
+    width: 80px;
+    height: 80px;
+}
+
+.profile-image img {
+    border-radius: 50%;
+}
+
+
 #editCommentForm-1 {
     margin-top: 10px;
 }
@@ -479,6 +493,14 @@ textarea.form-control {
     color: gold;
 }
 
+.answer-list {
+	margin-top:3%;
+	margin-left:10%;
+}
+
+.answer-form {
+	margin-top:20px;
+}
 
 
 
