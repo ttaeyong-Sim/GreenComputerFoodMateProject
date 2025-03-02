@@ -33,7 +33,9 @@
         <typeAlias type="com.spring.FoodMate.recipe.dto.RecipeQnaDTO" alias="RecipeQnaDTO"/>
         
         <typeAlias type="com.spring.FoodMate.product.dto.CategoryDTO" alias="ProductCategoryDTO"/>
-        
+      
+        <typeAlias type="com.spring.FoodMate.product.dto.ProductRatingDTO" alias="ProductRatingDTO"/>
+        <typeAlias type="com.spring.FoodMate.product.dto.ProductQnaDTO" alias="ProductQnaDTO"/>
 	</typeAliases>
 	
 </configuration>

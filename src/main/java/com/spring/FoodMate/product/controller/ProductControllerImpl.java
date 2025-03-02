@@ -36,7 +36,7 @@ import com.spring.FoodMate.recipe.service.RecipeService;
 @Controller
 public class ProductControllerImpl implements ProductController {
 	@Autowired
-	private ProductService productService;
+	private ProductService productService;// 상품 문의 수정
 	@Autowired
 	private RecipeService recipeService;
 	
