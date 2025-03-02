@@ -10,6 +10,7 @@ public class OrderDTOoutput {
     private int tot_Pdt_Price; // 총 상품 가격
     private int ship_Fee; // 배송비
 	private int ord_stat; // 주문 상태 0 : 결제 대기 / 1 : 결제 완료, 배송 준비 / 2 : 배송 중 / 3 : 배송 완료 / 4 : 구매 확정 / 5 : 주문 취소 / 6 : 반품
+	private int pay_status; // 결제 상태
     private String create_Date; // 생성 날짜
     private String del_Code; // 배송 코드
     private String waybill_Num; // 운송장 번호
@@ -47,6 +48,14 @@ public class OrderDTOoutput {
 		this.orderDetails = orderDetails;
 	}
 	
+	public int getPay_status() {
+		return pay_status;
+	}
+
+	public void setPay_status(int pay_status) {
+		this.pay_status = pay_status;
+	}
+
 	public String getDel_company_name() {
 		if(getDel_Code() == null) { return "없음"; }
 		else {

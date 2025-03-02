@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 <!DOCTYPE html>
 <html>
@@ -34,6 +36,80 @@
 		}
 </style>
 </head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		
+	  const endDateInput = document.getElementById('end-date');
+	  const startDateInput = document.getElementById('start-date');
+	  const buttons = document.querySelectorAll('.btn-group button');
+	
+	  // 오늘 날짜를 "yyyy-MM-dd" 형식으로 리턴하는 함수
+	  function getTodayFormatted() {
+	    return new Date().toISOString().substring(0, 10);
+	  }
+	
+	  // 페이지 로드 시 end-date에 오늘 날짜 설정
+	  endDateInput.value = getTodayFormatted();
+	
+	  // 버튼에 설정된 일수만큼 이전 날짜를 계산하여 start-date에 반영
+	  function updateStartDate(days) {
+	    const endDate = new Date(endDateInput.value);
+	    endDate.setDate(endDate.getDate() - days);
+	    startDateInput.value = endDate.toISOString().substring(0, 10);
+	  }
+	
+	  // 기본으로 "오늘" 버튼 (data-days="0")에 따라 start-date 설정
+	  updateStartDate(0);
+	
+	  // 각 버튼 클릭 이벤트 처리
+	  buttons.forEach(button => {
+	    button.addEventListener('click', function() {
+	      // 모든 버튼에서 active 클래스 제거 후, 클릭한 버튼에 active 추가
+	      buttons.forEach(btn => btn.classList.remove('active'));
+	      this.classList.add('active');
+	
+	      const days = parseInt(this.getAttribute('data-days'), 10);
+	      updateStartDate(days);
+	    });
+	  });
+	  
+	  function renderTable(data) {
+	    }
+
+	    function filterByDate() {
+	        let startDate = $("#start-date").val();
+	        let endDate = $("#end-date").val();
+
+	        if (!startDate || !endDate) {
+	            alert("시작 날짜와 종료 날짜를 선택하세요.");
+	            return;
+	        }
+
+	        let filteredData = pointLogList.filter(item => {
+	            return item.created_at >= startDate && item.created_at <= endDate;
+	        });
+	        renderTable(filteredData);
+	    }
+
+	    $(document).ready(function () {
+	        // 초기 데이터 렌더링
+
+	        // 조회 버튼 클릭 이벤트
+	        $("#search-date").on("click", );
+	    });
+	});
+</script>
+<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+<c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+<c:set var="itemsPerPage" value="8" />
+<c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
+<c:set var="endIndex" value="${currentPage * itemsPerPage}" />
+
+<%-- 전체 데이터 개수 구하기 --%>
+<c:set var="totalItems" value="${fn:length(orderList)}" />
+<fmt:parseNumber var="parsedTotalPages" value="${(totalItems + itemsPerPage - 1) / itemsPerPage}" integerOnly="true" />
+<c:set var="totalPages" value="${parsedTotalPages}" />
 <body>
 <div class="container mt-1">
 	<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
@@ -72,69 +148,84 @@
 			</tr>
 		</thead>
       	<tbody>
-      	<tr>
-      	  <td>2024-07-31
-      	  (20240731852982431)</td>
-          <td>
-          <img src="${contextPath}/resources/images/Shopping/myungran.jpg" alt="명란 젓" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
-          [2025설날] 2025 명란시대 짜지않고 맛있는 명품 선동명란 명란젓 선물세트 350g/800g
-          </td>
-          <td>39,800원 (1개)</td>
-          <td>상품 준비중</td>
-          <td>
-            <div class="d-flex flex-column gap-1">
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>반품신청</button>
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>교환신청</button>
+      	<c:forEach var="order" items="${orderList}" varStatus="status">
+	      		<c:if test="${status.index >= startIndex && status.index < endIndex}">
+			      	<tr>
+			      	  <td>${order.create_Date}
+			      	  (${order.ord_id})</td>
+			          <td>
+					    <c:forEach var="detail" items="${order.orderDetails}" varStatus="status">
+					        <c:if test="${status.first}">
+					            <img src="${contextPath}/resources/images/${detail.img_path}" 
+					                 alt="${detail.pdt_name}" 
+					                 class="img-fluid rounded" 
+					                 style="width: 50px; height: 50px; object-fit: cover;">
+					            ${detail.pdt_name}
+					            <c:if test="${not status.last}"> 외</c:if>
+					        </c:if>
+					    </c:forEach>
+					  </td>
+					  <c:set var="totalQty" value="0"/>
+					  <c:forEach var="detail" items="${order.orderDetails}">
+						  <c:set var="totalQty" value="${totalQty + detail.qty}"/>
+					  </c:forEach>
+			          <td><fmt:formatNumber value="${order.tot_Pdt_Price}" type="number" groupingUsed="true" />원 (${totalQty}개)</td>
+			          <td>
+					    <c:choose>
+					        <c:when test="${order.ord_stat eq '1'}">배송 준비</c:when>
+					        <c:when test="${order.ord_stat eq '2'}">배송 중</c:when>
+					        <c:when test="${order.ord_stat eq '3'}">배송 완료</c:when>
+					        <c:when test="${order.ord_stat eq '6'}">반품 완료</c:when>
+					        <c:when test="${order.ord_stat eq '7'}">교환 완료</c:when>
+					        <c:when test="${order.ord_stat eq '8'}">반품 신청</c:when>
+					        <c:when test="${order.ord_stat eq '9'}">교환 신청</c:when>
+					        <c:otherwise>알 수 없는 상태 (${order.ord_stat})</c:otherwise>
+					    </c:choose>
+					</td>
+          			<td>
+              <div class="d-flex flex-column gap-1">
+		    	<!-- 반품 신청 버튼 -->
+				<button class="btn btn-outline-secondary btn-sm" 
+				    <c:if test="${not (order.ord_stat eq '1' or order.ord_stat eq '2' or order.ord_stat eq '3')}">disabled</c:if>>
+				    반품신청
+				</button>
+				
+				<!-- 교환 신청 버튼 -->
+				<button class="btn btn-outline-secondary btn-sm" 
+				    <c:if test="${not (order.ord_stat eq '1' or order.ord_stat eq '2' or order.ord_stat eq '3')}">disabled</c:if>>
+				    교환신청
+				</button>
 		  	</div>
           </td>
         </tr>
-        <tr>
-          <td>2024-08-31
-      	  (20240831852982431)</td>
-          <td>
-          <img src="${contextPath}/resources/images/Shopping/doma.jpg" alt="향균도마" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
-          파커아사히 항균도마 셰프 프로 블랙 중/대
-          </td>
-          <td>212,000원 (1개)</td>
-          <td>상품 준비중</td>
-          <td>
-            <div class="d-flex flex-column gap-1">
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>취소하기</button>
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>반품신청</button>
-		    	<button class="btn btn-outline-secondary btn-sm" disabled>교환신청</button>
-		  	</div>
-          </td>
-        </tr>
+        </c:if>
+	    </c:forEach>
 		</tbody>
 	</table>
 	<div class="text-end">
-	  <a href="${contextPath}/mypage/ShoppingManage/canclelistManageForm.do" class="btn btn-dark">내역보기</a>
+	<!--    <a href="${contextPath}/mypage/ShoppingManage/canclelistManageForm.do" class="btn btn-dark">내역보기</a> -->
 	</div>
-	<nav aria-label="Page navigation">
-	  <ul class="pagination justify-content-center">
-	    <li class="page-item">
-	      <a class="page-link" href="#" aria-label="Previous">
-	        <span aria-hidden="true">Prev</span>
-	      </a>
-	    </li>
-	    <li class="page-item active" aria-current="page">
-	      <a class="page-link" href="#">1</a>
-	    </li>
-	    <li class="page-item"><a class="page-link" href="#">2</a></li>
-	    <li class="page-item"><a class="page-link" href="#">3</a></li>
-	    <li class="page-item"><a class="page-link" href="#">4</a></li>
-	    <li class="page-item"><a class="page-link" href="#">5</a></li>
-	    <li class="page-item"><a class="page-link" href="#">6</a></li>
-	    <li class="page-item"><a class="page-link" href="#">7</a></li>
-	    <li class="page-item"><a class="page-link" href="#">8</a></li>
-	    <li class="page-item"><a class="page-link" href="#">9</a></li>
-	    <li class="page-item"><a class="page-link" href="#">10</a></li>
-	    <li class="page-item">
-	      <a class="page-link" href="#" aria-label="Next">
-	        <span aria-hidden="true">Next</span>
-	      </a>
-	    </li>
-	  </ul>
+	<%-- 페이지네이션 --%>
+	<nav>
+	    <ul class="pagination justify-content-center">
+	        <c:if test="${currentPage > 1}">
+	            <li class="page-item">
+	                <a class="page-link" href="?page=${currentPage - 1}">Prev</a>
+	            </li>
+	        </c:if>
+	
+	        <c:forEach var="i" begin="1" end="${totalPages}">
+	            <li class="page-item ${i == currentPage ? 'active' : ''}">
+	                <a class="page-link" href="?page=${i}">${i}</a>
+	            </li>
+	        </c:forEach>
+	
+	        <c:if test="${currentPage < totalPages}">
+	            <li class="page-item">
+	                <a class="page-link" href="?page=${currentPage + 1}">Next</a>
+	            </li>
+	        </c:if>
+	    </ul>
 	</nav>
 </div>
 </body>

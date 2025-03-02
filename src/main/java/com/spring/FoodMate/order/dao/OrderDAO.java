@@ -53,6 +53,14 @@ public class OrderDAO {
         return sqlSession.selectList("mapper.order.findOrdersByBuyer", byr_id);
     }
     
+    public List<OrderDTOoutput> findReturnExchangeListByByrId(String byr_id) throws DataAccessException {
+        return sqlSession.selectList("mapper.order.findReturnExchangeListByByrId", byr_id);
+    }
+    
+    public List<OrderDTOoutput> findRefundListByByrId(String byr_id) throws DataAccessException {
+        return sqlSession.selectList("mapper.order.findRefundListByByrId", byr_id);
+    }
+    
     public List<OrderDTOoutput> findCancelOrdersByBuyer(String byr_id) throws DataAccessException {
         return sqlSession.selectList("mapper.order.findCancelOrdersByBuyer", byr_id);
     }

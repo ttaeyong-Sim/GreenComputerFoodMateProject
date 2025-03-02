@@ -55,6 +55,14 @@ public class OrderService {
         return orderDAO.findOrdersByBuyer(byr_id);
     }
     
+    public List<OrderDTOoutput> getReturnExchangeListByByrId(String byr_id) throws Exception {
+        return orderDAO.findReturnExchangeListByByrId(byr_id);
+    }
+    
+    public List<OrderDTOoutput> getRefundListByByrId(String byr_id) throws Exception {
+        return orderDAO.findRefundListByByrId(byr_id);
+    }
+    
     public List<OrderDTOoutput> getCancelOrdersByByrId(String byr_id) throws Exception {
         return orderDAO.findCancelOrdersByBuyer(byr_id);
     }
