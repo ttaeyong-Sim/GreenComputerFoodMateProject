@@ -40,13 +40,13 @@ public interface ProductController {
     
     Map<String, Object> categorycompare(@RequestParam("category_id") Integer category_id, String sort);
 	/*
-	 * // ÆòÁ¡ °ü·Ã ¸Þ¼­µåµé ModelAndView pdtRating(int pdt_id, HttpServletRequest request,
+	 * // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ ModelAndView pdtRating(int pdt_id, HttpServletRequest request,
 	 * HttpServletResponse response) throws Exception;
 	 * 
 	 * void addRating(ProductRatingDTO newRating, HttpServletRequest request,
 	 * HttpServletResponse response) throws Exception;
 	 * 
-	 * // Áú¹® °ü·Ã ¸Þ¼­µåµé ModelAndView pdtQna(int pdt_id, HttpServletRequest request,
+	 * // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ ModelAndView pdtQna(int pdt_id, HttpServletRequest request,
 	 * HttpServletResponse response) throws Exception;
 	 * 
 	 * void addQna(ProductQnaDTO newQna, HttpServletRequest request,
