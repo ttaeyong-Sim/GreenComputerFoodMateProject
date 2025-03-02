@@ -135,6 +135,7 @@ $(document).ready(function(){ //페이지가 준비되면
 	        }<c:if test="${!loop.last}">,</c:if>
 	    </c:forEach>
 	];
+		
 	   $(".view-address-button").click(function(){ //.view-address-btn 클래스가 클릭되면
 	       let ordId = $(this).data("ord-id"); // 버튼에서 ord_id 가져오기
 		
@@ -341,6 +342,11 @@ $(document).ready(function(){ //페이지가 준비되면
       }
     });
   }
+  
+  // 모달창 닫기
+  function closeModal() {
+	    $('#addressModal').modal('hide'); // Bootstrap의 modal 닫기 함수
+	}
 
   // 주소 모달에 정보 업데이트
   function updateAddressModal(data) {
@@ -490,7 +496,6 @@ $(document).ready(function(){ //페이지가 준비되면
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">배송지 정보</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p><strong>수령인 : </strong> <span id="toName"></span></p>
@@ -500,7 +505,7 @@ $(document).ready(function(){ //페이지가 준비되면
                 <p><strong>배송 메시지 : </strong> <span id="delivMessage"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">닫기</button>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 package com.spring.FoodMate.mypage.controller;
 
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,12 +53,14 @@ public class PointController {
 		    byr_id = buyerInfo.getByr_id(); // byr_id 값 추출
 		}
 		
+		DecimalFormat df = new DecimalFormat("#,###");
+		
 		try {
 			int point = (int) Math.round((int) pointData.get("amount") * 0.05);
 			PointDTO pointDTO = new PointDTO();
 			pointDTO.setByr_id(byr_id);
 			pointDTO.setAmount(point);
-			pointDTO.setDescription((int) pointData.get("amount") + "원 구매");
+			pointDTO.setDescription(df.format((int) pointData.get("amount")) + "원 구매");
 			pointDTO.setPoint_type((String) pointData.get("point_type"));
 			
 			pointService.addPoint(pointDTO);
@@ -96,11 +99,13 @@ public class PointController {
 		    byr_id = buyerInfo.getByr_id(); // byr_id 값 추출
 		}
 		
+		DecimalFormat df = new DecimalFormat("#,###");
+		
 		try {
 			PointDTO pointDTO = new PointDTO();
 			pointDTO.setByr_id(byr_id);
 			pointDTO.setAmount((int) pointData.get("amount"));
-			pointDTO.setDescription((int) pointData.get("amount") + "원 사용");
+			pointDTO.setDescription(df.format((int) pointData.get("amount")) + "원 사용");
 			pointDTO.setPoint_type((String) pointData.get("point_type"));
 			
 			pointService.usePoint(pointDTO);

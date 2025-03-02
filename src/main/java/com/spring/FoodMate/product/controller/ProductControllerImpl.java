@@ -25,6 +25,8 @@ import com.spring.FoodMate.common.UtilMethod;
 import com.spring.FoodMate.common.exception.UnhandledException;
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.dto.ProductQnaDTO;
+import com.spring.FoodMate.product.dto.ProductRatingDTO;
 import com.spring.FoodMate.product.exception.ProductException;
 import com.spring.FoodMate.product.service.ProductService;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
@@ -61,7 +63,21 @@ public class ProductControllerImpl implements ProductController {
 	    return mav;
 	}
 	
-	
+		@Override
+	@RequestMapping(value="/mypage_seller/ms_pdtlist", method=RequestMethod.GET)
+	public ModelAndView msPdtList(HttpServletRequest request, HttpSession session) throws Exception {
+		    SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
+		    List<ProductDTO> searchList = productService.ms_pdtList(sellerInfo.getUserId());
+		    
+		    ModelAndView mav = new ModelAndView();
+            mav.setViewName("common/layout");
+            mav.addObject("title", "FoodMate-상품 검색창");
+            mav.addObject("showNavbar", true);
+            mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) + ".jsp");
+		    mav.addObject("list", searchList);
+		    // Service 에 판매자 ID를 주고 해당하는 상품VO들의 List를 받아옴.
+		    return mav;
+	}
 	
 	@Override
 	@RequestMapping(value="/product/pdtdetail", method=RequestMethod.GET)
@@ -251,4 +267,89 @@ public class ProductControllerImpl implements ProductController {
             throw new UnhandledException("상품 비교하려다 오류발생", e);
         }
 	}
+	/*
+	 * // 상품 상세 페이지에서 평점 조회 및 추가
+	 * 
+	 * @Override
+	 * 
+	 * @RequestMapping(value = "/product/pdtRating", method = RequestMethod.GET)
+	 * public ModelAndView pdtRating(@RequestParam(value = "pdt_id", required =
+	 * true) int pdt_id, HttpServletRequest request, HttpServletResponse response)
+	 * throws Exception { // 해당 상품의 평점 리스트 조회 List<ProductRatingDTO> ratingList =
+	 * productService.getRatingsByPdtId(pdt_id);
+	 * 
+	 * ModelAndView mav = new ModelAndView(); mav.setViewName("common/layout");
+	 * mav.addObject("title", "상품 평점"); mav.addObject("showNavbar", true);
+	 * mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) +
+	 * ".jsp");
+	 * 
+	 * // 해당 상품 평점 목록을 추가 mav.addObject("ratingList", ratingList);
+	 * mav.addObject("pdt_id", pdt_id); // 상품 ID도 전달 return mav; }
+	 * 
+	 * // 평점 추가
+	 * 
+	 * @Override
+	 * 
+	 * @RequestMapping(value = "/product/addRating", method = RequestMethod.POST)
+	 * public void addRating(@ModelAttribute ProductRatingDTO newRating,
+	 * HttpServletRequest request, HttpServletResponse response) throws Exception {
+	 * // 평점 추가 작업 productService.addProductRating(newRating);
+	 * 
+	 * PrintWriter out = response.getWriter(); // 평점 추가 후 JavaScript로 알림 및 페이지 이동 처리
+	 * response.setContentType("text/html; charset=UTF-8");
+	 * out.println("<script type='text/javascript'>");
+	 * out.println("alert('평점이 등록되었습니다.');"); out.println("window.location.href='" +
+	 * request.getContextPath() + "/product/pdtRating?pdt_id=" +
+	 * newRating.getPdt_id() + "';"); out.println("</script>"); }
+	 * 
+	 * // 상품 상세 페이지에서 질문 조회 및 추가
+	 * 
+	 * @Override
+	 * 
+	 * @RequestMapping(value = "/product/pdtQna", method = RequestMethod.GET) public
+	 * ModelAndView pdtQna(@RequestParam(value = "pdt_id", required = true) int
+	 * pdt_id, HttpServletRequest request, HttpServletResponse response) throws
+	 * Exception { // 해당 상품의 질문 목록 조회 List<ProductQnaDTO> qnaList =
+	 * productService.getRatingsByPdtId(pdt_id);
+	 * 
+	 * ModelAndView mav = new ModelAndView(); mav.setViewName("common/layout");
+	 * mav.addObject("title", "상품 질문"); mav.addObject("showNavbar", true);
+	 * mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) +
+	 * ".jsp");
+	 * 
+	 * // 해당 상품 질문 목록을 추가 mav.addObject("qnaList", qnaList); mav.addObject("pdt_id",
+	 * pdt_id); // 상품 ID도 전달 return mav; }
+	 * 
+	 * // 질문 추가
+	 * 
+	 * @Override
+	 * 
+	 * @RequestMapping(value = "/product/addQna", method = RequestMethod.POST)
+	 * public void addQna(@ModelAttribute ProductQnaDTO newQna, HttpServletRequest
+	 * request, HttpServletResponse response) throws Exception { // 질문 추가 작업
+	 * productService.addQna(newQna);
+	 * 
+	 * PrintWriter out = response.getWriter(); // 질문 추가 후 JavaScript로 알림 및 페이지 이동 처리
+	 * response.setContentType("text/html; charset=UTF-8");
+	 * out.println("<script type='text/javascript'>");
+	 * out.println("alert('질문이 등록되었습니다.');"); out.println("window.location.href='" +
+	 * request.getContextPath() + "/product/pdtQna?pdt_id=" + newQna.getPdt_id() +
+	 * "';"); out.println("</script>"); }
+	 * 
+	 * // 상품 목록 조회
+	 * 
+	 * @Override
+	 * 
+	 * @RequestMapping(value = "/product/pdtlist", method = RequestMethod.GET)
+	 * public ModelAndView pdtList(
+	 * 
+	 * @RequestParam(value = "keyword", required = false, defaultValue = "") String
+	 * keyword, HttpServletRequest request) throws Exception { List<ProductDTO>
+	 * searchList = productService.pdtList(keyword);
+	 * 
+	 * ModelAndView mav = new ModelAndView(); mav.setViewName("common/layout");
+	 * mav.addObject("title", "FoodMate-상품 검색창"); mav.addObject("showNavbar", true);
+	 * mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) +
+	 * ".jsp"); mav.addObject("list", searchList); return mav; }
+	 */
 }

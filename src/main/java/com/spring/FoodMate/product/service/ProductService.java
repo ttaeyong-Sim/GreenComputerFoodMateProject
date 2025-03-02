@@ -9,6 +9,8 @@ import com.spring.FoodMate.common.exception.DBException;
 import com.spring.FoodMate.product.dao.ProductDAO;
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.dto.ProductQnaDTO;
+import com.spring.FoodMate.product.dto.ProductRatingDTO;
 import com.spring.FoodMate.product.exception.ProductException;
 
 @Service("productService")
@@ -130,4 +132,38 @@ public class ProductService {
 			throw new ProductException("ProductService에서 DB예외 전달.", e);
 		}
 	}
+	
+	/*
+	 * // 상품 평점 추가 public boolean addProductRating(ProductRatingDTO rating) { try {
+	 * int result = productDAO.insertProductRating(rating); return result > 0; }
+	 * catch (Exception e) { throw new
+	 * ProductException("ProductService.addProductRating 에러!", e); } }
+	 * 
+	 * // 상품 평점 조회 public List<ProductRatingDTO> getProductRatings(int pdt_id) { try
+	 * { return productDAO.getProductRatings(pdt_id); } catch (Exception e) { throw
+	 * new ProductException("ProductService.getProductRatings 에러! pdt_id = " +
+	 * pdt_id, e); } }
+	 * 
+	 * // 평점 삭제 public boolean deleteProductRating(int rating_id) { try { int result
+	 * = productDAO.deleteProductRating(rating_id); return result > 0; } catch
+	 * (Exception e) { throw new
+	 * ProductException("ProductService.deleteProductRating 에러!", e); } }
+	 * 
+	 * // 상품 문의 추가 public boolean addProductQna(ProductQnaDTO qna) { try { int
+	 * result = productDAO.insertProductQna(qna); return result > 0; } catch
+	 * (Exception e) { throw new
+	 * ProductException("ProductService.addProductQna 에러!", e); } }
+	 * 
+	 * // 상품 문의 조회 public List<ProductQnaDTO> getProductQna(int pdt_id) { try {
+	 * return productDAO.getProductQna(pdt_id); } catch (Exception e) { throw new
+	 * ProductException("ProductService.getProductQna 에러! pdt_id = " + pdt_id, e); }
+	 * }
+	 * 
+	 * // 문의 삭제 public boolean deleteProductQna(int qna_id) { try { int result =
+	 * productDAO.deleteProductQna(qna_id); return result > 0; } catch (Exception e)
+	 * { throw new ProductException("ProductService.deleteProductQna 에러!", e); } }
+	 * 
+	 * public List<ProductRatingDTO> getRatingsByPdtId(int pdt_id) { // TODO
+	 * Auto-generated method stub return null; }
+	 */
 }

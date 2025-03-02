@@ -29,7 +29,7 @@
         }
 
         .main-content {
-            margin-left: 250px; /* 사이드바 크기만큼 여백을 둔다 */
+            margin-left: 50px; /* 사이드바 크기만큼 여백을 둔다 */
             padding: 20px;
             flex-grow: 1;
         }

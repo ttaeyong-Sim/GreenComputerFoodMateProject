@@ -13,10 +13,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.dto.ProductQnaDTO;
+import com.spring.FoodMate.product.dto.ProductRatingDTO;
 
 public interface ProductController {
 
     ModelAndView pdtList(String slr_id, Integer category_id, String keyword, String sort, HttpServletRequest request) throws Exception;
+
+    ModelAndView msPdtList(HttpServletRequest request, HttpSession session) throws Exception;
 
     ModelAndView pdtDetail(int pdt_id, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
@@ -35,4 +39,17 @@ public interface ProductController {
     ModelAndView startcompare(int rcp_id, HttpServletRequest request) throws Exception;
     
     Map<String, Object> categorycompare(@RequestParam("category_id") Integer category_id, String sort);
+	/*
+	 * // 평점 관련 메서드들 ModelAndView pdtRating(int pdt_id, HttpServletRequest request,
+	 * HttpServletResponse response) throws Exception;
+	 * 
+	 * void addRating(ProductRatingDTO newRating, HttpServletRequest request,
+	 * HttpServletResponse response) throws Exception;
+	 * 
+	 * // 질문 관련 메서드들 ModelAndView pdtQna(int pdt_id, HttpServletRequest request,
+	 * HttpServletResponse response) throws Exception;
+	 * 
+	 * void addQna(ProductQnaDTO newQna, HttpServletRequest request,
+	 * HttpServletResponse response) throws Exception;
+	 */
 }

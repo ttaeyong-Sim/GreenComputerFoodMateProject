@@ -177,7 +177,13 @@
 			          <td>${pointlog.point_type}</td>
 			          <td>${pointlog.description}</td>
 			          <td>${pointlog.valid_until} 까지</td>
-			          <td>${pointlog.amount}원</td>
+			          <td>
+			          <fmt:formatNumber value="${pointlog.amount}" type="number" groupingUsed="true" />원
+				      <c:choose>
+				      	<c:when test="${fn:contains(pointlog.point_type, '사용')}"> 사용</c:when>
+				      	<c:otherwise> 적립</c:otherwise>
+				      </c:choose>
+			          </td>
 			        </tr>
 			    </c:if>
 	        </c:forEach>

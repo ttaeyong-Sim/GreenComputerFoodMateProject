@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.spring.FoodMate.common.exception.DBException;
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.dto.ProductQnaDTO;
+import com.spring.FoodMate.product.dto.ProductRatingDTO;
 
 @Repository("productDAO")
 public class ProductDAO {
@@ -132,4 +134,39 @@ public class ProductDAO {
 		}
 	}
 	
+	/*
+	 * // 평점 추가 public int insertProductRating(ProductRatingDTO rating) { try { int
+	 * result = sqlSession.insert("mapper.product.insertProductRating", rating);
+	 * return result; } catch (DataAccessException e) { throw new
+	 * DBException("ProductDAO.insertProductRating 에러!" + rating.toLogString(), e);
+	 * } }
+	 * 
+	 * // 특정 상품의 평점 조회 public List<ProductRatingDTO> getProductRatings(int pdt_id) {
+	 * try { List<ProductRatingDTO> ratings =
+	 * sqlSession.selectList("mapper.product.getProductRatings", pdt_id); return
+	 * ratings; } catch (DataAccessException e) { throw new
+	 * DBException("ProductDAO.getProductRatings 에러! pdt_id = " + pdt_id, e); } }
+	 * 
+	 * // 평점 삭제 public int deleteProductRating(int rating_id) { try { int result =
+	 * sqlSession.delete("mapper.product.deleteProductRating", rating_id); return
+	 * result; } catch (DataAccessException e) { throw new
+	 * DBException("ProductDAO.deleteProductRating 에러! rating_id = " + rating_id,
+	 * e); } }
+	 * 
+	 * // 상품 문의 추가 public int insertProductQna(ProductQnaDTO qna) { try { int result
+	 * = sqlSession.insert("mapper.product.insertProductQna", qna); return result; }
+	 * catch (DataAccessException e) { throw new
+	 * DBException("ProductDAO.insertProductQna 에러!" + qna.toLogString(), e); } }
+	 * 
+	 * // 특정 상품의 문의 조회 public List<ProductQnaDTO> getProductQna(int pdt_id) { try {
+	 * List<ProductQnaDTO> qnas =
+	 * sqlSession.selectList("mapper.product.getProductQna", pdt_id); return qnas; }
+	 * catch (DataAccessException e) { throw new
+	 * DBException("ProductDAO.getProductQna 에러! pdt_id = " + pdt_id, e); } }
+	 * 
+	 * // 상품 문의 삭제 public int deleteProductQna(int qna_id) { try { int result =
+	 * sqlSession.delete("mapper.product.deleteProductQna", qna_id); return result;
+	 * } catch (DataAccessException e) { throw new
+	 * DBException("ProductDAO.deleteProductQna 에러! qna_id = " + qna_id, e); } }
+	 */
 }

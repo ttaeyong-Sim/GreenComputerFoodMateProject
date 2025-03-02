@@ -13,7 +13,7 @@ public class OrderDTO {
     private int tot_Pdt_Price; // 총 상품 가격
     private int used_point; // 사용한 포인트
     private int ship_Fee; // 배송비
-    private int ord_Stat; // 주문 상태 0 : 결제 대기 / 1 : 결제 완료, 배송 준비 / 2 : 배송 중 / 3 : 배송 완료 / 4 : 구매 확정 / 5 : 주문 취소 / 6 : 반품
+    private char ord_Stat; // 주문 상태 0 : 결제 대기 / 1 : 결제 완료, 배송 준비 / 2 : 배송 중 / 3 : 배송 완료 / 4 : 구매 확정 / 5 : 주문 취소 / 6 : 반품
     private LocalDateTime create_Date; // 생성 날짜
     private String del_Code; // 배송 코드
     private String waybill_Num; // 운송장 번호
@@ -90,11 +90,11 @@ public class OrderDTO {
 		this.ship_Fee = ship_Fee;
 	}
 
-	public int getOrd_Stat() {
+	public char getOrd_Stat() {
 		return ord_Stat;
 	}
 
-	public void setOrd_Stat(int ord_Stat) {
+	public void setOrd_Stat(char ord_Stat) {
 		this.ord_Stat = ord_Stat;
 	}
 

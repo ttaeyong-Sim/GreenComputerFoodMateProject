@@ -17,6 +17,7 @@
 		    margin: 0;
 		    display: flex;
 		    flex-direction: column;
+		    justify-content: center;
 		}
 		
 		/* 전체 컨테이너 */
@@ -58,13 +59,14 @@
         .container-fluid {
 		    flex: 1;
 		    padding-top: 155px; /* 헤더 높이만큼 여백 추가 */
+		    padding-left: 150px;
 		}
 		
         .header {
 		    position: fixed; /* 화면에 고정 */
 		    top: 0;
 		    left: 250px; /* 사이드바 너비만큼 밀기 */
-		    width: calc(100% - 250px); /* 전체 화면에서 사이드바 너비만큼 제외 */
+		    width: calc(100% - 200px); /* 전체 화면에서 사이드바 너비만큼 제외 */
 		    background-color: #fa9820;
 		    color: white;
 		    text-align: center;
