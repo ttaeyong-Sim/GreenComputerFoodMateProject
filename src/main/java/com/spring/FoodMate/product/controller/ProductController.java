@@ -39,17 +39,5 @@ public interface ProductController {
     ModelAndView startcompare(int rcp_id, HttpServletRequest request) throws Exception;
     
     Map<String, Object> categorycompare(@RequestParam("category_id") Integer category_id, String sort);
-	/*
-	 * // ���� ���� �޼���� ModelAndView pdtRating(int pdt_id, HttpServletRequest request,
-	 * HttpServletResponse response) throws Exception;
-	 * 
-	 * void addRating(ProductRatingDTO newRating, HttpServletRequest request,
-	 * HttpServletResponse response) throws Exception;
-	 * 
-	 * // ���� ���� �޼���� ModelAndView pdtQna(int pdt_id, HttpServletRequest request,
-	 * HttpServletResponse response) throws Exception;
-	 * 
-	 * void addQna(ProductQnaDTO newQna, HttpServletRequest request,
-	 * HttpServletResponse response) throws Exception;
-	 */
+    
 }

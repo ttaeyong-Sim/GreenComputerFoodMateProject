@@ -267,89 +267,152 @@ public class ProductControllerImpl implements ProductController {
             throw new UnhandledException("상품 비교하려다 오류발생", e);
         }
 	}
-	/*
-	 * // 상품 상세 페이지에서 평점 조회 및 추가
-	 * 
-	 * @Override
-	 * 
-	 * @RequestMapping(value = "/product/pdtRating", method = RequestMethod.GET)
-	 * public ModelAndView pdtRating(@RequestParam(value = "pdt_id", required =
-	 * true) int pdt_id, HttpServletRequest request, HttpServletResponse response)
-	 * throws Exception { // 해당 상품의 평점 리스트 조회 List<ProductRatingDTO> ratingList =
-	 * productService.getRatingsByPdtId(pdt_id);
-	 * 
-	 * ModelAndView mav = new ModelAndView(); mav.setViewName("common/layout");
-	 * mav.addObject("title", "상품 평점"); mav.addObject("showNavbar", true);
-	 * mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) +
-	 * ".jsp");
-	 * 
-	 * // 해당 상품 평점 목록을 추가 mav.addObject("ratingList", ratingList);
-	 * mav.addObject("pdt_id", pdt_id); // 상품 ID도 전달 return mav; }
-	 * 
-	 * // 평점 추가
-	 * 
-	 * @Override
-	 * 
-	 * @RequestMapping(value = "/product/addRating", method = RequestMethod.POST)
-	 * public void addRating(@ModelAttribute ProductRatingDTO newRating,
-	 * HttpServletRequest request, HttpServletResponse response) throws Exception {
-	 * // 평점 추가 작업 productService.addProductRating(newRating);
-	 * 
-	 * PrintWriter out = response.getWriter(); // 평점 추가 후 JavaScript로 알림 및 페이지 이동 처리
-	 * response.setContentType("text/html; charset=UTF-8");
-	 * out.println("<script type='text/javascript'>");
-	 * out.println("alert('평점이 등록되었습니다.');"); out.println("window.location.href='" +
-	 * request.getContextPath() + "/product/pdtRating?pdt_id=" +
-	 * newRating.getPdt_id() + "';"); out.println("</script>"); }
-	 * 
-	 * // 상품 상세 페이지에서 질문 조회 및 추가
-	 * 
-	 * @Override
-	 * 
-	 * @RequestMapping(value = "/product/pdtQna", method = RequestMethod.GET) public
-	 * ModelAndView pdtQna(@RequestParam(value = "pdt_id", required = true) int
-	 * pdt_id, HttpServletRequest request, HttpServletResponse response) throws
-	 * Exception { // 해당 상품의 질문 목록 조회 List<ProductQnaDTO> qnaList =
-	 * productService.getRatingsByPdtId(pdt_id);
-	 * 
-	 * ModelAndView mav = new ModelAndView(); mav.setViewName("common/layout");
-	 * mav.addObject("title", "상품 질문"); mav.addObject("showNavbar", true);
-	 * mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) +
-	 * ".jsp");
-	 * 
-	 * // 해당 상품 질문 목록을 추가 mav.addObject("qnaList", qnaList); mav.addObject("pdt_id",
-	 * pdt_id); // 상품 ID도 전달 return mav; }
-	 * 
-	 * // 질문 추가
-	 * 
-	 * @Override
-	 * 
-	 * @RequestMapping(value = "/product/addQna", method = RequestMethod.POST)
-	 * public void addQna(@ModelAttribute ProductQnaDTO newQna, HttpServletRequest
-	 * request, HttpServletResponse response) throws Exception { // 질문 추가 작업
-	 * productService.addQna(newQna);
-	 * 
-	 * PrintWriter out = response.getWriter(); // 질문 추가 후 JavaScript로 알림 및 페이지 이동 처리
-	 * response.setContentType("text/html; charset=UTF-8");
-	 * out.println("<script type='text/javascript'>");
-	 * out.println("alert('질문이 등록되었습니다.');"); out.println("window.location.href='" +
-	 * request.getContextPath() + "/product/pdtQna?pdt_id=" + newQna.getPdt_id() +
-	 * "';"); out.println("</script>"); }
-	 * 
-	 * // 상품 목록 조회
-	 * 
-	 * @Override
-	 * 
-	 * @RequestMapping(value = "/product/pdtlist", method = RequestMethod.GET)
-	 * public ModelAndView pdtList(
-	 * 
-	 * @RequestParam(value = "keyword", required = false, defaultValue = "") String
-	 * keyword, HttpServletRequest request) throws Exception { List<ProductDTO>
-	 * searchList = productService.pdtList(keyword);
-	 * 
-	 * ModelAndView mav = new ModelAndView(); mav.setViewName("common/layout");
-	 * mav.addObject("title", "FoodMate-상품 검색창"); mav.addObject("showNavbar", true);
-	 * mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) +
-	 * ".jsp"); mav.addObject("list", searchList); return mav; }
-	 */
+    // 상품 후기 리스트 조회
+    @RequestMapping(value="/product/rating/list/{pdt_id}", method=RequestMethod.GET)
+    public String getProductRatingList(@PathVariable("pdt_id") int pdt_id, HttpServletRequest request) throws Exception {
+        List<ProductRatingDTO> ratingList = productService.getProductRatings(pdt_id);
+        request.setAttribute("ratingList", ratingList);
+        return "/product/productRatingList";
+    }
+
+    // 상품 후기 작성 폼
+    @RequestMapping(value="/product/rating/add/{pdt_id}", method=RequestMethod.GET)
+    public String showAddRatingForm(@PathVariable("pdt_id") int pdt_id, HttpServletRequest request) {
+        request.setAttribute("pdt_id", pdt_id);
+        return "/product/productRatingForm";
+    }
+
+    // 상품 후기 작성 처리
+    @RequestMapping(value="/product/rating/add", method=RequestMethod.POST)
+    public void addProductRating(@ModelAttribute ProductRatingDTO productRating, HttpServletResponse response, HttpSession session) throws Exception {
+        String userId = (String) session.getAttribute("userId");
+        productRating.setUserId(userId);
+
+        productService.insertProductRating(productRating);
+
+        PrintWriter out = response.getWriter();
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<script type='text/javascript'>");
+        out.println("alert('상품 후기가 등록되었습니다.');");
+        out.println("window.location.href='/product/rating/list/" + productRating.getPdt_id() + "';");
+        out.println("</script>");
+    }
+
+    // 상품 후기 수정 폼
+    @RequestMapping(value="/product/rating/edit/{rating_id}", method=RequestMethod.GET)
+    public String showEditRatingForm(@PathVariable("rating_id") int rating_id, HttpServletRequest request) throws Exception {
+        ProductRatingDTO rating = productService.getProductRatingById(rating_id);
+        request.setAttribute("rating", rating);
+        return "/product/productRatingEditForm";
+    }
+
+    // 상품 후기 수정 처리
+    @RequestMapping(value="/product/rating/edit", method=RequestMethod.POST)
+    public void editProductRating(@ModelAttribute ProductRatingDTO productRating, HttpServletResponse response) throws Exception {
+        productService.updateProductRating(productRating);
+
+        PrintWriter out = response.getWriter();
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<script type='text/javascript'>");
+        out.println("alert('상품 후기가 수정되었습니다.');");
+        out.println("window.location.href='/product/rating/list/" + productRating.getPdt_id() + "';");
+        out.println("</script>");
+    }
+
+    // 상품 후기 삭제
+    @RequestMapping(value="/product/rating/delete/{rating_id}", method=RequestMethod.GET)
+    public void deleteProductRating(@PathVariable("rating_id") int rating_id, HttpServletResponse response) throws Exception {
+        productService.deleteProductRating(rating_id);
+
+        PrintWriter out = response.getWriter();
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<script type='text/javascript'>");
+        out.println("alert('상품 후기가 삭제되었습니다.');");
+        out.println("window.location.href='/product/rating/list';");
+        out.println("</script>");
+    }
+    
+    // 상품 문의 리스트 조회 (상품에 대한 모든 문의)
+    @RequestMapping(value = "/product/qna/list/{pdt_id}", method = RequestMethod.GET)
+    public ModelAndView getProductQnaList(@PathVariable("pdt_id") int pdt_id, HttpServletRequest request) throws Exception {
+        List<ProductQnaDTO> qnaList = productService.getProductQna(pdt_id);  // ProductService로 호출
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("common/layout");
+        mav.addObject("title", "상품 문의 리스트");
+        mav.addObject("showNavbar", true);
+        mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) + ".jsp");
+        mav.addObject("qnaList", qnaList);  // 상품 문의 목록을 JSP로 전달
+        return mav;
+    }
+
+    @RequestMapping(value = "/product/qna/add/{pdt_id}", method = RequestMethod.GET)
+    public ModelAndView showAddQnaForm(@PathVariable("pdt_id") int pdt_id, HttpServletRequest request) { 
+        ModelAndView mav = new ModelAndView();
+        try {
+            mav.setViewName("common/layout");
+            mav.addObject("title", "상품 문의 작성");
+            mav.addObject("showNavbar", true);
+            mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) + ".jsp");
+            mav.addObject("pdt_id", pdt_id); // 상품 ID 전달
+        } catch (Exception e) {
+            // 예외 처리 로직 (로그 출력, 사용자에게 에러 메시지 등)
+            mav.addObject("error", "오류가 발생했습니다.");
+        }
+        return mav;
+    }
+    // 상품 문의 작성 처리
+    @RequestMapping(value = "/product/qna/add", method = RequestMethod.POST)
+    public void addProductQna(@ModelAttribute ProductQnaDTO productQna, HttpServletResponse response, HttpSession session) throws Exception {
+        String userId = (String) session.getAttribute("userId");
+        productQna.setUser_id(userId);  // 상품 문의 작성자의 ID를 설정
+
+        productService.insertProductQna(productQna);  // ProductService로 호출하여 상품 문의 등록
+
+        // 상품 문의 등록 후 페이지 리디렉션 (알림 처리)
+        PrintWriter out = response.getWriter();
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<script type='text/javascript'>");
+        out.println("alert('상품 문의가 등록되었습니다.');");
+        out.println("window.location.href='/product/qna/list/" + productQna.getPdt_id() + "';");
+        out.println("</script>");
+    }
+
+    // 상품 문의 수정 폼
+    @RequestMapping(value = "/product/qna/edit/{qna_id}", method = RequestMethod.GET)
+    public ModelAndView showEditQnaForm(@PathVariable("qna_id") int qna_id, HttpServletRequest request) throws Exception {
+        ProductQnaDTO qna = productService.getProductQnaById(qna_id);  // ProductService로 호출
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("common/layout");
+        mav.addObject("title", "상품 문의 수정");
+        mav.addObject("showNavbar", true);
+        mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) + ".jsp");
+        mav.addObject("qna", qna); // 수정할 상품 문의 정보 전달
+        return mav;
+    }
+
+    // 상품 문의 수정 처리
+    @RequestMapping(value = "/product/qna/edit", method = RequestMethod.POST)
+    public void editProductQna(@ModelAttribute ProductQnaDTO productQna, HttpServletResponse response) throws Exception {
+        productService.updateProductQna(productQna);  // ProductService로 호출하여 상품 문의 수정
+        // 수정 후 알림 처리
+        PrintWriter out = response.getWriter();
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<script type='text/javascript'>");
+        out.println("alert('상품 문의가 수정되었습니다.');");
+        out.println("window.location.href='/product/qna/list/" + productQna.getPdt_id() + "';");
+        out.println("</script>");
+    }
+
+    // 상품 문의 삭제
+    @RequestMapping(value = "/product/qna/delete/{qna_id}", method = RequestMethod.GET)
+    public void deleteProductQna(@PathVariable("qna_id") int qna_id, HttpServletResponse response) throws Exception {
+        productService.deleteProductQna(qna_id);  // ProductService로 호출하여 상품 문의 삭제
+        // 삭제 후 알림 처리
+        PrintWriter out = response.getWriter();
+        response.setContentType("text/html; charset=UTF-8");
+        out.println("<script type='text/javascript'>");
+        out.println("alert('상품 문의가 삭제되었습니다.');");
+        out.println("window.location.href='/product/qna/list';");
+        out.println("</script>");
+    }
 }
