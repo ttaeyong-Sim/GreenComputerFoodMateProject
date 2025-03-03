@@ -100,10 +100,20 @@
 <div class="container1">
     <a href="${contextPath}/main"><img id="sitelogo" src="${contextPath}/resources/images/foodmatelogo.png" alt="푸드메이트로고"></a>
 
-	<form action="${contextPath}/product/pdtlist" method="GET" class="search-bar">
-	    <input type="text" name="keyword" placeholder="재료만 검색가능">
+	<%
+		String currentPath = (String) request.getAttribute("javax.servlet.forward.request_uri");
+		if (currentPath == null) {
+	        currentPath = request.getRequestURI();  // fallback (예외 처리)
+	    }
+	    String contextPath = request.getContextPath();
+    	String searchAction = (currentPath.equals("/FoodMate/product/pdtlist")) ? "/product/pdtlist" : "/recipe/recipe_list";
+	%>
+
+	<form action="${contextPath}<%= searchAction %>" method="GET" class="search-bar">
+	    <input type="text" name="keyword" placeholder="<%= currentPath.equals("/FoodMate/product/pdtlist") ? "식재료 검색" : "레시피 검색" %>">
 	    <button type="submit"><i class="fas fa-search"></i></button>
 	</form>
+
 
 
     <div class="action-buttons">

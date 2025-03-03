@@ -1,6 +1,8 @@
 package com.spring.FoodMate.recipe.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,13 @@ public class RecipeDAOImpl implements RecipeDAO {
     @Override
     public List<RecipeDTO> selectRecipeList() throws Exception {
         return sqlSession.selectList("mapper.recipe.selectRecipeList");  // 레시피 목록 조회
+    }
+    
+    // 레시피 목록 검색
+    public List<RecipeDTO> searchRecipeList(String keyword) throws Exception {
+    	Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("keyword", keyword);
+        return sqlSession.selectList("mapper.recipe.searchRecipeList", paramMap);  // 레시피 목록 조회
     }
     
     @Override

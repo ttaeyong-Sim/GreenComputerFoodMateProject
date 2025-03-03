@@ -72,4 +72,7 @@ public interface RecipeDAO {
 	
 	//레시피 답변 작성
 	public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception;
+	
+	// 레시피 목록 검색
+    public List<RecipeDTO> searchRecipeList(String keyword) throws Exception;
 }

@@ -59,6 +59,11 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeDAO.selectRecipeList();  // 레시피 목록 조회
     }
     
+    // 레시피 검색
+    public List<RecipeDTO> searchRecipeList(String keyword) throws Exception {
+        return recipeDAO.searchRecipeList(keyword);  // 레시피 목록 조회
+    }
+    
     @Override
     public List<RecipeDTO> selectRecipeListByrID(String byr_id) throws Exception {
         return recipeDAO.selectRecipeListByrID(byr_id);  // 레시피 목록 조회

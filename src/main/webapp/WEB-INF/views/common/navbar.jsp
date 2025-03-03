@@ -48,12 +48,19 @@ nav {
 </style>
 </head>
 <body>
+<%
+    String currentPath = (String) request.getAttribute("javax.servlet.forward.request_uri");
+    if (currentPath == null) {
+        currentPath = request.getRequestURI();  // fallback (예외 처리)
+    }
+    String contextPath = request.getContextPath();
+%>
 <nav class="nav_main">
     <ul>
-        <li><a class="active" href="${contextPath}/main">메인</a></li>
-        <li><a href="${contextPath}/recipe/recipe_list">레시피</a></li>
-        <li><a href="${contextPath}/product/pdtlist">식재료</a></li>
-        <li><a href="${contextPath}/support/inquiryLists">고객센터</a></li>
+        <li><a class="<%= currentPath.equals(contextPath + "/main") ? "active" : "" %>" href="<%= contextPath %>/main">메인</a></li>
+		<li><a class="<%= currentPath.equals(contextPath + "/recipe/recipe_list") ? "active" : "" %>" href="<%= contextPath %>/recipe/recipe_list">레시피</a></li>
+		<li><a class="<%= currentPath.equals(contextPath + "/product/pdtlist") ? "active" : "" %>" href="<%= contextPath %>/product/pdtlist">식재료</a></li>
+		<li><a class="<%= currentPath.equals(contextPath + "/support/inquiryLists") ? "active" : "" %>" href="<%= contextPath %>/support/inquiryLists">고객센터</a></li>
     </ul>
 </nav>
 </body>

@@ -77,9 +77,15 @@ public class RecipeControllerImpl implements RecipeController {
     
     // 레시피 목록 조회
     @RequestMapping(value = "/recipe/recipe_list", method = RequestMethod.GET)
-    public ModelAndView selectRecipeList(HttpServletRequest request) throws Exception {
+    public ModelAndView selectRecipeList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
-        mav.addObject("recipeList", recipeService.selectRecipeList()); //서비스에 selectRecipeList메소드있어야함
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // keyword가 있을 경우 검색 기능 실행
+            mav.addObject("recipeList", recipeService.searchRecipeList(keyword));
+        } else {
+            // keyword가 없을 경우 전체 목록 조회 실행
+            mav.addObject("recipeList", recipeService.selectRecipeList());
+        }
         mav.setViewName("common/layout");
         mav.addObject("showNavbar", true);
         mav.addObject("title","레시피 목록");

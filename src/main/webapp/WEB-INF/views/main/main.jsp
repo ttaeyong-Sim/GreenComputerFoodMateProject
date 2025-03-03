@@ -71,11 +71,11 @@
 		               	<div class="item_review_star">
 		                	<p><span>
 		                	<c:choose>
-				                <c:when test="${recipe.rating == 5}">⭐⭐⭐⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 4}">⭐⭐⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 3}">⭐⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 2}">⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 1}">⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 5}">⭐⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 4}">⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 3}">⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 2}">⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 1}">⭐</c:when>
 				                <c:otherwise></c:otherwise>
 				            </c:choose>
 				            </span></p>
@@ -103,11 +103,11 @@
 		                <div class="item_review_star">
 		                	<p><span>
 		                	<c:choose>
-				                <c:when test="${recipe.rating == 5}">⭐⭐⭐⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 4}">⭐⭐⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 3}">⭐⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 2}">⭐⭐</c:when>
-				                <c:when test="${recipe.rating == 1}">⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 5}">⭐⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 4}">⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 3}">⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 2}">⭐⭐</c:when>
+				                <c:when test="${Math.round(recipe.rating) == 1}">⭐</c:when>
 				                <c:otherwise></c:otherwise>
 				            </c:choose>
 				            </span></p>

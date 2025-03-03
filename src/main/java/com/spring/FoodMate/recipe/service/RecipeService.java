@@ -75,4 +75,7 @@ public interface RecipeService {
    
     //답변 작성
     public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception;
+    
+ // 레시피 검색
+    public List<RecipeDTO> searchRecipeList(String keyword) throws Exception;
 }
