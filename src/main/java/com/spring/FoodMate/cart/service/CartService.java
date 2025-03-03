@@ -81,7 +81,7 @@ public class CartService {
         }
     }
     
-    public void deleteCartByrID(String byr_id) {
-    	cartDAO.deleteCartByrID(byr_id);
+    public void deleteCartByrID(String byr_id,List<Integer> cartItems) {
+    	cartDAO.deleteCartByrID(byr_id, cartItems);
     }
 }

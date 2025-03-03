@@ -181,7 +181,12 @@ function addToWish() {
 			<div id="price_final">총 <span id="final_price"><fmt:formatNumber value="${product.price}" type="number" groupingUsed="true" /></span>원</div>
 		</div>
 		<div class="info5">
-			<button id="btn_buy" onclick="window.location.href='${contextPath}/order/order1'">바로구매</button>
+			<form action="${pageContext.request.contextPath}/order/order1" method="GET">
+			    <input type="hidden" name="directBuy" value="true">
+			    <input type="hidden" name="pdt_id" value="${product.pdt_id}">
+			    <input type="hidden" id="buy_qty" name="buy_qty" value="1">
+			    <button id="btn_buy" type="submit" style="width: 150px;">바로구매</button>
+			</form>
 			<button id="btn_cart" onclick="addToCart()">장바구니 담기</button>
 			<button id="btn_cart" onclick="addToWish()">찜 하기</button>
 		</div>
@@ -212,6 +217,7 @@ function addToWish() {
         // 화면에 표시된 수량과 가격 갱신
         document.getElementById('quantity').textContent = quantity;
         document.getElementById('final_price').textContent = totalPrice.toLocaleString();
+        document.getElementById('buy_qty').value = quantity;
     }
 
     document.addEventListener("DOMContentLoaded", function() {

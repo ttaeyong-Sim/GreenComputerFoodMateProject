@@ -40,6 +40,8 @@ import com.spring.FoodMate.order.dto.OrderPaymentDTO;
 import com.spring.FoodMate.order.dto.OrderRequestDTO;
 import com.spring.FoodMate.order.exception.OrderException;
 import com.spring.FoodMate.order.service.OrderService;
+import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.service.ProductService;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -53,47 +55,77 @@ public class OrderController {
 	CartService cartService;
 	@Autowired
 	PointService pointService;
+	@Autowired
+	ProductService productService;
 	
 	
 	private final Dotenv dotenv = Dotenv.load();
     private final String PimpUid = dotenv.get("PORTONE_IMP_UID");
 	
-	@RequestMapping(value="/order/order1")
-	public ModelAndView orderPage(@RequestParam(value = "cartIds", required = false) String cartIds, @RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String viewName = UtilMethod.getViewName(request);
-		HttpSession session = request.getSession();
-		session.setAttribute("action", action);
-		BuyerDTO buyerInfo = (BuyerDTO) session.getAttribute("buyerInfo"); // 세션에서 buyerInfo 가져오기
-		String byr_id = null;
+    @RequestMapping(value="/order/order1")
+    public ModelAndView orderPage(
+        @RequestParam(value = "cartIds", required = false) String cartIds,
+        @RequestParam(value="result", required=false) String result,
+        @RequestParam(value="action", required=false) String action,
+        @RequestParam(value="directBuy", required=false) Boolean directBuy,
+        @RequestParam(value="pdt_id", required=false) Integer pdt_id,
+        @RequestParam(value="buy_qty", required=false) Integer qty,
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		if (buyerInfo != null) {
-		    byr_id = buyerInfo.getByr_id(); // byr_id 값 추출
-		}
-		
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("result",result);
-		mav.setViewName("common/layout");
-		mav.addObject("impUid", PimpUid);
-		mav.addObject("showNavbar", true);
-		mav.addObject("title", "푸드 메이트");
-		mav.addObject("body", "/WEB-INF/views" + viewName + ".jsp");
-		
-		mav.addObject("deliveryList", deliveryService.getdeliveryList(byr_id)); // 배송지
-		mav.addObject("buyerInfo", (BuyerDTO) session.getAttribute("buyerInfo"));
-		if (cartIds != null && !cartIds.isEmpty()) {
-	        List<Integer> cartIdList = Arrays.stream(cartIds.split(","))
-	                                         .map(Integer::parseInt)
-	                                         .collect(Collectors.toList());
-	        List<CartDTO> cartItems = orderService.getCartItems(cartIdList);
-	        mav.addObject("orderItems", cartItems);
-	        mav.addObject("orderItemList", cartIdList);
-	    }
-		return mav;
-	}
+        String viewName = UtilMethod.getViewName(request);
+        HttpSession session = request.getSession();
+        session.setAttribute("action", action);
+        BuyerDTO buyerInfo = (BuyerDTO) session.getAttribute("buyerInfo");
+        String byr_id = (buyerInfo != null) ? buyerInfo.getByr_id() : null;
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("result", result);
+        mav.setViewName("common/layout");
+        mav.addObject("impUid", PimpUid);
+        mav.addObject("showNavbar", true);
+        mav.addObject("title", "푸드 메이트");
+        mav.addObject("body", "/WEB-INF/views" + viewName + ".jsp");
+        mav.addObject("deliveryList", deliveryService.getdeliveryList(byr_id)); 
+        mav.addObject("buyerInfo", buyerInfo);
+
+        List<Integer> orderItemList = new ArrayList<>();
+        List<CartDTO> orderItems = new ArrayList<>();
+
+        // 장바구니에서 온 주문인지, 바로 구매인지 체크
+        if (Boolean.TRUE.equals(directBuy) && pdt_id != null && qty != null) {
+            // 개별 상품 정보 조회 후 주문 페이지에 추가
+        	ProductDTO pdt_info = productService.select1PdtByPdtId(pdt_id);
+        	CartDTO singleItem = new CartDTO();
+        	singleItem.setByr_id(byr_id);
+        	singleItem.setPdt_id(pdt_id);
+        	singleItem.setPdt_name(pdt_info.getName());
+        	singleItem.setQty(qty);
+        	singleItem.setImg_path(pdt_info.getImg_path());
+        	singleItem.setSlr_id(pdt_info.getSlr_id());
+        	singleItem.setPrice(pdt_info.getPrice());
+        	singleItem.setStatus(pdt_info.getStatus());
+        	
+            orderItems.add(singleItem);
+            orderItemList.add(pdt_id);  // 단일 상품의 ID를 리스트에 추가
+        } else if (cartIds != null && !cartIds.isEmpty()) {
+            List<Integer> cartIdList = Arrays.stream(cartIds.split(","))
+                                             .map(Integer::parseInt)
+                                             .collect(Collectors.toList());
+            orderItems = orderService.getCartItems(cartIdList);
+            orderItemList.addAll(cartIdList);  // 장바구니에서 주문한 상품 ID 리스트 추가
+        }
+        
+        mav.addObject("directBuy", directBuy);
+        mav.addObject("orderItems", orderItems);
+        mav.addObject("orderItemList", orderItemList);  
+
+        return mav;
+    }
+
 	
 	
 	@RequestMapping("/order/setOrderItems")
-	public String setOrderItems(@RequestBody OrderRequestDTO orderRequestDTO, HttpSession session) throws Exception {
+	public String setOrderItems(@RequestBody OrderRequestDTO orderRequestDTO, @RequestParam(value = "directBuy", required = false, defaultValue = "false") boolean directBuy, HttpSession session) throws Exception {
 		
 //		 System.out.println("받은 주문 ID 리스트: " + cartIds); // 디버깅용
 		BuyerDTO buyerInfo = (BuyerDTO) session.getAttribute("buyerInfo");
@@ -183,8 +215,9 @@ public class OrderController {
 	    	
 	    	orderService.insertOrderPayment(orderPayment);
 	    }
-	    
-	    cartService.deleteCartByrID(buyerInfo.getByr_id());
+	    if(!directBuy) {
+	    	cartService.deleteCartByrID(buyerInfo.getByr_id(),orderRequestDTO.getCartItems());
+	    }
 	    
 		PointDTO pointDTO = new PointDTO();
 		pointDTO.setByr_id(byrId);

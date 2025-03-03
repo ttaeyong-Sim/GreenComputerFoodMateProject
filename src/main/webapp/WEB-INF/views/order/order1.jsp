@@ -731,7 +731,7 @@ function execDaumPostcode() {
         		    };
         		$.ajax({
                     type: "POST",
-                    url: "${contextPath}/order/setOrderItems",
+                    url: "${contextPath}/order/setOrderItems?directBuy=" + encodeURIComponent(${directBuy}),
                     contentType: "application/json",
                     data: JSON.stringify(orderData),  // 기존 데이터를 전송
                     success: function(response) {

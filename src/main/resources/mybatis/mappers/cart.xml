@@ -50,8 +50,14 @@
 	    DELETE FROM FOODMATE_CART WHERE CART_ID = #{cart_id}
 	</delete>
 	
-	<delete id="deleteCartByrid" parameterType="String">
-	    DELETE FROM FOODMATE_CART WHERE BYR_ID = #{byr_id}
+	<delete id="deleteCartByrid" parameterType="map">
+	    DELETE FROM FOODMATE_CART 
+	    WHERE BYR_ID = #{byr_id} 
+	    AND CART_ID IN 
+	    <foreach item="cartId" collection="cartItems" open="(" separator="," close=")">
+	        #{cartId}
+	    </foreach>
 	</delete>
+
 
 </mapper>

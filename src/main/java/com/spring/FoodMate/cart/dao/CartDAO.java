@@ -68,7 +68,10 @@ public class CartDAO {
 		}
     }
 	
-	public void deleteCartByrID(String byr_id) {
-		sqlSession.delete("mapper.cart.deleteCartByrid", byr_id);
+	public void deleteCartByrID(String byr_id, List<Integer> cartItems) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("byr_id", byr_id);
+		map.put("cartItems", cartItems); // cartItems는 List<Integer> 타입
+		sqlSession.delete("mapper.cart.deleteCartByrid", map);
     }
 }
