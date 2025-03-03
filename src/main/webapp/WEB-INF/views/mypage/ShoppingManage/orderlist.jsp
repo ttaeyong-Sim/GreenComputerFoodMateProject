@@ -392,7 +392,7 @@ $(document).ready(function(){ //페이지가 준비되면
     </div>
     
     
-    <div class="border p-4 rounded mb-3" style="margin: 0 auto;">
+    <div class="border p-4 rounded mb-2" style="margin: 0 auto;">
     	<div class="d-flex align-items-center gap-3 flex-wrap">
     		<p class="mb-0 align-self-center">조회기간</p>
     		<div class="btn-group" role="group" aria-label="data filter buttons">
@@ -414,6 +414,9 @@ $(document).ready(function(){ //페이지가 준비되면
     		</div>
     	</div>
 	</div>
+	<div class="text-end mb-2">
+	  <a href="${contextPath}/mypage/ShoppingManage/canclelist" class="btn btn-dark">취소리스트</a>
+	</div>
 	
 	<c:forEach var="order" items="${orderList}" varStatus="status">
 	<c:if test="${status.index >= startIndex && status.index < endIndex}">
@@ -424,7 +427,8 @@ $(document).ready(function(){ //페이지가 준비되면
         <th>주문한 날짜</th>
         <th>총 상품 금액</th>
         <th>배송비</th>
-        <th>최종 금액</th>
+        <th>최종 결제 금액</th>
+        <th>사용 포인트</th>
         <th>주문 상태</th>
         <th>배송지 조회</th>
         <th></th>
@@ -437,6 +441,7 @@ $(document).ready(function(){ //페이지가 준비되면
         		<td><fmt:formatNumber value="${order.tot_Pdt_Price}" type="number" groupingUsed="true" />원</td>
         		<td><fmt:formatNumber value="${order.ship_Fee}" type="number" groupingUsed="true" />원</td>
         		<td><fmt:formatNumber value="${order.tot_Pdt_Price + order.ship_Fee}" type="number" groupingUsed="true" />원</td>
+        		<td><fmt:formatNumber value="${order.used_point}" type="number" groupingUsed="true" />원</td>
         		<td>${order.ord_stat_msg}</td>
         		<td><button class="btn btn-outline-secondary btn-sm view-address-button" data-ord-id="${order.ord_id}">
         		배송지 확인</button></td>

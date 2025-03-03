@@ -129,8 +129,7 @@ public class OrderController {
 	        order.setOrd_code(orderRequestDTO.getMerchantUid());
 	        order.setByr_id(byrId);
 	        order.setSlr_id(slrId);
-	        order.setTot_Pdt_Price(totalProductPrice - used_point);
-	        order.setUsed_point(used_point);
+	        order.setTot_Pdt_Price(totalProductPrice);
 	        order.setShip_Fee(shippingFee);
 	        order.setOrd_Stat('1'); // '1' = 결제완료 상태
 	        order.setCreate_Date(LocalDateTime.now());
@@ -180,6 +179,7 @@ public class OrderController {
 	    	orderPayment.setPay_Method(orderRequestDTO.getPayMethod());
 	    	orderPayment.setPay_Status('1');
 	    	orderPayment.setPg_id(orderRequestDTO.getPgId());
+	    	orderPayment.setUsed_point(used_point / groupedBySeller.size());
 	    	
 	    	orderService.insertOrderPayment(orderPayment);
 	    }
@@ -279,12 +279,12 @@ public class OrderController {
 	
 	@RequestMapping(value = "/order/updateStatus", method = RequestMethod.POST)
 	@ResponseBody
-    public Map<String, Object> updateOrderStatusTo3(@RequestBody OrderDTO deliInfo, HttpSession session) throws Exception {
+    public Map<String, Object> updateOrderStatus(@RequestBody OrderDTO deliInfo, HttpSession session) throws Exception {
         Map<String, Object> response = new HashMap<>();
         System.out.println("오더컨트롤러에서 디버깅중 : " + deliInfo.toString());
         
     	SessionDTO userInfo = (SessionDTO) session.getAttribute("sessionDTO");
-    	boolean result = orderService.updateOrdStatProcess(userInfo, deliInfo, 3); // 추가값을 받아오는지 아닌지 여기서 판단해서 할것
+    	boolean result = orderService.updateOrdStatProcess(userInfo, deliInfo, deliInfo.getOrd_Stat()); // 추가값을 받아오는지 아닌지 여기서 판단해서 할것
     	
         if (result) {
             response.put("status", "success");

@@ -14,6 +14,7 @@ public class OrderDTOoutput {
     private String create_Date; // 생성 날짜
     private String del_Code; // 배송 코드
     private String waybill_Num; // 운송장 번호
+    private int used_point; // 사용한 포인트
     
     private List<OrderDetailDTOoutput> orderDetails;
 
@@ -56,6 +57,14 @@ public class OrderDTOoutput {
 		this.pay_status = pay_status;
 	}
 
+	public int getUsed_point() {
+		return used_point;
+	}
+
+	public void setUsed_point(int used_point) {
+		this.used_point = used_point;
+	}
+
 	public String getDel_company_name() {
 		if(getDel_Code() == null) { return "없음"; }
 		else {
@@ -77,10 +86,15 @@ public class OrderDTOoutput {
 		case 3 : return "배송 완료";
 		case 4 : return "구매 확정";
 		case 5 : return "주문 취소됨";
-		case 6 : return "반품 및 교환";
+		case 6 : return "반품 확정";
+		case 7 : return "교환 확정";
+		case 8 : return "반품 신청";
+		case 9 : return "교환 신청";
 		default: return "상태 불명";
 		}
 	}
+	
+	
 
     @Override
     public String toString() {

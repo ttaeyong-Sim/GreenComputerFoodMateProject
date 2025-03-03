@@ -141,9 +141,10 @@
 		<thead class="table-header table-secondary">
 			<tr>
 				<td>날짜/주문번호</td>
-				<td>상품명/옵션</td>
+				<td>상품명</td>
 				<td>상품금액/수량</td>
 				<td>환불금액</td>
+				<td>환불 포인트</td>
 				<td>환불상태</td>
 			</tr>
 		</thead>
@@ -170,7 +171,8 @@
 						  <c:set var="totalQty" value="${totalQty + detail.qty}"/>
 					  </c:forEach>
 			          <td><fmt:formatNumber value="${order.tot_Pdt_Price}" type="number" groupingUsed="true" />원 (${totalQty}개)</td>
-		          <td><fmt:formatNumber value="${order.tot_Pdt_Price}" type="number" groupingUsed="true" />원</td>
+		          <td><fmt:formatNumber value="${order.tot_Pdt_Price-order.used_point}" type="number" groupingUsed="true" />원</td>
+		          <td><fmt:formatNumber value="${order.used_point}" type="number" groupingUsed="true" />P</td>
 		          <td>
 		            <c:choose>
 					        <c:when test="${order.pay_status eq '3'}">환불 완료</c:when>

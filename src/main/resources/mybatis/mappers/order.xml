@@ -61,8 +61,8 @@
 	</select>
 
 	<insert id="insertOrderList" parameterType="orderDTO">
-	    INSERT INTO FOODMATE_ORDER (ORD_ID, ORD_CODE, BYR_ID, SLR_ID, TOT_PDT_PRICE, USED_POINT, SHIP_FEE, ORD_STAT, CREATE_DATE, DEL_CODE, WAYBILL_NUM)
-	    VALUES (FOODMATE_ORDER_SEQ.NEXTVAL, #{ord_code}, #{byr_id}, #{slr_id}, #{tot_Pdt_Price}, #{used_point}, #{ship_Fee}, #{ord_Stat}, SYSDATE, #{del_Code}, #{waybill_Num})
+	    INSERT INTO FOODMATE_ORDER (ORD_ID, ORD_CODE, BYR_ID, SLR_ID, TOT_PDT_PRICE, SHIP_FEE, ORD_STAT, CREATE_DATE, DEL_CODE, WAYBILL_NUM)
+	    VALUES (FOODMATE_ORDER_SEQ.NEXTVAL, #{ord_code}, #{byr_id}, #{slr_id}, #{tot_Pdt_Price}, #{ship_Fee}, #{ord_Stat}, SYSDATE, #{del_Code}, #{waybill_Num})
 	</insert>
 	
 	<insert id="insertOrderDetail" parameterType="orderdetailDTO">
@@ -76,35 +76,38 @@
 	</insert>
 	
 	<insert id="insertOrderPayment" parameterType="orderpaymentDTO">
-	    INSERT INTO FOODMATE_PAYMENT (PAY_ID, ORD_ID, PG_ID, PAY_METHOD, PAY_STATUS, PAY_DATE)
-	    VALUES (FOODMATE_PAYMENT_SEQ.NEXTVAL, #{ord_id}, #{pg_id}, #{pay_Method}, #{pay_Status}, SYSDATE)
+	    INSERT INTO FOODMATE_PAYMENT (PAY_ID, ORD_ID, PG_ID, PAY_METHOD, PAY_STATUS, PAY_DATE, USED_POINT)
+	    VALUES (FOODMATE_PAYMENT_SEQ.NEXTVAL, #{ord_id}, #{pg_id}, #{pay_Method}, #{pay_Status}, SYSDATE, #{used_point})
 	</insert>
 	
 	<!-- 마이페이지에서 쓰는, 출력 전용 -->
 	
 	<!-- 구매자 마이페이지, 정상 주문만 출력 -->
 	<select id="findOrdersByBuyer" parameterType="string" resultType="OrderDTOoutput">
-        SELECT *
-        FROM FOODMATE_ORDER
+        SELECT O.*, P.used_point
+        FROM FOODMATE_ORDER O
+        LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
         WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 4) 
     </select>
     
     <select id="findRefundListByByrId" parameterType="string" resultType="OrderDTOoutput">
-        SELECT O.*, P.pay_status
+        SELECT O.*, P.pay_status, P.used_point
 		FROM FOODMATE_ORDER O
 		LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
 		WHERE O.BYR_ID = #{byr_id} AND O.ORD_STAT IN (5, 6)
     </select>
     
     <select id="findReturnExchangeListByByrId" parameterType="string" resultType="OrderDTOoutput">
-        SELECT *
-        FROM FOODMATE_ORDER
+        SELECT O.*, P.used_point
+        FROM FOODMATE_ORDER O
+        LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
         WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 6, 7, 8 ,9) 
     </select>
     
     <select id="findCancelOrdersByBuyer" parameterType="string" resultType="OrderDTOoutput">
-        SELECT *
-        FROM FOODMATE_ORDER
+        SELECT O.*, P.used_point
+        FROM FOODMATE_ORDER O
+        LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
         WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (5, 6) 
     </select>
     

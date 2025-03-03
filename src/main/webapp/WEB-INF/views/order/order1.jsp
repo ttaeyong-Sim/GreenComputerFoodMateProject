@@ -531,7 +531,7 @@ function execDaumPostcode() {
                     </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="orderitems" items="${orderItems}">
+                <c:forEach var="orderitems" items="${orderItems}" varStatus="status">
 		            <tr class="order-item"
 		                data-price="${orderitems.price}"
 		                data-qty="${orderitems.qty}"
@@ -542,7 +542,12 @@ function execDaumPostcode() {
 		                </td>
 		                <td>${orderitems.qty}개</td>
 		                <td>₩ <fmt:formatNumber value="${orderitems.price * orderitems.qty}" type="number" groupingUsed="true" />원</td>
-		                <td><span id=point-discount-view>0</span>p</td>
+		                <!-- 첫 번째 항목에서만 포인트 차감 셀 생성 -->
+		                <c:if test="${status.first}">
+		                    <td id="point-discount-cell" rowspan="${fn:length(orderItems)}" style="vertical-align: middle;">
+		                        <span id="point-discount-view">0</span>원
+		                    </td>
+		                </c:if>
 		                <td>0원</td>
 		                <td>기본 3,000원</td>
 		            </tr>

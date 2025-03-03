@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 <!DOCTYPE html>
 <html>
@@ -58,7 +60,7 @@
 }
 </style>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
   var contextPath = "${contextPath}";
 
@@ -163,6 +165,11 @@
       }
     });
   }
+  
+  // 모달창 닫기
+  function closeModal() {
+	    $('#addressModal').modal('hide'); // Bootstrap의 modal 닫기 함수
+	}
 
   // 주소 모달에 정보 업데이트
   function updateAddressModal(data) {
@@ -182,9 +189,81 @@
       alert("알 수 없는 오류가 발생했습니다.");
     }
   }
+  
+  document.addEventListener("DOMContentLoaded", function() {
+		
+	  const endDateInput = document.getElementById('end-date');
+	  const startDateInput = document.getElementById('start-date');
+	  const buttons = document.querySelectorAll('.btn-group button');
+	
+	  // 오늘 날짜를 "yyyy-MM-dd" 형식으로 리턴하는 함수
+	  function getTodayFormatted() {
+	    return new Date().toISOString().substring(0, 10);
+	  }
+	
+	  // 페이지 로드 시 end-date에 오늘 날짜 설정
+	  endDateInput.value = getTodayFormatted();
+	
+	  // 버튼에 설정된 일수만큼 이전 날짜를 계산하여 start-date에 반영
+	  function updateStartDate(days) {
+	    const endDate = new Date(endDateInput.value);
+	    endDate.setDate(endDate.getDate() - days);
+	    startDateInput.value = endDate.toISOString().substring(0, 10);
+	  }
+	
+	  // 기본으로 "오늘" 버튼 (data-days="0")에 따라 start-date 설정
+	  updateStartDate(0);
+	
+	  // 각 버튼 클릭 이벤트 처리
+	  buttons.forEach(button => {
+	    button.addEventListener('click', function() {
+	      // 모든 버튼에서 active 클래스 제거 후, 클릭한 버튼에 active 추가
+	      buttons.forEach(btn => btn.classList.remove('active'));
+	      this.classList.add('active');
+	
+	      const days = parseInt(this.getAttribute('data-days'), 10);
+	      updateStartDate(days);
+	    });
+	  });
+	  
+	  function renderTable(data) {
+	    }
+
+	    function filterByDate() {
+	        let startDate = $("#start-date").val();
+	        let endDate = $("#end-date").val();
+
+	        if (!startDate || !endDate) {
+	            alert("시작 날짜와 종료 날짜를 선택하세요.");
+	            return;
+	        }
+
+	        let filteredData = pointLogList.filter(item => {
+	            return item.created_at >= startDate && item.created_at <= endDate;
+	        });
+	        renderTable(filteredData);
+	    }
+
+	    $(document).ready(function () {
+	        // 초기 데이터 렌더링
+
+	        // 조회 버튼 클릭 이벤트
+	        $("#search-date").on("click", );
+	    });
+	});
 </script>
 
 </head>
+<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+<c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+<c:set var="itemsPerPage" value="8" />
+<c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
+<c:set var="endIndex" value="${currentPage * itemsPerPage}" />
+
+<%-- 전체 데이터 개수 구하기 --%>
+<c:set var="totalItems" value="${fn:length(orderList)}" />
+<fmt:parseNumber var="parsedTotalPages" value="${(totalItems + itemsPerPage - 1) / itemsPerPage}" integerOnly="true" />
+<c:set var="totalPages" value="${parsedTotalPages}" />
 <body>
 <main>
 <div class="container mt-1">
@@ -193,7 +272,7 @@
     </div>
     
     
-    <div class="border p-4 rounded mb-3" style="margin: 0 auto;">
+    <div class="border p-4 rounded mb-2" style="margin: 0 auto;">
     	<div class="d-flex align-items-center gap-3 flex-wrap">
     		<p class="mb-0 align-self-center">조회기간</p>
     		<div class="btn-group" role="group" aria-label="data filter buttons">
@@ -215,6 +294,9 @@
     		</div>
     	</div>
 	</div>
+	<div class="text-end mb-2">
+	  <a href="${contextPath}/mypage/ShoppingManage/orderlist" class="btn btn-dark">주문리스트</a>
+	</div>
 	
 	<c:forEach var="order" items="${orderList}">
     	<table class="table table-hover table-custom">
@@ -225,6 +307,7 @@
         <th>총 상품 금액</th>
         <th>배송비</th>
         <th>최종 금액</th>
+        <th>사용 포인트</th>
         <th>주문 상태</th>
         <th>배송지 조회</th>
         <th></th>
@@ -234,9 +317,10 @@
         	<tr>
         		<td>${order.ord_id}</td>
         		<td>${order.create_Date}</td>
-        		<td>${order.tot_Pdt_Price}</td>
-        		<td>${order.ship_Fee}</td>
-        		<td>${order.tot_Pdt_Price + order.ship_Fee}</td>
+        		<td><fmt:formatNumber value="${order.tot_Pdt_Price}" type="number" groupingUsed="true" />원</td>
+        		<td><fmt:formatNumber value="${order.ship_Fee}" type="number" groupingUsed="true" />원</td>
+        		<td><fmt:formatNumber value="${order.tot_Pdt_Price + order.ship_Fee}" type="number" groupingUsed="true" />원</td>
+        		<td><fmt:formatNumber value="${order.used_point}" type="number" groupingUsed="true" />원</td>
         		<td>${order.ord_stat_msg}</td>
         		<td><button class="btn btn-outline-secondary btn-sm view-address-button" data-ord-id="${order.ord_id}">
         		배송지 확인</button></td>
@@ -291,7 +375,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">배송지 정보</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p><strong>수령인 : </strong> <span id="toName"></span></p>
@@ -301,37 +384,33 @@
                 <p><strong>배송 메시지 : </strong> <span id="delivMessage"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">닫기</button>
             </div>
         </div>
     </div>
 </div>
 	
-	<nav aria-label="Page navigation">
-	  <ul class="pagination justify-content-center">
-	    <li class="page-item">
-	      <a class="page-link" href="#" aria-label="Previous">
-	        <span aria-hidden="true">Prev</span>
-	      </a>
-	    </li>
-	    <li class="page-item active" aria-current="page">
-	      <a class="page-link" href="#">1</a>
-	    </li>
-	    <li class="page-item"><a class="page-link" href="#">2</a></li>
-	    <li class="page-item"><a class="page-link" href="#">3</a></li>
-	    <li class="page-item"><a class="page-link" href="#">4</a></li>
-	    <li class="page-item"><a class="page-link" href="#">5</a></li>
-	    <li class="page-item"><a class="page-link" href="#">6</a></li>
-	    <li class="page-item"><a class="page-link" href="#">7</a></li>
-	    <li class="page-item"><a class="page-link" href="#">8</a></li>
-	    <li class="page-item"><a class="page-link" href="#">9</a></li>
-	    <li class="page-item"><a class="page-link" href="#">10</a></li>
-	    <li class="page-item">
-	      <a class="page-link" href="#" aria-label="Next">
-	        <span aria-hidden="true">Next</span>
-	      </a>
-	    </li>
-	  </ul>
+	<%-- 페이지네이션 --%>
+	<nav>
+	    <ul class="pagination justify-content-center">
+	        <c:if test="${currentPage > 1}">
+	            <li class="page-item">
+	                <a class="page-link" href="?page=${currentPage - 1}">Prev</a>
+	            </li>
+	        </c:if>
+	
+	        <c:forEach var="i" begin="1" end="${totalPages}">
+	            <li class="page-item ${i == currentPage ? 'active' : ''}">
+	                <a class="page-link" href="?page=${i}">${i}</a>
+	            </li>
+	        </c:forEach>
+	
+	        <c:if test="${currentPage < totalPages}">
+	            <li class="page-item">
+	                <a class="page-link" href="?page=${currentPage + 1}">Next</a>
+	            </li>
+	        </c:if>
+	    </ul>
 	</nav>
 </div>
 </main>
