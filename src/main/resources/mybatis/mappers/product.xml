@@ -207,6 +207,13 @@
 		where pdt_id = #{pdt_id}
 	</select>
 	
+	<!-- 상품 하나에 해당하는 설명 이미지들 경로만 가져가는중 -->
+	<select id="getDescImgPaths" parameterType="int" resultType="string">
+	    SELECT IMG_PATH
+	    FROM FOODMATE_PRODUCT_DESCIMG
+	    WHERE PDT_ID = #{pdt_id}
+	</select>
+	
 	<!-- 상품 후기 등록 -->
     <insert id="insertProductRating" parameterType="ProductRatingDTO">
         INSERT INTO FOODMATE_PRODUCT_RATING (CMT_PDT_RATING_ID, PDT_ID, BYR_ID, RATING, COMMENTS, CREATE_DATE)

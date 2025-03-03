@@ -98,7 +98,12 @@ public class UtilMethod {
 	    file.transferTo(dest);
 
 	    // 저장된 파일 경로 반환 (웹에서 접근할 수 있는 경로)
-	    return "pdt/" + dest.getName();
+	    if(type == 1) {
+	    	return "pdt/" + dest.getName();
+	    } else {
+	    	return "pdt/description/" + dest.getName();
+	    }
+	    
 	}
 	
 	public static String saveRecipeImage(MultipartFile file) throws Exception {

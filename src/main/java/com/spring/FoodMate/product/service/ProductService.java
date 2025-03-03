@@ -127,7 +127,7 @@ public class ProductService {
 		}
 	}
 	
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackFor = ProductException.class)
 	public boolean insertNewProduct(HttpServletRequest request, ProductDTO newPdt) throws Exception {
 		try {
 			HttpSession session = request.getSession();
@@ -203,6 +203,21 @@ public class ProductService {
 	// 재고 수 업데이트하는 메서드
 	public int updateStock(int pdt_id, int stock) throws Exception {
 		return productDAO.updateStock(pdt_id, stock);
+	}
+	
+	// 상품 설명 이미지들 불러와서 html 태그로 준비해주는 메서드
+	public String getDescImgs(int pdt_id) throws Exception {
+	    List<String> imgPaths = productDAO.getDescImgPaths(pdt_id);  // DAO에서 이미지 경로 리스트 가져오기
+	    StringBuilder descriptionHtml = new StringBuilder();
+	    
+	    // 이미지 경로들을 <img> 태그로 감싸기
+	    for (String imgPath : imgPaths) {
+	        descriptionHtml.append("<img src=/FoodMate/resources/images/")
+	        			   .append(imgPath)
+	        			   .append(" alt=\"상품 설명 이미지\" />");
+	    }
+	    
+	    return descriptionHtml.toString();  // HTML로 구성된 이미지 태그 반환
 	}
 	
 	// 상품 후기 등록

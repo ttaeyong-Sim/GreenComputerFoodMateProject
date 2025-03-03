@@ -269,9 +269,6 @@ public class ProductController {
     @ResponseBody
     public Map<String, Object> changeStatus(@RequestParam int pdt_id, @RequestParam String status) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println("요청은 들어옴");
-        System.out.println("상품아이디는" + pdt_id);
-        System.out.println("현재상태는" + status);
         try {
             // 상태 변경 처리
             boolean isSuccess = productService.changeStatus(pdt_id, status);
@@ -290,6 +287,13 @@ public class ProductController {
 
         return response;
     }
+	
+	@RequestMapping(value = "/product/miscDescription", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String getMiscDesc(@RequestParam("pdt_id") int pdt_id) throws Exception {
+		String descriptionHtml = productService.getDescImgs(pdt_id);
+		return descriptionHtml;
+	}
 	
     // 상품 후기 리스트 조회
     @RequestMapping(value="/product/rating/list/{pdt_id}", method=RequestMethod.GET)

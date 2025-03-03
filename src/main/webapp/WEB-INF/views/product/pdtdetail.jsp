@@ -194,7 +194,7 @@ function addToWish() {
 </article>
 
 <jsp:include page="pdtdetail_misc.jsp">
-	<jsp:param name="pdt_ID" value="${product.pdt_id}"/>
+	<jsp:param name="pdt_id" value="${product.pdt_id}"/>
 </jsp:include>
 
 </main>

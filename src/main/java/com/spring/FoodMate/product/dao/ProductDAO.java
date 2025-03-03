@@ -170,6 +170,11 @@ public class ProductDAO {
 		return sqlSession.update("mapper.product.updateStock", params);
 	}
 	
+	// 상품 상세설명 이미지 경로만 리스트로 가져오기
+	public List<String> getDescImgPaths(int pdt_id) throws Exception {
+	    return sqlSession.selectList("mapper.product.getDescImgPaths", pdt_id);
+	}
+	
 	// 상품 후기 등록
 	public int insertProductRating(ProductRatingDTO newProductRating) {
 	    try {
