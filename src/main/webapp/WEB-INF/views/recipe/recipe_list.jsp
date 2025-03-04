@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 <!DOCTYPE html>
 <html lang="ko">
@@ -61,9 +59,9 @@
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
-    white-space: nowrap;      /* 텍스트가 한 줄로 유지되도록 */
-    overflow: hidden;         /* 넘치는 텍스트는 잘리게 */
-    text-overflow: ellipsis;  /* 잘린 텍스트에 '...' */
+    white-space: nowrap;      /* 텍스트가 한 줄로 유지되도록 바꿧음 */
+    overflow: hidden;         /* 넘치는 텍스트는 잘리게 설정 */
+    text-overflow: ellipsis;  /* 잘린 텍스트에 '...' 이거밖에모름 */
     width: 100%;              
     display: inline-block;    
     max-width: 100%;          /* 텍스트가 일정 범위를 넘지 않도록  */
@@ -74,45 +72,41 @@
     color: #666;
 }
 
-/* Swiper 슬라이드 컨테이너 크기 조절하는곳 */
-.swiper-container { 
-    width: 100%;
-    overflow: hidden;
+/* 최근 본 레시피 제목 스타일 */
+.mt-5 {
     display: flex;
-    justify-content: center; /* 하나일 때는 중앙 정렬 */
+    flex-direction: column; 
+    margin-bottom: 20px;
+}
+
+.mt-5 > strong {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0 auto;
+    margin-bottom: 40px;
+}
+
+/* Swiper 슬라이드 컨테이너 크기 조정 */
+.swiper-container {
+    width: 100%; 
+    max-width: 1500px;  /* 최대 폭을 늘려서 공간을 확보 */
+    margin: 0 auto;  /* 가운데 정렬 */
+    overflow: hidden;
+    display: flex;  
 }
 
 .swiper-wrapper {
     display: flex;
-    justify-content: flex-start; /* 여러 개일 때는 왼쪽 정렬 */
-    gap: 10px;  /* 슬라이드 간격 */
+    gap: 5px;  /* 슬라이드 간격을 조금 더 넓힘 */
 }
 
 .recipe-item {
     width: 250px;  
     height: 200px; 
+    display: flex;
+    flex-direction: column;
 }
 
-
-
-.swiper-button-prev, .swiper-button-next {
-    font-size: 30px;
-    color: #bbb;
-    background: transparent;
-    border: none;
-    transform: translateY(-50%);
-    z-index: 10;
-    cursor: pointer;
-}
-
-.swiper-button-prev, .swiper-button-next {
-    opacity: 0.7;
-    margin-top:125%;
-}
-
-.swiper-button-prev:hover, .swiper-button-next:hover {
-    opacity: 1;
-}
 /*▲여기까지 */
 .pagination {
     justify-content: center;
@@ -397,15 +391,14 @@
 </div>
 
 <div class="container mt-4">
-    <div class="mb-3 text-end">
-		<a href="${pageContext.request.contextPath}/recipe/recipe_list" class="btn btn-outline-primary me-2">최신순</a>
-		<a href="#" class="btn btn-outline-primary me-2">평점순</a>
+    <div class="mb-3 text-end">                          	<!-- param값 sort로 불러올 목록 정렬 분류 -->
+		<a href="${pageContext.request.contextPath}/recipe/recipe_list?sort=latest" class="btn btn-outline-primary me-2">최신순</a>
+		<a href="${pageContext.request.contextPath}/recipe/recipe_list?sort=rating" class="btn btn-outline-primary me-2">평점순</a>
     </div>
 
     <div class="row">
        
-        <c:forEach var="recipe" items="${recipeList}" varStatus="status">
-        <c:if test="${status.index >= startIndex && status.index < endIndex}">
+        <c:forEach var="recipe" items="${recipeList}">
             <div class="col-md-3 col-sm-6">
                 <a href="${contextPath}/recipe/recipe_Detail?rcp_id=${recipe.rcp_id}" class="text-decoration-none">
                     <div class="card recipe-card">
@@ -434,10 +427,8 @@
                     </div>
                 </a>
             </div>
-            </c:if>
         </c:forEach>
     </div>
-
 
 	<div class="pagination">
 	    <!-- 이전 페이지 -->
@@ -455,72 +446,61 @@
 	        <a href="?page=${currentPage + 1}">Next</a>
 	    </c:if>
 	</div>
-
 </div>
 
 
 
-<div class="mt-5">
-    <strong>🏷️최근 본 레시피</strong>   
-    <c:if test="${not empty recentRecipeList}">
-        <!-- Swiper 컨테이너로 최근 본 레시피 출력 -->
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-                <c:forEach var="recipe" items="${recentRecipeList}">
-                    <div class="swiper-slide">
-                        <div class="recipe-item">
-                            <a href="${contextPath}/recipe/recipe_Detail?rcp_id=${recipe.rcp_id}" class="text-decoration-none">
-                                <div class="recipe-image">
-								    <div class="image-wrapper">
-								        <img src="${contextPath}/resources/images/${recipe.mainimg_path}" alt="Recipe Image">
-								    </div>
-								</div>
-                                <h6 class="recipe-title">${recipe.title}</h6>
-                            </a>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
-            <!-- Swiper 네비게이션 버튼 -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-        </div>
-    </c:if>
-
-    <!-- 최근 본 레시피가 없을 경우 -->
-    <c:if test="${empty recentRecipeList}">
-        <strong>최근 본 레시피가 없습니다.</strong>
-    </c:if>
-</div>
+	<!-- 최근 본 레시피 제목과 레시피 아이템 -->
+	<div class="mt-5">
+	    <strong>🏷️ 최근 본 레시피</strong>
+	    <c:if test="${not empty recentRecipeList}">
+	        <!-- Swiper 컨테이너로 최근 본 레시피 출력 -->
+	        <div class="swiper-container">
+	            <div class="swiper-wrapper">
+	                <c:forEach var="recipe" items="${recentRecipeList}">
+	                    <div class="swiper-slide">
+	                        <div class="recipe-item">
+	                            <a href="${contextPath}/recipe/recipe_Detail?rcp_id=${recipe.rcp_id}" class="text-decoration-none">
+	                                <div class="recipe-image">
+	                                    <div class="image-wrapper">
+	                                        <img src="${contextPath}/resources/images/${recipe.mainimg_path}" alt="Recipe Image">
+	                                    </div>
+	                                </div>
+	                                <h6 class="recipe-title">${recipe.title}</h6>
+	                            </a>
+	                        </div>
+	                    </div>	                    
+	                </c:forEach>
+	            </div>
+	        </div>
+	    </c:if>
+	
+	    <!-- 최근 본 레시피가 없을 경우 -->
+	    <c:if test="${empty recentRecipeList}">
+	        <strong>최근 본 레시피가 없습니다.</strong>
+	    </c:if>
+	</div>
 
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
 const swiper = new Swiper(".swiper-container", {
     slidesPerView: 'auto',  // 슬라이드 수를 자동으로 조정
     spaceBetween: 20,  // 슬라이드 간격
-    navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev"
-    },
+
     breakpoints: {
         1024: {
-            slidesPerView: 4, // 1024px 이상일 때 슬라이드 4개
+            slidesPerView: 4, 
         },
         768: {
-            slidesPerView: 2, // 768px 이하일 때 슬라이드 2개
+            slidesPerView: 2, 
         },
         480: {
-            slidesPerView: 1, // 480px 이하일 때 슬라이드 1개
+            slidesPerView: 1,
         }
     }
 });
 
-// 최근본 레시피가 하나일 때 중앙 배치
-if (document.querySelectorAll('.swiper-slide').length === 1) {
-    const swiperContainer = document.querySelector('.swiper-container');
-    swiperContainer.style.justifyContent = 'center'; // 중앙 정렬
-    swiperContainer.style.display = 'flex'; // flexbox로 설정하여 중앙 정렬
-}
+
 </script>
 
 

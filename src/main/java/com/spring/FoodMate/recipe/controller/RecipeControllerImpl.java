@@ -77,15 +77,27 @@ public class RecipeControllerImpl implements RecipeController {
     
     // 레시피 목록 조회
     @RequestMapping(value = "/recipe/recipe_list", method = RequestMethod.GET)
-    public ModelAndView selectRecipeList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, HttpServletRequest request) throws Exception {
+    public ModelAndView selectRecipeList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, @RequestParam(value = "sort", required = false) String sort, HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
+		List<RecipeDTO> recipeList;
+		
+		/* ▼sort라는 파라미터값이 null일 경우 기본값은 "latest"(최신순)으로 출력하게 설정했습미다.
+         왜냐하면 코드를 좀 줄여볼려고 레시피 조회기능에다가 정렬기능까지 다 넣어놓았어요 
+         "latest", "rating" recipe_list jsp 보시면 버튼에 sort값으로 지정해놓은거 참고하시면 이해가 쉽습니다 -심*/
+        if (sort == null) {
+            sort = "latest";  // 기본값: 최신순
+        }
+		// "sort(정렬)" 파라미터 값에 따라 레시피 목록 조회
         if (keyword != null && !keyword.trim().isEmpty()) {
             // keyword가 있을 경우 검색 기능 실행
-            mav.addObject("recipeList", recipeService.searchRecipeList(keyword));
+			recipeList = recipeService.searchRecipeList(keyword);
+        } else if (sort.equals("rating")) {
+            recipeList = recipeService.selectRecipeListByRating();  // 평점순 정렬
         } else {
-            // keyword가 없을 경우 전체 목록 조회 실행
-            mav.addObject("recipeList", recipeService.selectRecipeList());
+            recipeList = recipeService.selectRecipeList();  // 최신순 정렬 (기본값)
         }
+		System.out.println("정렬값:" + sort);
+        mav.addObject("recipeList", recipeList);
         mav.setViewName("common/layout");
         mav.addObject("showNavbar", true);
         mav.addObject("title","레시피 목록");
@@ -352,19 +364,28 @@ public class RecipeControllerImpl implements RecipeController {
 	        // 세션에서 로그인한 사용자 정보 받기
 	        BuyerDTO buyerDTO = (BuyerDTO) session.getAttribute("buyerInfo");
 	        String byr_id = buyerDTO.getByr_id();  // 댓글 작성자의 ID
-	        System.out.println("byr_id: " + byr_id);
-	        // RecipeRatingDTO에 데이터 세팅
-	        RecipeRatingDTO ratingDTO = new RecipeRatingDTO();
-	        ratingDTO.setRcp_id(rcp_id);
-	        ratingDTO.setByr_id(byr_id);
-	        ratingDTO.setRating(rating);
-	        ratingDTO.setComments(comments);
-
-	        // 서비스 호출하여 DB에 후기 저장
-	        recipeService.addRecipeRating(ratingDTO);
-
-	        // 성공 메시지 추가
-	        redirectAttributes.addFlashAttribute("message", "후기가 성공적으로 등록되었습니다.");
+	        
+	        // 이미 후기가 작성되었는지 확인
+	        int alreadyRated = recipeService.alreadyExistRating(rcp_id, byr_id);
+	        
+	        //true일경우
+	        if (alreadyRated> 0) {
+	            
+	            redirectAttributes.addFlashAttribute("error", "이미 후기를 작성하셨습니다.");
+	        } else {
+	            // 후기가 존재하지 않으면 새로 등록
+	            RecipeRatingDTO ratingDTO = new RecipeRatingDTO();
+	            ratingDTO.setRcp_id(rcp_id);
+	            ratingDTO.setByr_id(byr_id);
+	            ratingDTO.setRating(rating);
+	            ratingDTO.setComments(comments);
+	            
+	            // 서비스 호출하여 DB에 후기 저장
+	            recipeService.addRecipeRating(ratingDTO);
+	            
+	            // 성공 메시지 추가
+	            redirectAttributes.addFlashAttribute("message", "후기가 성공적으로 등록되었습니다.");
+	     }
 	    } catch (Exception e) {
 	        // 오류 발생 시
 	        redirectAttributes.addFlashAttribute("error", "후기 등록 중 오류가 발생했습니다.");
@@ -480,6 +501,58 @@ public class RecipeControllerImpl implements RecipeController {
 	    // 답변 후 해당 질문 페이지로 리다이렉트
 	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
 	    
+	}
+	// 레시피 질문 수정 처리
+	@RequestMapping("/recipe/updateRecipeQna")
+	public String updateRecipeQna(
+	        @RequestParam("cmt_rcp_qna_id") int cmt_rcp_qna_id,  // 질문 ID
+	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID (리다이렉트용)
+	        @RequestParam("comments") String comments,  // 수정할 댓글 
+	        RedirectAttributes redirectAttributes) {
+	    try {
+	        // RecipeQnaDTO에 데이터 세팅
+	        RecipeQnaDTO qnaDTO = new RecipeQnaDTO();
+	        qnaDTO.setCmt_rcp_qna_id(cmt_rcp_qna_id);
+	        qnaDTO.setComments(comments);
+	        
+	        System.out.println("rcp_id =" + rcp_id);
+	        System.out.println("원본,답글,답글의답글 ID = " + cmt_rcp_qna_id);
+	        // 서비스 호출하여 질문 수정
+	        recipeService.updateRecipeQna(qnaDTO);
+
+	        // 성공 메시지 추가
+	        redirectAttributes.addFlashAttribute("message", "질문이 성공적으로 수정되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();  // 예외 출력
+	        redirectAttributes.addFlashAttribute("error", "질문 수정 중 오류가 발생했습니다.");
+	    }
+
+	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
+	}
+
+	// 레시피 질문 삭제 처리
+	@RequestMapping("/recipe/deleteRecipeQna")
+	public String deleteRecipeQna(
+	        @RequestParam("cmt_rcp_qna_id") int cmt_rcp_qna_id,  // 삭제할 질문 ID
+	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID (리다이렉트용)
+	        RedirectAttributes redirectAttributes) {
+
+	    try {
+	        // RecipeQnaDTO에 데이터 세팅
+	        RecipeQnaDTO qnaDTO = new RecipeQnaDTO();
+	        qnaDTO.setCmt_rcp_qna_id(cmt_rcp_qna_id);
+
+	        // 서비스 호출하여 질문 삭제
+	        recipeService.deleteRecipeQna(qnaDTO);
+
+	        // 성공 메시지 추가
+	        redirectAttributes.addFlashAttribute("message", "질문이 성공적으로 삭제되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();  // 예외 출력
+	        redirectAttributes.addFlashAttribute("error", "질문 삭제 중 오류가 발생했습니다.");
+	    }
+
+	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
 	}
 
 }

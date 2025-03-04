@@ -54,6 +54,12 @@ public class RecipeDAOImpl implements RecipeDAO {
         return sqlSession.selectList("mapper.recipe.selectRecipeList");  // 레시피 목록 조회
     }
     
+    
+        // 레시피 목록 평점순으로 조회
+    @Override
+    public List<RecipeDTO> selectRecipeListByRating() throws Exception {
+        return sqlSession.selectList("mapper.recipe.selectRecipeListByRating");  // 레시피 목록 조회
+
     // 레시피 목록 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception {
     	Map<String, Object> paramMap = new HashMap<>();
@@ -136,6 +142,18 @@ public class RecipeDAOImpl implements RecipeDAO {
 		}
 	}
 	
+	//레시피 후기 작성
+	@Override
+	public void addRecipeRating(RecipeRatingDTO ratingDTO) throws Exception {
+        sqlSession.insert("mapper.recipe.addRecipeRating", ratingDTO); 
+    }
+	
+	//후기 작성 시 중복 작성 확인 (별점 테러 방지)
+	@Override
+    public int alreadyExistRating(int rcpId, String byrId) throws Exception {
+        // 쿼리문 실행 (평점이 이미 존재하는지 확인)
+        return sqlSession.selectOne("mapper.recipe.alreadyExistRating", Map.of("rcpId", rcpId, "byrId", byrId));
+    }
 	@Override
 	public void insertRecipeRating(RecipeRatingDTO ratingDTO) throws Exception {
         sqlSession.insert("mapper.recipe.insertRecipeRating", ratingDTO); 

@@ -29,6 +29,10 @@ public interface RecipeDAO {
     // 레시피 목록 조회
     List<RecipeDTO> selectRecipeList() throws Exception;
     
+    
+    //레시피 목록 평점순으로 조회
+    public List<RecipeDTO> selectRecipeListByRating() throws Exception;
+    
     // 레시피 아이디 목록 조회
     List<RecipeDTO> selectRecipeListByrID(String byr_Id) throws Exception;
     
@@ -49,6 +53,8 @@ public interface RecipeDAO {
 	
 	//레시피 후기 작성
 	public void insertRecipeRating(RecipeRatingDTO ratingDTO) throws Exception;
+	//후기 작성 시 중복 작성 확인 (별점 테러 방지)
+	public int alreadyExistRating(int rcpId, String byrId) throws Exception;
 	
 	//레시피 후기 출력
 	public List<RecipeRatingDTO> getRatingsByRecipeId(int rcp_id) throws Exception;
@@ -78,4 +84,10 @@ public interface RecipeDAO {
     
     // 레시피 조회수
     public void updateRecipeViews(int rcp_id) throws Exception;
+    
+    	//레시피 질문,답변 수정
+	public void updateRecipeQna(RecipeQnaDTO qnaDTO);
+	
+	//레시피 질문,답변 삭제
+	public void deleteRecipeQna(RecipeQnaDTO qnaDTO);
 }

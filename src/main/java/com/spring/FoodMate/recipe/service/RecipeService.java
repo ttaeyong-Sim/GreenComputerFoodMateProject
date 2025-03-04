@@ -56,6 +56,8 @@ public interface RecipeService {
     
     public void addRecipeRating(RecipeRatingDTO ratingDTO) throws Exception;
     
+    //후기 작성 시 중복 작성 확인 (별점 테러 방지)
+    public int alreadyExistRating(int rcp_id, String byr_id) throws Exception;
     public List<RecipeRatingDTO> getRatingsByRecipeId(int rcp_id) throws Exception;
     
     public void updateRecipeRating(RecipeRatingDTO ratingDTO);
@@ -81,4 +83,10 @@ public interface RecipeService {
     
     // 레시피 조회수
     public void setViewsCount(int rcp_id) throws Exception;
+    
+        //레시피 질문,답변 수정
+    public void updateRecipeQna(RecipeQnaDTO qnaDTO);
+    
+    //레시피 질문,답변 삭제
+    public void deleteRecipeQna(RecipeQnaDTO qnaDTO);
 }

@@ -182,6 +182,10 @@ public class RecipeServiceImpl implements RecipeService {
     public void addRecipeRating(RecipeRatingDTO ratingDTO) throws Exception {
         recipeDAO.insertRecipeRating(ratingDTO);  // 후기를 DB에 저장
     }
+        //후기 작성 시 중복 작성 확인 (별점 테러 방지)
+    public int alreadyExistRating(int rcp_id, String byr_id) throws Exception {
+        return recipeDAO.alreadyExistRating(rcp_id, byr_id);
+    }
     
     @Override
     public List<RecipeRatingDTO> getRatingsByRecipeId(int rcp_id) throws Exception {
@@ -233,5 +237,16 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public void setViewsCount(int rcp_id) throws Exception{
     	recipeDAO.updateRecipeViews(rcp_id);
+    }
+        //레시피 질문,답변 수정
+    @Override
+    public void updateRecipeQna(RecipeQnaDTO qnaDTO) {
+        recipeDAO.updateRecipeQna(qnaDTO);
+    }
+ 
+    //레시피 질문,답변 삭제
+    @Override
+    public void deleteRecipeQna(RecipeQnaDTO qnaDTO) {
+        recipeDAO.deleteRecipeQna(qnaDTO);
     }
 }

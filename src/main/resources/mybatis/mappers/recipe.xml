@@ -208,7 +208,7 @@
 	</select>
 	
 	<!-- 레시피 별점 및 후기 추가 -->
-    <insert id="insertRecipeRating" parameterType="RecipeRatingDTO">
+    <insert id="addRecipeRating" parameterType="RecipeRatingDTO">
         INSERT INTO FOODMATE_RECIPE_RATING
         (CMT_RCP_RATING_ID, RCP_ID, BYR_ID, RATING, COMMENTS, CREATE_DATE)
         VALUES
@@ -219,6 +219,13 @@
         #{comments}, 
         SYSDATE)
     </insert>
+    
+        <!-- 이미 후기가 작성되었는지 확인 -->
+    <select id="alreadyExistRating" parameterType="map" resultType="int">
+        SELECT COUNT(*) 
+        FROM FOODMATE_RECIPE_RATING
+        WHERE RCP_ID = #{rcpId} AND BYR_ID = #{byrId}
+    </select>
     
     
     <resultMap id="RecipeRatingMap" type="RecipeRatingDTO">
@@ -354,5 +361,20 @@
 	        views = views + 1
 	    WHERE rcp_id = #{rcp_id}
 	</update>
+	
+		<!-- 레시피 질문,답변 수정 -->
+	<update id="updateRecipeQna" parameterType="RecipeQnaDTO">
+	    UPDATE FOODMATE_RECIPE_QNA
+	    SET 
+	        COMMENTS = #{comments},
+	        UPDATE_DATE = SYSDATE
+	    WHERE CMT_RCP_QNA_ID = #{cmt_rcp_qna_id}
+	</update>
+	
+	<!-- 레시피 질문,답변 삭제 -->
+	<delete id="deleteRecipeQna" parameterType="RecipeQnaDTO">
+	    DELETE FROM FOODMATE_RECIPE_QNA
+	    WHERE CMT_RCP_QNA_ID = #{cmt_rcp_qna_id}
+	</delete>
 
 </mapper>
