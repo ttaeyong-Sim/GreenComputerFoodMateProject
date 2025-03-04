@@ -61,9 +61,14 @@ public class UtilMethod {
 	private static final String imagePath3 = "C:/Web/FoodMate/src/main/webapp/resources/images";
 	// 그린컴퓨터학원 - 강규진.
 	
-	public static String savePdtImage(HttpServletRequest request, MultipartFile file) throws Exception {
+	public static String savePdtImage(MultipartFile file, int type) throws Exception {
 	    // 저장할 디렉토리 경로 설정
-	    String uploadDir = imagePath + "/pdt";
+		String uploadDir = null;
+		if(type == 1) {
+			uploadDir = imagePath + "/pdt";
+		} else {
+			uploadDir = imagePath + "/pdt/description";
+		}
 
 	    File dir = new File(uploadDir);
 

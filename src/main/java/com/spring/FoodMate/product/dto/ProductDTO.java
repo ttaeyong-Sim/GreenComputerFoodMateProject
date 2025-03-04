@@ -1,5 +1,7 @@
 package com.spring.FoodMate.product.dto;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,7 @@ public class ProductDTO {
 	private Double unit_price;
 	private char ort_stat;
 	private int ord_count;
+	private List<MultipartFile> pdt_descimg;
 	
 	public void setPdt_id(int pdt_id) { this.pdt_id = pdt_id; }
 	public String getSlr_id() { return slr_id; }
@@ -56,6 +59,8 @@ public class ProductDTO {
 	public void setOrt_stat(char ort_stat) {this.ort_stat = ort_stat;}
 	public int getOrd_count() {return ord_count;}
 	public void setOrd_count(int ord_count) {this.ord_count = ord_count;}
+	public List<MultipartFile> getPdt_descimg() {return pdt_descimg;}
+	public void setPdt_descimg(List<MultipartFile> pdt_descimg) {this.pdt_descimg = pdt_descimg;}
 	
 	// 예외 로그 기록용
 	public String toLogString() {

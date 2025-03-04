@@ -160,9 +160,25 @@
 	    WHERE pdt_id = #{pdt_id}
 	</select>
 	
+	<!-- 새 상품 추가 -->
 	<insert id="newPdt" parameterType="ProductDTO">
 		INSERT INTO FoodMate_Product (PDT_ID, SLR_ID, NAME, IMG_PATH, PRICE, QTY, UNIT, CATEGORY_ID, STOCK, STATUS, DESCRIPTION)
 		VALUES (FOODMATE_PRODUCT_SEQ.NEXTVAL, #{slr_id}, #{name}, #{img_path}, #{price}, #{qty}, #{unit}, #{category_id}, #{stock}, #{status}, #{description})
+	</insert>
+	
+	<!-- 새 상품에 설명이미지 넣어주기위해 상품ID 가져오기 -->
+	<select id="getLastInsertedPdtId" resultType="int">
+	    SELECT pdt_id
+		FROM (SELECT pdt_id
+		FROM foodmate_product
+		ORDER BY pdt_id DESC)
+		WHERE ROWNUM = 1
+	</select>
+	
+	<!-- 새 상품 추가할때 상품 설명 이미지들도 추가, 이미지마다 반복 -->
+	<insert id="newPdtDescImg">
+		INSERT INTO FOODMATE_PRODUCT_DESCIMG (IMG_ID, PDT_ID, IMG_PATH)
+		VALUES (FOODMATE_PRODUCT_DESCIMG_SEQ.NEXTVAL, #{pdt_id}, #{img_path})
 	</insert>
 	
 	<update id="editPdt" parameterType="ProductDTO">

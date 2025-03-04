@@ -133,6 +133,17 @@ public class ProductDAO {
 		}
 	}
 	
+	public int getNewPdtId() throws DataAccessException {
+		return sqlSession.selectOne("mapper.product.getLastInsertedPdtId");
+	}
+	
+	public int insertProductDescImg(int pdt_id, String imgPath) throws DataAccessException {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("pdt_id", pdt_id);
+		params.put("img_path", imgPath);
+		return sqlSession.insert("mapper.product.newPdtDescImg", params);
+	}
+	
 	public int updateProduct(ProductDTO editPdt) {
 		try {
 			int result = sqlSession.update("mapper.product.editPdt", editPdt);

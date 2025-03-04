@@ -8,11 +8,29 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-var contextPath = "${contextPath}";
-console.log(contextPath);
+const contextPath = "${contextPath}";
 
 $(document).ready(function() {
     var lastCategoryId = null;  // 마지막 선택된 카테고리 ID
+    
+    // 상품 설명 이미지 입력 및 추가 함수
+    let imgCount = 1; // 파일 입력 개수 카운트
+    $(document).on('change', '.pdt_descimg', function() {
+        // 현재 입력된 파일이 있으면 새로운 input 추가
+        if ($(this).val() !== '') {
+            // 중복 생성 방지 (마지막 input이 비어있을 때만 추가)
+            if ($('.pdt_descimg').last().val() === '') return;
+
+            imgCount++;
+            let newInput = `
+                <div class="row">
+                    <label for="pdt_descimg_${imgCount}">상품 이미지 ${imgCount}</label>
+                    <input type="file" class="pdt_descimg" id="pdt_descimg_${imgCount}" name="pdt_descimg[]" accept="image/*">
+                </div>`;
+            
+            $('#imageUploadContainer').append(newInput);
+        }
+    });
 
     // 1단계 카테고리 선택 시
     $('#category_1').on('change', function() {
@@ -83,9 +101,9 @@ $(document).ready(function() {
 
     // 폼 제출 이벤트(공개)
     $('#submit_public').on('click', function(event) {
-        event.preventDefault();
+        event.preventDefault(); // 클릭시 submit 막아놓고
 
-        var isValid = true;
+        var isValid = true; // 유효성검사
         var requiredFields = ['#pdt_Name', '#pdt_Price', '#pdt_Dscrpt', '#pdt_Weight', '#unit', '#stock', '#pdt_img'];
 
         requiredFields.forEach(function(field) {
@@ -199,16 +217,19 @@ $(document).ready(function() {
 			</div>
       
 		<div class="form-Rightbox">
+		
 			<div class="row">
-				<label for="introImage">상품 이미지</label>
+				<label for="introImage">상품 썸네일 이미지</label>
 				<input type="file" id="pdt_img" name="pdt_img" accept="image/*" required>
 			</div>
 			
-<!-- 			<div class="row"> -->
-<!-- 				<label for="introImage">소개 이미지</label> -->
-<!-- 				<input type="file" id="pdt_DscImg" name="pdt_DscImg" accept="image/*" required> -->
-<!-- 			</div> -->
-<!-- 소개 이미지는 나중에 만들거야 -->
+			<div id="imageUploadContainer">
+			    <div class="row">
+			    	<label for="pdt_desimg">상품 설명 이미지<br>(드래그로 선택)</label>
+			    	<input type="file" id="pdt_desimg" name="pdt_descimg" accept="image/*" multiple />
+			    </div>
+			</div>
+			
 		</div>
 		
 		</div>
