@@ -43,13 +43,20 @@ public class MemberController {
 	private SocialLoginController sociallogincontroller; 
 
 	private final Dotenv dotenv = Dotenv.load();
-	
 	private final String KAKAO_API_KEY = dotenv.get("KAKAO_REST_API");  //  카카오 REST API 키
+	private final String OPENDATA_SERVICE_KEY = dotenv.get("OPENDATA_SERVICE_KEY"); // 공공데이터 API 키
 	
 	@RequestMapping(value="/member/loginForm", method=RequestMethod.GET)
 	private ModelAndView Loginform(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("kakao_API_key", KAKAO_API_KEY);
+		return mav;
+	}
+	
+	@RequestMapping(value="/member/signUpSellerForm", method=RequestMethod.GET)
+	private ModelAndView signUpSellerForm(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("servicekey", OPENDATA_SERVICE_KEY);
 		return mav;
 	}
 	
@@ -197,10 +204,15 @@ public class MemberController {
 		return resEntity;
 	}
 	
-	@RequestMapping(value="/member/overlapped.do" ,method = RequestMethod.POST)
-	public ResponseEntity buyIDoverlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception{
+	@RequestMapping(value="/member/overlapped" ,method = RequestMethod.POST)
+	public ResponseEntity IDoverlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception{
 		ResponseEntity resEntity = null;
-		String result = memberService.buyerIDoverlapped(id);
+		String result = "true";
+		boolean result_buyer = memberService.buyerIDoverlapped(id).equals("true");
+		boolean result_seller = memberService.sellerIDoverlapped(id).equals("true");
+		if(!(result_buyer || result_seller)) {
+			result = "false";
+		}
 		resEntity =new ResponseEntity(result, HttpStatus.OK);
 		return resEntity;
 	}
@@ -412,13 +424,13 @@ public class MemberController {
 		return resEntity;
 	}
 	
-	@RequestMapping(value="/member/overlappedseller.do" ,method = RequestMethod.POST)
-	public ResponseEntity sellerIDoverlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception{
-		ResponseEntity resEntity = null;
-		String result = memberService.sellerIDoverlapped(id);
-		resEntity =new ResponseEntity(result, HttpStatus.OK);
-		return resEntity;
-	}
+//	@RequestMapping(value="/member/overlappedseller.do" ,method = RequestMethod.POST)
+//	public ResponseEntity sellerIDoverlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception{
+//		ResponseEntity resEntity = null;
+//		String result = memberService.sellerIDoverlapped(id);
+//		resEntity =new ResponseEntity(result, HttpStatus.OK);
+//		return resEntity;
+//	}
 	
 	@RequestMapping(value="/member/updateSeller" ,method = RequestMethod.POST)
 	public ResponseEntity updateSeller(@ModelAttribute("sellerDTO") SellerDTO _sellerDTO,

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	    $.ajax({
 	       type:"post",
 	       async:false,  
-	       url:"${contextPath}/member/overlappedseller.do",
+	       url:"${contextPath}/member/overlapped",
 	       dataType:"text",
 	       data: {id:_id},
 	       success:function (data,textStatus){
@@ -83,6 +83,46 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
         return true;
     }
+    
+    $(document).ready(function() {
+        $("#searchBtn").click(function() {
+        	
+        	// JSP에서 전달된 serviceKey 변수 저장
+            var serviceKey = "${servicekey}";
+            
+            // 사업자번호 입력값 가져오기
+            let bsnum1 = $("#bsnum1").val().trim();
+            let bsnum2 = $("#bsnum2").val().trim();
+            let bsnum3 = $("#bsnum3").val().trim();
+
+            // 입력값 유효성 검사
+            if (bsnum1.length !== 3 || bsnum2.length !== 2 || bsnum3.length !== 5) {
+                alert("올바른 사업자번호를 입력하세요 (예: 123-45-67890)");
+                return;
+            }
+
+            // 사업자번호 조합
+            let businessNumber = bsnum1 + bsnum2 + bsnum3;
+
+            // .env에서 serviceKey 가져오기 (백엔드에서 처리 필요)
+            $.ajax({
+                url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + serviceKey,
+                type: "POST",
+                data: JSON.stringify({ "b_no": [businessNumber] }), // 사업자번호 배열
+                dataType: "json",
+                contentType: "application/json",
+                accept: "application/json",
+                success: function(result) {
+                    console.log("조회 결과:", result);
+                    alert("사업자 조회 성공! 콘솔을 확인하세요.");
+                },
+                error: function(xhr) {
+                    console.log("오류 발생:", xhr.responseText);
+                    alert("사업자 조회 실패! 콘솔을 확인하세요.");
+                }
+            });
+        });
+    });
 </script>
 <meta charset="UTF-8">
 <title>회원 가입</title>
