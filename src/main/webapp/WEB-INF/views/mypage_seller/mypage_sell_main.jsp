@@ -38,7 +38,7 @@
 			<div class="col-md-3 mt-3">
 				<div class="mainbox">
 					<div class="name_icon_btn">
-						<img src="${contextPath}/resources/images/profile_09.png" alt="" />
+						<img src="${contextPath}/resources/images/logo.png" alt="" />
 						<p> 프로필수정 </p>
 						<p> 그린축산 </p>
 						<p> 팔로워 : n명 </p>

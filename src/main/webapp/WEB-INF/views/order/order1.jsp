@@ -713,10 +713,14 @@ function execDaumPostcode() {
 	        if (typeof orderItemList === "string") {
 	            orderItemList = JSON.parse(orderItemList); // 문자열이면 JSON 배열로 변환
 	        }
+	        if(${directBuy}){
+	        	var directqty = ${not empty orderItems ? orderItems[0].qty : 0}; 
+	        }
         	
         	function requestOrder2() {
         		var orderData = {
         				cartIds: orderItemList, // 주문 아이템 목록을 그대로 전송
+        				directqty : directqty, // 바로구매시 해당 품목을 바로전송
         		        merchantUid: "ORD-" + new Date().getTime(), // 예시: 주문번호 생성
         		        payMethod: "card", // 결제방식 (ex: 카드, 계좌이체)
         		        pgId: "imp11122", // PG사 ID
@@ -787,6 +791,7 @@ function execDaumPostcode() {
 		            if (rsp.success) {
 		            	var orderData = {
 		            			cartIds: orderItemList, // 주문 아이템 목록을 그대로 전송
+		            			directqty : directqty, // 바로구매시 해당 품목을 바로전송
 		        		        merchantUid: rsp.merchant_uid,
 		        		        payMethod: rsp.pay_method, // 결제방식 (ex: 카드, 계좌이체)
 		        		        pgId: rsp.imp_uid, // PG사 ID
@@ -801,7 +806,7 @@ function execDaumPostcode() {
 		        		    };
 		            	$.ajax({
 		                    type: "POST",
-		                    url: "${contextPath}/order/setOrderItems",
+		                    url: "${contextPath}/order/setOrderItems?directBuy=" + encodeURIComponent(${directBuy}),
 		                    contentType: "application/json",
 		                    data: JSON.stringify(orderData),  // 기존 데이터를 전송
 		                    success: function(response) {

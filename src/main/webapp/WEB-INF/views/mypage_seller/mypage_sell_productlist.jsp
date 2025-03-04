@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8" isELIgnored="false"%>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath"  value="${pageContext.request.contextPath}"  />  
 <html>
 <head>
@@ -181,6 +183,16 @@ function deleteProduct(pdt_id) {
 </script>
 
 </head>
+<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+<c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+<c:set var="itemsPerPage" value="8" />
+<c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
+<c:set var="endIndex" value="${currentPage * itemsPerPage}" />
+
+<%-- 전체 데이터 개수 구하기 --%>
+<c:set var="totalItems" value="${fn:length(list)}" />
+<fmt:parseNumber var="parsedTotalPages" value="${(totalItems + itemsPerPage - 1) / itemsPerPage}" integerOnly="true" />
+<c:set var="totalPages" value="${parsedTotalPages}" />
 <body>
 <main id="product_list">
 
@@ -227,18 +239,23 @@ function deleteProduct(pdt_id) {
 
 <article class="pagination">
     <div class="pagination_buttons">
-    	<a href="#" class="page_button active">1</a>
-        <a href="#" class="page_button">2</a>
-        <a href="#" class="page_button">3</a>
-        <a href="#" class="page_button">4</a>
-        <a href="#" class="page_button">5</a>
-        <a href="#" class="page_button">6</a>
-        <a href="#" class="page_button">7</a>
-        <a href="#" class="page_button">8</a>
-        <a href="#" class="page_button">9</a>
-        <a href="#" class="page_button">10</a>
+        <%-- 이전 페이지 버튼 --%>
+        <c:if test="${currentPage > 1}">
+            <a href="?page=${currentPage - 1}" class="page_button">Prev</a>
+        </c:if>
+
+        <%-- 페이지 번호 버튼 --%>
+        <c:forEach var="i" begin="1" end="${totalPages}">
+            <a href="?page=${i}" class="page_button ${i == currentPage ? 'active' : ''}">${i}</a>
+        </c:forEach>
+
+        <%-- 다음 페이지 버튼 --%>
+        <c:if test="${currentPage < totalPages}">
+            <a href="?page=${currentPage + 1}" class="page_button">Next</a>
+        </c:if>
     </div>
 </article>
+
 
 </main>
 </body>

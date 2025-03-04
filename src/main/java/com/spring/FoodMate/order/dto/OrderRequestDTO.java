@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.spring.FoodMate.cart.dto.CartDTO;
 
 @Component("orderrequestDTO")
 public class OrderRequestDTO {
 	@JsonProperty("cartIds")
     private List<Integer> cartIds; // 상품 ID 리스트
+	private int directqty; // 바로구매 전용
 	
     private String merchantUid;
     private String payMethod;
@@ -41,4 +43,16 @@ public class OrderRequestDTO {
 	public void setUsed_point(int used_point) {
 		this.used_point = used_point;
 	}
+
+	public int getDirectqty() {
+		return directqty;
+	}
+
+	public void setDirectqty(int directqty) {
+		this.directqty = directqty;
+	}
+	
+	
+	
+	
 }
