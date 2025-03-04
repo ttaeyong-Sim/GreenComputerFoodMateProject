@@ -74,6 +74,32 @@
 	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
 	</select>
 	
+	<!-- 평점순 레시피 조회 -->
+	<select id="selectRecipeListByRating" resultType="recipeDTO">
+	    SELECT 
+	        R.RCP_ID, 
+	        R.BYR_ID, 
+	        BP.NICKNAME,  -- 닉네임 추가
+	        R.CATEGORY_ID, 
+	        R.TITLE, 
+	        R.MAINIMG_PATH, 
+	        R.FOOD_NAME, 
+	        R.REQ_TIME, 
+	        R.DESCRIPTION, 
+	        R.STATUS, 
+	        R.CREATE_DATE,
+	        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING <!-- 평점이 없으면 0을 대신하고, 평균 평점 계산 -->
+	    FROM FOODMATE_RECIPE R
+	    LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID  -- 닉네임 조인
+	    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID  -- 평점 조인
+	    WHERE R.STATUS = 'Y'
+	    GROUP BY 
+	        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
+	        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
+	        R.STATUS, R.CREATE_DATE
+	    ORDER BY RATING DESC -- 평점순으로 내림차순 정렬
+	</select>
+	
 	    <!-- 레시피 조회 -->
 	<select id="searchRecipeList" resultType="recipeDTO" parameterType="map">
 	    SELECT 
