@@ -4,6 +4,8 @@
 <c:set var="contextPath"  value="${pageContext.request.contextPath}"  />  
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Noto+Sans+KR:wght@100..900&display=swap');
 
@@ -187,9 +189,29 @@
     transition: background-color 0.3s, border-color 0.3s;
 }
 
+.hidden { display: none; }
+
+#toggleBtn {
+    background-color: #74b243; /* Bootstrap primary 색상 */
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 50px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    border: none;
+    display: block;
+    margin: 0 auto;
+    align-items: center;
+    gap: 8px;
+}
+
+#toggleBtn:hover {
+    background-color: #0056b3;
+}
+
 </style>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 var contextPath = "${contextPath}";
 
@@ -450,6 +472,21 @@ $(document).on("click", "#cart-button", function() {
     });
 });
 
+$(document).ready(function(){
+    $("#toggleBtn").click(function(){
+        $(".recipe-step.hidden").slideToggle();
+
+        // 버튼 텍스트 및 아이콘 변경
+        let isExpanded = $(this).data("expanded");
+        if (isExpanded) {
+            $(this).html('<i class="bi bi-chevron-down"></i> 레시피 펼치기');
+        } else {
+            $(this).html('<i class="bi bi-chevron-up"></i> 레시피 접기');
+        }
+        $(this).data("expanded", !isExpanded);
+    });
+});
+
 </script>
 
 
@@ -467,9 +504,9 @@ $(document).on("click", "#cart-button", function() {
 			</article>
 		</section>
 		
-		<section id="rcp_step">
-		    <c:forEach var="step" items="${steps}">
-			    <div>
+		<section id="rcp_step" class="mb-2">
+		    <c:forEach var="step" items="${steps}" varStatus="status">
+			    <div class="recipe-step ${status.index >= 7 ? 'hidden' : ''}">
 			        <span class="step-number">${step.rcp_step}</span> ${step.step_desc}<br>
 			    </div>
 			</c:forEach>
@@ -478,7 +515,11 @@ $(document).on("click", "#cart-button", function() {
 
 	<div class="section_container">
 		<section id="rcp_spread">
-		레시피 펼치기⏬ 이것도 나중에 만들어
+			<div class="d-flex justify-content-center mt-3">
+			    <button id="toggleBtn">
+			        <i class="bi bi-chevron-down"></i> <span>레시피 펼치기</span>
+			    </button>
+			</div>
 		</section>
 	</div>
 	
