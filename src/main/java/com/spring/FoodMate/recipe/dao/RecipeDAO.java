@@ -52,7 +52,8 @@ public interface RecipeDAO {
 	List<CategoryDTO> select_Child_IngrdCategory(int parentIngrdCategoryId);
 	
 	//레시피 후기 작성
-	public void insertRecipeRating(RecipeRatingDTO ratingDTO) throws Exception;
+	public void addRecipeRating(RecipeRatingDTO ratingDTO) throws Exception;
+		
 	//후기 작성 시 중복 작성 확인 (별점 테러 방지)
 	public int alreadyExistRating(int rcpId, String byrId) throws Exception;
 	

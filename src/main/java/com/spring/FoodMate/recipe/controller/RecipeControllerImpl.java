@@ -555,6 +555,7 @@ public class RecipeControllerImpl implements RecipeController {
 	    return "redirect:/recipe/recipe_Detail?rcp_id=" + rcp_id;
 	}
 
+
 }
 
 	

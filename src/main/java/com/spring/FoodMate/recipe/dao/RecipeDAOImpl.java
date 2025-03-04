@@ -59,6 +59,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     @Override
     public List<RecipeDTO> selectRecipeListByRating() throws Exception {
         return sqlSession.selectList("mapper.recipe.selectRecipeListByRating");  // 레시피 목록 조회
+    }    
 
     // 레시피 목록 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception {
@@ -154,10 +155,6 @@ public class RecipeDAOImpl implements RecipeDAO {
         // 쿼리문 실행 (평점이 이미 존재하는지 확인)
         return sqlSession.selectOne("mapper.recipe.alreadyExistRating", Map.of("rcpId", rcpId, "byrId", byrId));
     }
-	@Override
-	public void insertRecipeRating(RecipeRatingDTO ratingDTO) throws Exception {
-        sqlSession.insert("mapper.recipe.insertRecipeRating", ratingDTO); 
-    }
 	
 	@Override
 	public List<RecipeRatingDTO> getRatingsByRecipeId(int rcp_id) throws Exception {
@@ -208,6 +205,18 @@ public class RecipeDAOImpl implements RecipeDAO {
 	@Override
 	public void updateRecipeViews(int rcp_id) throws Exception{
 	    sqlSession.update("mapper.recipe.updateRecipeViews", rcp_id);
+	}
+
+	// 레시피 질문,답변 수정
+	@Override
+	public void updateRecipeQna(RecipeQnaDTO qnaDTO) {
+	    sqlSession.update("mapper.recipe.updateRecipeQna", qnaDTO);
+	}
+
+	// 레시피 질문,답변 삭제
+	@Override
+	public void deleteRecipeQna(RecipeQnaDTO qnaDTO) {
+	    sqlSession.delete("mapper.recipe.deleteRecipeQna", qnaDTO);
 	}
 	
 }

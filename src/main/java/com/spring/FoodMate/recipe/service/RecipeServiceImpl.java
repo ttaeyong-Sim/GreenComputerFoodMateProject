@@ -59,6 +59,12 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeDAO.selectRecipeList();  // 레시피 목록 조회
     }
     
+    // 레시피 목록 평점순으로 조회
+    @Override
+    public List<RecipeDTO> selectRecipeListByRating() throws Exception {
+        return recipeDAO.selectRecipeListByRating();  // 레시피 목록 조회
+    }
+    
     // 레시피 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception {
         return recipeDAO.searchRecipeList(keyword);  // 레시피 목록 조회
@@ -180,7 +186,7 @@ public class RecipeServiceImpl implements RecipeService {
 	//후기 저장
     @Override
     public void addRecipeRating(RecipeRatingDTO ratingDTO) throws Exception {
-        recipeDAO.insertRecipeRating(ratingDTO);  // 후기를 DB에 저장
+        recipeDAO.addRecipeRating(ratingDTO);  // 후기를 DB에 저장
     }
         //후기 작성 시 중복 작성 확인 (별점 테러 방지)
     public int alreadyExistRating(int rcp_id, String byr_id) throws Exception {

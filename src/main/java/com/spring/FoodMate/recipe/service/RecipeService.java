@@ -26,6 +26,9 @@ public interface RecipeService {
     // 레시피 목록 조회
     List<RecipeDTO> selectRecipeList() throws Exception;
     
+    //레시피 목록 평점순으로 조회
+    public List<RecipeDTO> selectRecipeListByRating() throws Exception;
+    
     // 레시피 목록 아이디 조회
     List<RecipeDTO> selectRecipeListByrID(String byr_id) throws Exception;
     

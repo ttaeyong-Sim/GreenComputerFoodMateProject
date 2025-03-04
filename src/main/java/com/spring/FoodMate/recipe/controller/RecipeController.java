@@ -42,9 +42,6 @@ public interface RecipeController {
             List<Integer> ingredientsCategoryIds, // 재료 카테고리 ID
             HttpSession session
         ) throws Exception;
-
-    // 레시피 목록 조회
-    ModelAndView selectRecipeList(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, HttpServletRequest request) throws Exception;
     
      // 레시피 상세 조회
     ModelAndView selectRecipeDetail(int rcp_Id, HttpServletRequest request) throws Exception;
