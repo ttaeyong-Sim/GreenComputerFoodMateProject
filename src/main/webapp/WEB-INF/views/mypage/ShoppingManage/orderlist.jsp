@@ -299,6 +299,7 @@ $(document).ready(function(){ //페이지가 준비되면
 	   	if (confirm("구매를 확정하시겠습니까?")) {
 	   	    updateOrderStatus(ordId, null, null, 4);
 	   	}
+    });
 	   	
  // 리뷰 버튼 클릭 시 모달 띄우기
     $(".btn-review").click(function() {
@@ -544,7 +545,7 @@ $(document).ready(function(){ //페이지가 준비되면
         alert("알 수 없는 오류가 발생했습니다.");
     }
     // 음... 스크립트마다 핸들에러를 만들어야하나?
-}
+	}
 </script>
 <%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
 <c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
