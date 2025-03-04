@@ -335,6 +335,25 @@ public class ProductController {
         return response;
     }
     
+    // 상품 후기 삭제 ajax 요청
+    @RequestMapping(value = "/product/deleteReview", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteReview(@RequestBody Map<String, Object> requestMap) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        int reviewId = Integer.parseInt(requestMap.get("review_id").toString());
+
+        // 삭제 처리 로직 (서비스 호출 등)
+        boolean success = pdtReviewService.deleteReview(reviewId);
+
+        if (success) {
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+            response.put("alertMsg", "리뷰 삭제에 실패했습니다.");
+        }
+        return response;
+    }
+    
     // 최근본 상품
     private void RecentProductView(int pdt_id, ProductDTO productDTO, HttpSession session) {
         // 세션에서 '최근 본 상품' 리스트를 가져옴

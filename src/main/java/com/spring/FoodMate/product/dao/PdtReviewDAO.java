@@ -42,6 +42,19 @@ public class PdtReviewDAO {
 	    }
 	}
 	
+	// 상품 후기 삭제
+	public int deleteProductRating(int cmt_pdt_rating_id) {
+	    try {
+	        System.out.println("상품 후기 삭제 시작: cmt_pdt_rating_id = " + cmt_pdt_rating_id);  // 로그 추가
+	        int result = sqlSession.delete("mapper.product.deleteProductRating", cmt_pdt_rating_id);
+	        System.out.println("상품 후기 삭제 성공: " + result);  // 성공 로그
+	        return result;
+	    } catch (DataAccessException e) {
+	        System.out.println("상품 후기 삭제 실패: cmt_pdt_rating_id = " + cmt_pdt_rating_id);  // 실패 로그
+	        throw new DBException("ProductDAO.deleteProductRating 에러! cmt_pdt_rating_id = '" + cmt_pdt_rating_id + "'", e);
+	    }
+	}
+	
 	// 이 구매자가 이 상품 샀음? 안샀으면 0, 샀으면 산횟수만큼 숫자출력
 	public int isByrConfirmPdt(String byr_id, int pdt_id) throws DataAccessException {
 		ProductRatingDTO param = new ProductRatingDTO();
@@ -49,13 +62,13 @@ public class PdtReviewDAO {
 		param.setPdt_id(pdt_id);
 		return sqlSession.selectOne("mapper.product.isByrConfirmPdt", param);
 	}
-
+	
+	// 이 구매자가 상품 리뷰 썼었음?
 	public ProductRatingDTO isReviewed(String byr_id, int pdt_id) throws DataAccessException {
 		ProductRatingDTO param = new ProductRatingDTO();
 		param.setByr_id(byr_id);
 		param.setPdt_id(pdt_id);
 		return sqlSession.selectOne("mapper.product.isReviewed", param);
-	
 	}
 	
 	
@@ -83,18 +96,7 @@ public class PdtReviewDAO {
 	    }
 	}
 
-	// 상품 후기 삭제
-	public int deleteProductRating(int cmt_pdt_rating_id) {
-	    try {
-	        System.out.println("상품 후기 삭제 시작: cmt_pdt_rating_id = " + cmt_pdt_rating_id);  // 로그 추가
-	        int result = sqlSession.delete("mapper.product.deleteProductRating", cmt_pdt_rating_id);
-	        System.out.println("상품 후기 삭제 성공: " + result);  // 성공 로그
-	        return result;
-	    } catch (DataAccessException e) {
-	        System.out.println("상품 후기 삭제 실패: cmt_pdt_rating_id = " + cmt_pdt_rating_id);  // 실패 로그
-	        throw new DBException("ProductDAO.deleteProductRating 에러! cmt_pdt_rating_id = '" + cmt_pdt_rating_id + "'", e);
-	    }
-	}
+	
 
 	
 

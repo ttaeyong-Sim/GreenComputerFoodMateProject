@@ -98,15 +98,23 @@
     color: gold;
 }
 
+.btn-review-submit { 
+    background-color: #f39c12;
+    color: white;
+    border-radius: 8px;
+    padding: 5px 10px;
+    width: 100px;   
+}
+
 </style>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-var contextPath = "${contextPath}";
+const contextPath = "${contextPath}";
 
 // 구매확정 시스템
 $(document).ready(function(){
-    $("#buyconfirmbtn").click(function(){
+	$(".shipping-status-3").click(function() {
         // 버튼에 저장된 데이터 추출
         let slrId = $(this).data("slr-id");
         let ordCode = $(this).data("ord-code");
@@ -293,30 +301,26 @@ $(document).ready(function(){ //페이지가 준비되면
 	   	}
     });
     
-	// 배송상태-3인 버튼(구매확정버튼) 클릭 시
-    $(".shipping-status-3").click(function() {
-	   	var ordId = $(this).data("ord-id"); // 버튼에서 ord_id 가져오기
-	   	if (confirm("구매를 확정하시겠습니까?")) {
-	   	    updateOrderStatus(ordId, null, null, 4);
-	   	}
-	   	
  // 리뷰 버튼 클릭 시 모달 띄우기
     $(".btn-review").click(function() {
         let pdtId = $(this).data("pdt-id"); // 상품 ID 가져오기
         isReviewed(pdtId, function(reviewData) {
             if (reviewData) { // 자바스크립트는 truthy, falsy로 확인함!! 
                 if (confirm("이미 작성한 리뷰가 있습니다. 수정하시겠습니까?")) {
-                    showReviewForm(pdtId, reviewData.rating, reviewData.comments);
+                	console.log(reviewData.cmt_pdt_rating_id);
+                	console.log('리뷰아이디 쏘는중');
+                    showReviewForm(pdtId, reviewData.rating, reviewData.comments, reviewData.cmt_pdt_rating_id);
                 }
             } else {
-                showReviewForm(pdtId, 0, "");
+                showReviewForm(pdtId, 0, "", 0);
             }
         });
     });
 
     // 모달 표시 함수
-    function showReviewForm(pdtId, rating, comments, mode) {
+    function showReviewForm(pdtId, rating, comments, review_id) {
         $("#pdtId").val(pdtId); // 상품 ID 저장
+        $("#reviewId").val(review_id); // 히든 인풋에 review_id 설정
         $("#rating-text").text(rating); // 평점 반영
         $("#review-comments").val(comments); // 댓글 반영
 
@@ -327,6 +331,17 @@ $(document).ready(function(){ //페이지가 준비되면
                 $(this).addClass("selected");
             }
         });
+		
+        if (review_id != 0) {
+            // 리뷰id 들어왔을때(수정모드일때) 작성을 수정으로 바꿈
+            $("#submitReview").text("후기 수정"); // 버튼 텍스트 변경
+            $("#deleteReview").show(); // 삭제 버튼 보이기
+        } else {
+            // 신규 작성일 때는 삭제 버튼 숨기기
+            $("#submitReview").text("후기 작성"); // 버튼 텍스트 변경
+            $("#deleteReview").hide(); // 삭제 버튼 숨기기
+            $("#reviewId").val(""); // 기존 review_id 값 비워주기
+        }
 
         $("#reviewModal").fadeIn(); // 모달 표시
     }
@@ -434,6 +449,49 @@ $(document).ready(function(){ //페이지가 준비되면
         });
     }
     
+ 	// 모달의 삭제 버튼 클릭 시
+    $("#deleteReview").click(function(event) {
+        event.preventDefault();
+        deleteReview();
+    });
+
+    // 리뷰 삭제 함수
+    function deleteReview() {
+        let review_id = $("#reviewId").val();  // 수정할 리뷰 ID (히든 인풋에서 가져옴)
+
+        if (!review_id) {
+            alert("삭제할 리뷰가 없습니다.");
+            return;
+        }
+
+        // 삭제 요청 전 확인 메시지
+        if (!confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
+            return;
+        }
+
+        // ⭐ 1. Ajax로 서버에 리뷰 삭제 요청
+        $.ajax({
+            type: "POST",
+            url: contextPath + "/product/deleteReview",  // 리뷰 삭제를 위한 서버 URL
+            contentType: "application/json",
+            data: JSON.stringify({
+                review_id: review_id  // 삭제할 리뷰 ID
+            }),
+            dataType: "json",
+            success: function(response) {
+                if (response.success === true) {
+                    alert("리뷰가 삭제되었습니다!");
+                    location.reload(); // 성공 후 새로고침
+                } else {
+                    alert(response.alertMsg); // 실패 메시지
+                }
+            },
+            error: function() {
+                alert("리뷰 삭제 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
     // 배송 상태 자동 조회
     $('.shipping-status-2').each(function() {
       var delCode = $(this).data('delcode');  // 배송사 코드
@@ -475,13 +533,11 @@ $(document).ready(function(){ //페이지가 준비되면
       success: function(trackResponse) {
         console.log(trackResponse);
         var statusCode = trackResponse.statusCode;
-        if (statusCode === "DELIVERED") {
+        if (statusCode === "배송 완료") {
           updateOrderStatus(0, delCode, waybillNum, 3);  // 배송 완료 확인시 상태 갱신
-        } else {
-        	$div.text("배송상태: " + statusCode + "<br>택배사: " + delCode + "<br>운송장번호: " + waybillNum);
-        	// 여기에 배송 상세조회 만들어야함
         }
-        
+        $div.html("배송상태: " + statusCode + "<br>택배사: " + delCode + "<br>운송장번호: " + waybillNum);
+    	// 여기에 배송 상세조회 만들어야함
       },
       error: function(xhr, status, error) {
         console.error("Request failed:", status, error);
@@ -565,7 +621,7 @@ $(document).ready(function(){ //페이지가 준비되면
     </div>
     
     
-    <div class="border p-4 rounded mb-2" style="margin: 0 auto;">
+    <div class="border p-4 rounded mb-3" style="margin: 0 auto;">
     	<div class="d-flex align-items-center gap-3 flex-wrap">
     		<p class="mb-0 align-self-center">조회기간</p>
     		<div class="btn-group" role="group" aria-label="data filter buttons">
@@ -587,9 +643,6 @@ $(document).ready(function(){ //페이지가 준비되면
     		</div>
     	</div>
 	</div>
-	<div class="text-end mb-2">
-	  <a href="${contextPath}/mypage/ShoppingManage/canclelist" class="btn btn-dark">취소리스트</a>
-	</div>
 	
 	<c:forEach var="order" items="${orderList}" varStatus="status">
 	<c:if test="${status.index >= startIndex && status.index < endIndex}">
@@ -600,8 +653,7 @@ $(document).ready(function(){ //페이지가 준비되면
         <th>주문한 날짜</th>
         <th>총 상품 금액</th>
         <th>배송비</th>
-        <th>최종 결제 금액</th>
-        <th>사용 포인트</th>
+        <th>최종 금액</th>
         <th>주문 상태</th>
         <th>배송지 조회</th>
         <th></th>
@@ -614,7 +666,6 @@ $(document).ready(function(){ //페이지가 준비되면
         		<td><fmt:formatNumber value="${order.tot_Pdt_Price}" type="number" groupingUsed="true" />원</td>
         		<td><fmt:formatNumber value="${order.ship_Fee}" type="number" groupingUsed="true" />원</td>
         		<td><fmt:formatNumber value="${order.tot_Pdt_Price + order.ship_Fee}" type="number" groupingUsed="true" />원</td>
-        		<td><fmt:formatNumber value="${order.used_point}" type="number" groupingUsed="true" />원</td>
         		<td>${order.ord_stat_msg}</td>
         		<td><button class="btn btn-outline-secondary btn-sm view-address-button" data-ord-id="${order.ord_id}">
         		배송지 확인</button></td>
@@ -628,7 +679,7 @@ $(document).ready(function(){ //페이지가 준비되면
 				            <div class="shipping-status-${order.ord_stat}" data-delcode="${order.del_Code}" data-waybillnum="${order.waybill_Num}">조회 중...</div>
 				        </c:when>
 				        <c:when test="${order.ord_stat == 3}">
-				            <button class="btn btn-outline-primary btn-sm" id="buyconfirmbtn"
+				            <button class="btn btn-outline-primary btn-sm shipping-status-${order.ord_stat}"
 				            data-slr-id="${order.slr_id}"
 			                data-ord-code="${order.ord_code}"
 			                data-pdt-price="${order.tot_Pdt_Price}"
@@ -664,6 +715,7 @@ $(document).ready(function(){ //페이지가 준비되면
                     <button class="btn btn-outline-success btn-sm btn-review" data-pdt-id="${detail.pdt_id}">후기 작성</button>
                     </td>
                     </c:if>
+                    
                 </tr>
             </c:forEach>
             
@@ -722,11 +774,12 @@ $(document).ready(function(){ //페이지가 준비되면
 
         <!-- 숨겨진 pdt_id -->
         <input type="hidden" id="pdtId">
+        <input type="hidden" id="reviewId">
 
         <!-- 제출 버튼 -->
-        <button id="submitReview" class="w-btn-outline w-btn-red-outline">후기 작성</button>
+        <button id="submitReview" class="btn-review-submit">후기 작성</button>
         <!-- 후기 삭제 버튼 -->
-        <button id="deleteReview" class="w-btn-outline w-btn-red-outline" style="display: none;">후기 삭제</button>
+        <button id="deleteReview" class="btn-review-submit" style="display: none;">후기 삭제</button>
     </div>
 </div>
 

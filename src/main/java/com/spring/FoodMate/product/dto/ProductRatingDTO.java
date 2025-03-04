@@ -47,6 +47,7 @@ public class ProductRatingDTO {
     
     // toLogString() 메서드 추가
     public String toLogString() {
+    	if(comments==null) {comments="null";}
         return "ProductRatingDTO{" +
                "cmt_pdt_rating_id=" + cmt_pdt_rating_id +
                ", pdt_id=" + pdt_id +
