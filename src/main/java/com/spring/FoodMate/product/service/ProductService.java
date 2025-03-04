@@ -40,7 +40,7 @@ public class ProductService {
 		} catch (DBException e) {
 			throw new ProductException("ProductService에서 DB예외 전달.", e);
 		} catch (Exception e) {
-			throw new ProductException("ProductService.searchList 에러! 값 전해주기 귀찮다", e);
+			throw new ProductException("ProductService.searchList 에러!", e);
 		}
 	}
 	
@@ -53,6 +53,29 @@ public class ProductService {
 			throw new ProductException("ProductService.ms_pdtList 에러! slr_id = '" + slr_id + "'", e);
 		}
 	}
+	
+	// 상품 재고및 상태변경 페이지에 필요한 데이터 제공 메서드
+	public List<ProductDTO> mypageseller_pdtListForStock(String slr_id) {
+		try {
+			return productDAO.pdtListForStockBySlrId(slr_id);
+		} catch (DBException e) {
+			throw new ProductException("ProductService에서 DB예외 전달.", e);
+		} catch (Exception e) {
+			throw new ProductException("ProductService.ms_pdtList 에러! slr_id = '" + slr_id + "'", e);
+		}
+	}
+	
+	// 상품 상태 변경 메서드
+	public boolean changeStatus(int pdt_id, String currentStatus) {
+        String newStatus = (currentStatus.equals("Y")) ? "N" : "Y";  // 상태 반전
+
+        try {
+            // 상품 상태 변경
+            return productDAO.updateStatus(pdt_id, newStatus) > 0;
+        } catch (Exception e) {
+            throw new ProductException("음...", e);
+        }
+    }
 	
 	public ProductDTO select1PdtByPdtId(int pdt_id) {
 		try {
@@ -131,6 +154,11 @@ public class ProductService {
 		} catch (DBException e) {
 			throw new ProductException("ProductService에서 DB예외 전달.", e);
 		}
+	}
+	
+	// 재고 수 업데이트하는 메서드
+	public int updateStock(int pdt_id, int stock) throws Exception {
+		return productDAO.updateStock(pdt_id, stock);
 	}
 	
 	// 상품 후기 등록

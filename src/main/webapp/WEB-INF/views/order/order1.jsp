@@ -809,7 +809,9 @@ function execDaumPostcode() {
 		                    	window.location.replace("${contextPath}/order/order2?merchant_uid=" + encodeURIComponent(rsp.merchant_uid) + "&pay_method=" + encodeURIComponent(rsp.pay_method));
 		                    },
 		                    error: function(xhr, status, error) {
-		                        alert("결제 데이터 저장 중 오류 발생: " + error);
+		                        var errorMsg = xhr.responseJSON ? xhr.responseJSON.alertMsg : "알 수 없는 오류 발생";
+		                        alert("결제 데이터 저장 중 오류 발생: " + errorMsg);
+		                        window.location.replace("${contextPath}/cart/cartlist");
 		                    }
 		                });
 		            	

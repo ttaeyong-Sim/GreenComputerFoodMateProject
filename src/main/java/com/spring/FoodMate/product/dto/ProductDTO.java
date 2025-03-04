@@ -21,6 +21,8 @@ public class ProductDTO {
 	private String slr_nickname; // pdt_id 매개로 Join 해서 쓰는 판매자 별명
 	private MultipartFile pdt_img; // 실제 이미지 전달용
 	private Double unit_price;
+	private char ort_stat;
+	private int ord_count;
 	
 	public void setPdt_id(int pdt_id) { this.pdt_id = pdt_id; }
 	public String getSlr_id() { return slr_id; }
@@ -50,7 +52,10 @@ public class ProductDTO {
 	public void setPdt_img(MultipartFile pdt_img) {this.pdt_img = pdt_img;}
 	public Double getUnit_price() {return unit_price;}
 	public void setUnit_price(Double unit_price) {this.unit_price = unit_price;}
-	
+	public char getOrt_stat() {return ort_stat;}
+	public void setOrt_stat(char ort_stat) {this.ort_stat = ort_stat;}
+	public int getOrd_count() {return ord_count;}
+	public void setOrd_count(int ord_count) {this.ord_count = ord_count;}
 	
 	// 예외 로그 기록용
 	public String toLogString() {

@@ -48,6 +48,23 @@ public class ProductDAO {
 		}
 	}
 	
+	public List<ProductDTO> pdtListForStockBySlrId(String slr_id) {
+		try {
+			List<ProductDTO> searchList = sqlSession.selectList("mapper.product.listForStockBySlrSelf", slr_id);
+			return searchList;
+		} catch (DataAccessException e) {
+			throw new DBException("ProductDAO.pdtListBySlrId 에러! 판매자 id : '" + slr_id + "'", e);
+		}
+	}
+
+	// 판매자가 상품 상태 변경하는 메서드
+	public int updateStatus(int pdt_id, String newStatus) throws DataAccessException {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("pdt_id", pdt_id);
+		params.put("newStatus", newStatus);
+		return sqlSession.update("mapper.product.changeStatus", params);
+	}
+	
 	// 판매자 id, 카테고리 id, 검색어로 검색하는거
 	public List<ProductDTO> searchList(String slr_id, Integer category_id, String keyword, String sort) {
         Map<String, Object> paramMap = new HashMap<>();
@@ -132,6 +149,14 @@ public class ProductDAO {
 		} catch (DataAccessException e) {
 			throw new DBException("ProductDAO.deleteProduct 에러! pdt_id = " + pdt_id, e);
 		}
+	}
+	
+	// 재고 변경 sql로 연결
+	public int updateStock(int pdt_id, int stock) throws DataAccessException {
+		Map<String, Integer> params = new HashMap<String, Integer>();
+		params.put("pdt_id", pdt_id);
+		params.put("stock", stock);
+		return sqlSession.update("mapper.product.updateStock", params);
 	}
 	
 	// 상품 후기 등록

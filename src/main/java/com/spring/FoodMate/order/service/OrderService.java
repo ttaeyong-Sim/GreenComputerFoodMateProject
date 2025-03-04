@@ -16,6 +16,8 @@ import com.spring.FoodMate.order.dto.OrderDTOoutput;
 import com.spring.FoodMate.order.dto.OrderDetailDTO;
 import com.spring.FoodMate.order.dto.OrderDetailDTOoutput;
 import com.spring.FoodMate.order.dto.OrderPaymentDTO;
+import com.spring.FoodMate.order.dto.OrderRequestDTO;
+import com.spring.FoodMate.order.exception.OrderException;
 import com.spring.FoodMate.product.dto.ProductDTO;
 
 @Service("OrderService")
@@ -131,5 +133,17 @@ public class OrderService {
         }
         
         return updateOrderStatus(ordId, delCode, waybillNum, ordStat);
+    }
+    
+    // 주문한 cartItems에서 상품 id, 수량 빼와서 그만큼 줄이는 메서드
+    public void reducePdtStockProcess(List<CartDTO> cartItems) throws Exception {
+   
+	    for (CartDTO cart : cartItems) {
+	        int pdt_id = cart.getPdt_id();
+	        int qty = cart.getQty();
+	        if(orderDAO.reducePdtStock(pdt_id, qty) == 0) { // 업데이트가 안됐으면
+	        	throw new OrderException(103);
+	        }
+	    }
     }
 }

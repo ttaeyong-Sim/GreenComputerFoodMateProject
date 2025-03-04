@@ -224,4 +224,11 @@
         WHERE 
             o.byr_id = #{buyerId}
     </select>
+    
+    <!-- 상품테이블에서 재고 감소시키는데, 재고가 구매량보다 적을경우 아예 검색이안되고 0을 반환함 -->
+    <update id="reducePdtStock">
+    	UPDATE FOODMATE_PRODUCT
+	    SET stock = stock - #{qty}
+	    WHERE pdt_id = #{pdt_id} AND stock >= #{qty}
+	</update>
 </mapper>

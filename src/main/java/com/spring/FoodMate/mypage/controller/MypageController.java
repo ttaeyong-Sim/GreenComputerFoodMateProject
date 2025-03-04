@@ -358,14 +358,14 @@ public class MypageController {
 	
 	@RequestMapping(value="/mypage_seller/mypage_sell_productlist", method=RequestMethod.GET)
 	public ModelAndView seller_Mypage_productList(HttpServletRequest request, HttpSession session) throws Exception {
-		    SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
-		    List<ProductDTO> searchList = productService.ms_pdtList(sellerInfo.getUserId());
-		    
-		    ModelAndView mav = new ModelAndView();
-            mav.addObject("title", "FoodMate - 내 상품 목록");
-		    mav.addObject("list", searchList);
-		    // Service 에 판매자 ID를 주고 해당하는 상품VO들의 List를 받아옴.
-		    return mav;
+	    SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
+	    List<ProductDTO> searchList = productService.ms_pdtList(sellerInfo.getUserId());
+	    
+	    ModelAndView mav = new ModelAndView();
+        mav.addObject("title", "FoodMate - 내 상품 목록");
+	    mav.addObject("list", searchList);
+	    // Service 에 판매자 ID를 주고 해당하는 상품VO들의 List를 받아옴.
+	    return mav;
 	}
 	
 	@RequestMapping(value="/mypage_seller/myInfoManage/memberEditForm", method=RequestMethod.GET)
@@ -395,12 +395,14 @@ public class MypageController {
 	}
 	
 	
-	
 	@RequestMapping(value="/mypage_seller/mypage_sell_productamount", method=RequestMethod.GET)
-	private ModelAndView seller_Mypage_productAmount(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+	private ModelAndView seller_Mypage_productAmount(HttpServletRequest request, HttpSession session) throws Exception {
+		SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
+	    List<ProductDTO> searchList = productService.mypageseller_pdtListForStock(sellerInfo.getUserId());
+	    
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("title", "FoodMate - 상품 재고 관리");
+		mav.addObject("list", searchList);
 		return mav;
 	}
 

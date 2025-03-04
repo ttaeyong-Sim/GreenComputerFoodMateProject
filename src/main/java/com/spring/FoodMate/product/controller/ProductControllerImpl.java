@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.spring.FoodMate.cart.exception.CartException;
 import com.spring.FoodMate.common.SessionDTO;
 import com.spring.FoodMate.common.UtilMethod;
 import com.spring.FoodMate.common.exception.UnhandledException;
@@ -63,23 +64,7 @@ public class ProductControllerImpl implements ProductController {
 	    // 검색어 없을땐 전체 상품리스트 갖고옴.
 	    return mav;
 	}
-	
-		@Override
-	@RequestMapping(value="/mypage_seller/ms_pdtlist", method=RequestMethod.GET)
-	public ModelAndView msPdtList(HttpServletRequest request, HttpSession session) throws Exception {
-		    SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
-		    List<ProductDTO> searchList = productService.ms_pdtList(sellerInfo.getUserId());
-		    
-		    ModelAndView mav = new ModelAndView();
-            mav.setViewName("common/layout");
-            mav.addObject("title", "FoodMate-상품 검색창");
-            mav.addObject("showNavbar", true);
-            mav.addObject("body", "/WEB-INF/views" + UtilMethod.getViewName(request) + ".jsp");
-		    mav.addObject("list", searchList);
-		    // Service 에 판매자 ID를 주고 해당하는 상품VO들의 List를 받아옴.
-		    return mav;
-	}
-	
+
 	@Override
 	@RequestMapping(value="/product/pdtdetail", method=RequestMethod.GET)
 	public ModelAndView pdtDetail(
@@ -271,6 +256,54 @@ public class ProductControllerImpl implements ProductController {
             throw new UnhandledException("상품 비교하려다 오류발생", e);
         }
 	}
+	
+	@RequestMapping(value="/product/updateStock", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateStock(@RequestParam("pdt_id") int pdtId, 
+            @RequestParam("stock") int stock) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+	        int result = productService.updateStock(pdtId, stock);
+	        if (result > 0) {
+	            response.put("success", true);
+	        } else {
+	            response.put("success", false);
+	            response.put("message", "재고 변경에 실패했습니다.");
+	        }
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	        response.put("success", false);
+	        response.put("message", "서버 오류가 발생했습니다.");
+	    }
+	    return response;
+	}
+	
+	@RequestMapping(value="/product/changeStat", method=RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> changeStatus(@RequestParam int pdt_id, @RequestParam String status) {
+        Map<String, Object> response = new HashMap<>();
+        System.out.println("요청은 들어옴");
+        System.out.println("상품아이디는" + pdt_id);
+        System.out.println("현재상태는" + status);
+        try {
+            // 상태 변경 처리
+            boolean isSuccess = productService.changeStatus(pdt_id, status);
+            
+            // 결과에 따라 응답 설정
+            if (isSuccess) {
+                response.put("success", true);
+            } else {
+                response.put("success", false);
+                response.put("message", "상태 변경에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "오류가 발생했습니다.");
+        }
+
+        return response;
+    }
+	
     // 상품 후기 리스트 조회
     @RequestMapping(value="/product/rating/list/{pdt_id}", method=RequestMethod.GET)
     public String getProductRatingList(@PathVariable("pdt_id") int pdt_id, HttpServletRequest request) throws Exception {

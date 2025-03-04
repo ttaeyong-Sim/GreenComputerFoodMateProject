@@ -23,6 +23,7 @@ import com.spring.FoodMate.common.exception.DBException;
 import com.spring.FoodMate.common.exception.JjamException;
 import com.spring.FoodMate.common.exception.UnauthorizedException;
 import com.spring.FoodMate.common.exception.UnhandledException;
+import com.spring.FoodMate.order.exception.OrderException;
 import com.spring.FoodMate.product.exception.ProductException;
 
 @ControllerAdvice
@@ -139,6 +140,52 @@ public class GlobalExceptionHandler {
         return handleException(request, ex.getMessage());
     }
     
+    // 주문 예외 처리
+    @ExceptionHandler(OrderException.class)
+    @ResponseBody
+    public Object handleOrderException(HttpServletRequest request, HttpServletResponse response, OrderException ex) {
+        boolean ajax = isAjaxRequest(request);
+        logger.error("주문 관련 오류, 이 요청은 Ajax 요청이 " + ajax + "입니다. " + ex.getMessage(), ex);
+        String alertMsg = "주문 오류입니다.";
+        
+        switch (ex.getErrorCode()) {
+            case 101:
+                alertMsg = "존재하지 않는 주문입니다."; break;
+            case 102:
+                alertMsg = "주문 처리 중 오류가 발생했습니다."; break;
+            case 103:
+                alertMsg = "구매하시려는 수량보다 재고가 부족합니다."; break;
+            case 104:
+                alertMsg = "미할당된 오류 메시지 104."; break;
+            case 105:
+                alertMsg = "미할당된 오류 메시지 105."; break;
+            case 106:
+                alertMsg = "미할당된 오류 메시지 106."; break;
+            case 107:
+                alertMsg = "미할당된 오류 메시지 107."; break;
+            case 108:
+                alertMsg = "미할당된 오류 메시지 108."; break;
+            case 109:
+                alertMsg = "미할당된 오류 메시지 109."; break;
+            default:
+            	alertMsg = "미할당된 오류 메시지."; break;
+        }
+
+        if (ajax) { // Ajax 요청이면 404, success : false, alertMsg를 반환함.
+        	System.out.println("GlobalExceptionHander OrderHandler에서 로깅 중.");
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("alertMsg", alertMsg);
+            return errorResponse;
+        } else { // Ajax 요청이 아니면 오류 페이지로 보내버림.
+            try {
+            	return handleException(request, alertMsg);
+            } catch (Exception _ex) {
+                logger.error("예외 처리기에서 또 예외 발생: " + _ex.getMessage(), _ex);
+            }
+            return false;
+        }
+    }
+    
     // DB 예외 처리
     @ExceptionHandler(DBException.class)
     @ResponseBody
@@ -147,13 +194,13 @@ public class GlobalExceptionHandler {
         return handleException(request, ex.getMessage());
     }
     
-    // 되도않는주소로 요청할때 처리
+    // 없는 주소로 요청할때 처리
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseBody
     public Object handleNoHandlerFoundException(HttpServletRequest request, NoHandlerFoundException ex) {
         // 404 오류 처리
         logger.error("존재하지 않는 페이지 요청: " + ex.getMessage(), ex);
-        return handleException(request, "그런페이지 준비 안해놨음 수구");
+        return handleException(request, "존재하지 않는 페이지입니다.");
     }
     
     // 예상하지 못한 예외

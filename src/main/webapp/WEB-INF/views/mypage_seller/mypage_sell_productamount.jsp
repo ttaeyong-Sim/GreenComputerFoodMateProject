@@ -48,6 +48,79 @@
         background-color: #0056b3;
     }
 </style>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+
+const contextPath = '${contextPath}';
+$(document).on("click", ".btn-stockchange", function() {
+    let pdtId = $(this).data("pdt-id"); // 상품 ID 가져오기
+    let stockInput = $(this).prev("input"); // 해당 버튼 앞에 있는 입력 필드 찾기
+    let newStock = stockInput.val(); // 입력된 재고 값 가져오기
+
+    // 입력값 검증
+    if (newStock < 0) {
+        alert("재고는 0 이상이어야 합니다.");
+        stockInput.val(stockInput.data("original-stock")); // 원래 값으로 되돌리기
+        return;
+    }
+
+    if (isNaN(newStock)) {
+        alert("올바른 숫자를 입력하세요.");
+        stockInput.val(stockInput.data("original-stock")); // 원래 값으로 되돌리기
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: contextPath + "/product/updateStock", // 서버에서 처리할 URL
+        data: { pdt_id: pdtId, stock: newStock }, // 상품 ID와 변경된 재고 값 전송
+        success: function(response) {
+            if (response.success) {
+                alert("재고가 변경되었습니다.");
+                location.reload(); // 변경된 정보 새로고침
+            } else {
+                alert(response.message || "재고 변경에 실패했습니다.");
+            }
+        },
+        error: function() {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    });
+});
+
+// 상품 판매상태 변경
+$(document).on('click', '.btn-changestat', function() {
+    var pdtId = $(this).data('pdt-id');  // pdt_id 가져오기
+    var currentStatus = $(this).data('status');  // 현재 상태 확인
+
+    // AJAX 요청
+    $.ajax({
+        type: "POST",
+        url: contextPath + "/product/changeStat",  // 요청 주소
+        data: {
+            pdt_id: pdtId,
+            status: currentStatus  // 상태 값 (Y 또는 N)
+        },
+        success: function(response) {
+            if (response.success) {
+                // 상태 변경이 성공하면 새로고침
+            	var newStatusText = (currentStatus === 'Y') ? '판매 중지됨' : '판매 중';
+                alert("판매 상태가 변경되었습니다.");
+                location.reload();
+            } else {
+                alert("상태 변경에 실패했습니다.");
+            }
+        },
+        error: function() {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    });
+});
+
+
+</script>
+
 </head>
 <body>
 <div class="container mt-1">
@@ -56,9 +129,9 @@
     </div>
     
     <!-- 공개여부 일괄변경 버튼 -->
-    <div>
-        <button class="batch-change-btn">공개여부 일괄변경</button>
-    </div>
+<!--     <div> -->
+<!--         <button class="batch-change-btn">공개여부 일괄변경</button> -->
+<!--     </div> -->
     
     <table class="table table-hover table-custom">
         <thead class="table-header table-secondary">
@@ -69,74 +142,39 @@
                 <td>상품명</td>
                 <td>재고수</td>
                 <td>대기주문수</td>
-                <td>예상재고수</td>
                 <td>공개여부</td>
             </tr>
         </thead>
         <tbody>
+        
+<c:choose>
+<c:when test="${empty list}">
+	<p>표시할 내용이 없습니다.</p>
+</c:when>
+<c:otherwise>
+<c:forEach var="product" items="${list}">
+        
             <tr>
                 <td><input type="checkbox" name="product-check" /></td>
-                <td>123751</td>
+                <td>${product.pdt_id}</td>
                 <td>
-                    <img src="${contextPath}/resources/images/a1.jpg" alt="pdt_img" class="img-fluid rounded" style="width: 150px; height: 150px; object-fit: cover;">
+                    <img src="${contextPath}/resources/images/${product.img_path}" alt="pdt_img" class="img-fluid rounded" style="width: 150px; height: 150px; object-fit: cover;">
                 </td>
-                <td>돼지고기 목살 600g</td>
+                <td>${product.name}</td>
                 <td>
-				    <input type="text" class="form-control form-control-sm" value="564" min="0" style="width: 80px; display: inline-block;" />
-				    <button class="btn btn-outline-secondary btn-sm">변경</button>
+				    <input type="text" class="form-control form-control-sm" value="${product.stock}" min="0" style="width: 80px; display: inline-block;" />
+				    <button class="btn btn-outline-secondary btn-sm btn-stockchange" data-pdt-id="${product.pdt_id}">변경</button>
 				</td>
-				<td>3건</td>
-                <td>512</td>
-                <td>판매중<button class="btn btn-outline-secondary btn-sm">변경</button></td>
-            </tr>
-            
-            <tr>
-                <td><input type="checkbox" name="product-check" /></td>
-                <td>123751</td>
+				<td>${product.ord_count}건</td>
                 <td>
-                    <img src="${contextPath}/resources/images/a1.jpg" alt="pdt_img" class="img-fluid rounded" style="width: 150px; height: 150px; object-fit: cover;">
+                ${product.status == 'Y' ? '판매 중' : '판매 중지됨'}
+                <button class="btn btn-outline-secondary btn-sm btn-changestat" data-pdt-id="${product.pdt_id}" data-status="${product.status}">변경</button>
                 </td>
-                <td>돼지고기 목살 600g</td>
-                <td>
-				    <input type="text" class="form-control form-control-sm" value="564" min="0" style="width: 80px; display: inline-block;" />
-				    <button class="btn btn-outline-secondary btn-sm">변경</button>
-				</td>
-				<td>3건</td>
-                <td>512</td>
-                <td>판매중<button class="btn btn-outline-secondary btn-sm">변경</button></td>
             </tr>
-            
-            <tr>
-                <td><input type="checkbox" name="product-check" /></td>
-                <td>123751</td>
-                <td>
-                    <img src="${contextPath}/resources/images/a1.jpg" alt="pdt_img" class="img-fluid rounded" style="width: 150px; height: 150px; object-fit: cover;">
-                </td>
-                <td>돼지고기 목살 600g</td>
-                <td>
-				    <input type="text" class="form-control form-control-sm" value="564" min="0" style="width: 80px; display: inline-block;" />
-				    <button class="btn btn-outline-secondary btn-sm">변경</button>
-				</td>
-				<td>3건</td>
-                <td>512</td>
-                <td>판매중<button class="btn btn-outline-secondary btn-sm">변경</button></td>
-            </tr>
-            
-            <tr>
-                <td><input type="checkbox" name="product-check" /></td>
-                <td>123751</td>
-                <td>
-                    <img src="${contextPath}/resources/images/a1.jpg" alt="pdt_img" class="img-fluid rounded" style="width: 150px; height: 150px; object-fit: cover;">
-                </td>
-                <td>돼지고기 목살 600g</td>
-                <td>
-				    <input type="text" class="form-control form-control-sm" value="564" min="0" style="width: 80px; display: inline-block;" />
-				    <button class="btn btn-outline-secondary btn-sm">변경</button>
-				</td>
-				<td>3건</td>
-                <td>512</td>
-                <td>판매중<button class="btn btn-outline-secondary btn-sm">변경</button></td>
-            </tr>
+
+</c:forEach>
+</c:otherwise>
+</c:choose>
            
         </tbody>
     </table>

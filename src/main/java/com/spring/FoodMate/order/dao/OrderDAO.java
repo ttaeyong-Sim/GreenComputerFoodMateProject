@@ -125,4 +125,13 @@ public class OrderDAO {
         params.put("ord_stat", ord_stat);
     	return sqlSession.update("mapper.order.updateOrderStatusByOrdCode", params);
     }
+    
+    // pdt_id랑 qty를 주면 상품테이블의 pdt_id로 검색해서 qty 만큼 빼는 메서드
+    // 반환값이 1이면 재고차감이 된거고 0이면 안된거(주요 예외원인은 재고부족)
+    public int reducePdtStock(int pdt_id, int qty) throws DataAccessException {
+    	Map<String, Object> params = new HashMap<>();
+        params.put("pdt_id", pdt_id);
+        params.put("qty", qty);
+        return sqlSession.update("mapper.order.reducePdtStock", params);
+    }
 }
