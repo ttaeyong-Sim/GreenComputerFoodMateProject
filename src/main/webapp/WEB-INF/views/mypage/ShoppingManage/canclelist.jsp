@@ -298,7 +298,8 @@
 	  <a href="${contextPath}/mypage/ShoppingManage/orderlist" class="btn btn-dark">주문리스트</a>
 	</div>
 	
-	<c:forEach var="order" items="${orderList}">
+	<c:forEach var="order" items="${orderList}" varStatus="status">
+	<c:if test="${status.index >= startIndex && status.index < endIndex}">
     	<table class="table table-hover table-custom">
         <thead class="table-header table-secondary">
         <tr>
@@ -366,6 +367,7 @@
         </table>
         <div style="border:3px solid black; width:100%; margin-bottom: 10px;"></div>
         <!-- 임시 구분선 -->
+        </c:if>
     </c:forEach>
 	
 	

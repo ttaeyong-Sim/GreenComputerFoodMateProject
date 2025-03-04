@@ -16,6 +16,7 @@ public class RecipeDTO {
     private LocalDateTime create_date;
     private String status;
     private int review_count;
+    private int views;
     
     // DB 컬럼에 맞춘 필드 
     
@@ -55,6 +56,13 @@ public class RecipeDTO {
 	public void setReview_count(int review_count) {
 		this.review_count = review_count;
 	}
+	public int getViews() {
+		return views;
+	}
+	public void setViews(int views) {
+		this.views = views;
+	}
+	
 	
 	
 }

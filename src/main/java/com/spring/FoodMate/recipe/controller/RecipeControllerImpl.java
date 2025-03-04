@@ -115,6 +115,9 @@ public class RecipeControllerImpl implements RecipeController {
 //      // "최근 본 레시피" 를 jsp include 하고 거기서 알아서 처리하게 하면 어떨까요?
 //      // 지금 이대로면 모든 메서드마다 리센트레시피리스트관련처리를 해야하는데.
         
+	    
+	    // 조회수 더하기
+	      recipeService.setViewsCount(rcp_id);
         
         
         // 업데이트된 recentRecipeList를 jsp에 전달

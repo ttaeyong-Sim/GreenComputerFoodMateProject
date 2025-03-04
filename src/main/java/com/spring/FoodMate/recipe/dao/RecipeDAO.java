@@ -75,4 +75,7 @@ public interface RecipeDAO {
 	
 	// 레시피 목록 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception;
+    
+    // 레시피 조회수
+    public void updateRecipeViews(int rcp_id) throws Exception;
 }

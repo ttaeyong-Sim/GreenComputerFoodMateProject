@@ -78,4 +78,7 @@ public interface RecipeService {
     
  // 레시피 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception;
+    
+    // 레시피 조회수
+    public void setViewsCount(int rcp_id) throws Exception;
 }

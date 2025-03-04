@@ -96,6 +96,10 @@ public class MemberService {
 		memberDAO.updateBuyer(buyerDTO);
 	}
 	
+	public void updateSeller(SellerDTO sellerDTO) throws Exception{
+		memberDAO.updateSeller(sellerDTO);
+	}
+	
 	public boolean deleteMember(String buyer_Id, String password) throws Exception{
 		BuyerDTO buyerDTO = new BuyerDTO();
 		buyerDTO.setByr_id(buyer_Id);

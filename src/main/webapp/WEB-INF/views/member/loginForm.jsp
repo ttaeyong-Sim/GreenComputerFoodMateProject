@@ -131,7 +131,7 @@
                             / 
                 <a href="${contextPath}/member/sellerpasswdFindForm" class="link_find">비밀번호 찾기</a>
                         	/
-                <a href="${contextPath}/member/signUpContactForm" class="link_find">회원가입</a>
+                <a href="${contextPath}/member/signUpSelectForm" class="link_find">회원가입</a>
             </span>
         </form>
     </div>

@@ -411,7 +411,7 @@ function handleError(response) {
     	</div>
 	</div>
 		<c:forEach var="order" items="${orderList}" varStatus="status">
-	<c:if test="${status.index >= startIndex && status.index < endIndex}">
+		<c:if test="${status.index >= startIndex && status.index < endIndex}">
     	<table class="table table-hover table-custom">
         <thead class="table-header table-secondary">
         <tr>

@@ -461,9 +461,7 @@ $(document).ready(function(){ //페이지가 준비되면
 			                data-pdt-price="${order.tot_Pdt_Price}"
 				            >구매확정</button>
 				        </c:when>
-				        <c:when test="${order.ord_stat == 4}">
-				            <button class="btn btn-outline-success btn-sm">리뷰하기</button>
-				        </c:when>
+				        
 				    </c:choose>
 				</div>
 				</td>
@@ -477,6 +475,7 @@ $(document).ready(function(){ //페이지가 준비되면
                 <th>상품명</th>
                 <th>상품 가격</th>
                 <th>수량</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -485,6 +484,16 @@ $(document).ready(function(){ //페이지가 준비되면
                     <td><img class="productImg" src=${contextPath}/resources/images/${detail.img_path}>${detail.pdt_name}</td>
                     <td><fmt:formatNumber value="${detail.pdt_price}" type="number" groupingUsed="true" />원</td>
                     <td>${detail.qty}</td>
+                    <td>
+	                    <c:choose>
+	                    	<c:when test="${order.ord_stat == 4}">
+					            <button class="btn btn-outline-success btn-sm" 
+								        onclick="location.href='${contextPath}/product/pdtdetail?pdt_id=${detail.pdt_id}'">
+								    리뷰하기
+								</button>
+					        </c:when>
+					    </c:choose>
+                    </td>
                 </tr>
             </c:forEach>
         </tbody>

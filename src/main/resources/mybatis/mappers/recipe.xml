@@ -60,6 +60,7 @@
 	        R.DESCRIPTION, 
 	        R.STATUS, 
 	        R.CREATE_DATE,
+	        R.VIEWS,
 	        COUNT(rr.rcp_id) AS REVIEW_COUNT,
 	        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING <!-- 평점이 없으면 0을 대신하고, 평균 평점 계산 (소수 첫째 자리에서 둘째자리를 기준 반올림)-->
 	    FROM FOODMATE_RECIPE R
@@ -69,7 +70,7 @@
 	    GROUP BY 
 	        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
 	        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
-	        R.STATUS, R.CREATE_DATE
+	        R.STATUS, R.CREATE_DATE, R.VIEWS
 	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
 	</select>
 	
@@ -87,6 +88,7 @@
 	        R.DESCRIPTION, 
 	        R.STATUS, 
 	        R.CREATE_DATE,
+	        R.VIEWS,
 	        COUNT(rr.rcp_id) AS REVIEW_COUNT,
 	        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING <!-- 평점이 없으면 0을 대신하고, 평균 평점 계산 (소수 첫째 자리에서 둘째자리를 기준 반올림)-->
 	    FROM FOODMATE_RECIPE R
@@ -99,7 +101,7 @@
 	    GROUP BY 
 	        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
 	        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
-	        R.STATUS, R.CREATE_DATE
+	        R.STATUS, R.CREATE_DATE, R.VIEWS
 	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
 	</select>
 
@@ -344,5 +346,13 @@
             #{parent_id}, 
             SYSDATE)
 	</insert>
+	
+	<!-- 레시피 조회수 더하기-->
+	<update id="updateRecipeViews" parameterType="int">
+	    UPDATE FOODMATE_RECIPE
+	    SET 
+	        views = views + 1
+	    WHERE rcp_id = #{rcp_id}
+	</update>
 
 </mapper>

@@ -154,6 +154,17 @@
     	]]>
 	</update>
 	
+		<update id="updateSeller" parameterType="sellerDTO">
+	    <![CDATA[
+			update foodmate_seller
+			       set pw=#{password},
+			       name = #{name},
+			       email = #{email},
+			       phone_num = #{phone_num}
+		 	       where slr_id=#{slr_id}
+    	]]>
+	</update>
+	
 	<update id="updateResetSellerPW" parameterType="sellerDTO">
 	    <![CDATA[
 			update foodmate_seller

@@ -1,7 +1,5 @@
 package com.spring.FoodMate.mypage.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.FoodMate.common.SessionDTO;
 import com.spring.FoodMate.member.dto.BuyerDTO;
+import com.spring.FoodMate.member.dto.SellerDTO;
 import com.spring.FoodMate.mypage.dto.ProfileDTO;
 import com.spring.FoodMate.mypage.dto.WishDTO;
 import com.spring.FoodMate.mypage.service.DeliveryService;
@@ -69,6 +68,8 @@ public class MypageController {
 		
 		
 		ModelAndView mav = new ModelAndView();
+		// 업데이트된 recentProductList를 jsp에 전달
+        mav.addObject("recentProductList", (List<ProductDTO>) session.getAttribute("recentProductList"));
 		mav.addObject("myrecipeList", recipeService.selectRecipeListByrID(byr_id)); //서비스에 selectRecipeList메소드있어야함
 		mav.addObject("orderList", orderService.getOrderDetailsByByrId(byr_id));
 		mav.addObject("wishList", wishlistService.getwishList(byr_id));
@@ -365,6 +366,32 @@ public class MypageController {
 		    mav.addObject("list", searchList);
 		    // Service 에 판매자 ID를 주고 해당하는 상품VO들의 List를 받아옴.
 		    return mav;
+	}
+	
+	@RequestMapping(value="/mypage_seller/myInfoManage/memberEditForm", method=RequestMethod.GET)
+	private ModelAndView sellermyInfoManageMemberEditform(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("sellerInfo", (SellerDTO) session.getAttribute("sellerInfo"));
+		return mav;
+	}
+	
+	@RequestMapping(value="/mypage_seller/myInfoManage/profileEditForm", method=RequestMethod.GET)
+	private ModelAndView sellerprofileEditform(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		
+		SellerDTO sellerInfo = (SellerDTO) session.getAttribute("sellerInfo"); // 세션에서 buyerInfo 가져오기
+		String slr_id = null;
+
+		if (sellerInfo != null) {
+			slr_id = sellerInfo.getSlr_id(); // byr_id 값 추출
+		}
+		
+//		ProfileDTO profileDTO = profileService.getBuyerProfile(byr_id);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("profile", "");
+		return mav;
 	}
 	
 	

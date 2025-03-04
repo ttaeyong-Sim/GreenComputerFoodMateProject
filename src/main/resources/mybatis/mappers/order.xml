@@ -87,7 +87,8 @@
         SELECT O.*, P.used_point
         FROM FOODMATE_ORDER O
         LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
-        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 4) 
+        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 4)
+        ORDER BY O.CREATE_DATE DESC
     </select>
     
     <select id="findRefundListByByrId" parameterType="string" resultType="OrderDTOoutput">
@@ -95,20 +96,23 @@
 		FROM FOODMATE_ORDER O
 		LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
 		WHERE O.BYR_ID = #{byr_id} AND O.ORD_STAT IN (5, 6)
+		ORDER BY O.CREATE_DATE DESC
     </select>
     
     <select id="findReturnExchangeListByByrId" parameterType="string" resultType="OrderDTOoutput">
         SELECT O.*, P.used_point
         FROM FOODMATE_ORDER O
         LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
-        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 6, 7, 8 ,9) 
+        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 6, 7, 8 ,9)
+        ORDER BY O.CREATE_DATE DESC
     </select>
     
     <select id="findCancelOrdersByBuyer" parameterType="string" resultType="OrderDTOoutput">
         SELECT O.*, P.used_point
         FROM FOODMATE_ORDER O
         LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
-        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (5, 6) 
+        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (5, 6)
+        ORDER BY O.CREATE_DATE DESC
     </select>
     
     <!-- 구매자 마이페이지 메인에서 쓰는 출력 전용, 10개까지만 출력 -->

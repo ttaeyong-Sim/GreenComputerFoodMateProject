@@ -1,6 +1,7 @@
 package com.spring.FoodMate.product.controller;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,9 @@ public class ProductControllerImpl implements ProductController {
 			@RequestParam(value = "pdt_id", required = true) int pdt_id,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {		
 		ProductDTO product = productService.select1PdtByPdtId(pdt_id); // pdt_id로 pdt 전체행 받아옴
+		
+		HttpSession session = request.getSession();
+		RecentProductView(pdt_id, product, session);
 		
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("common/layout");
@@ -414,5 +418,51 @@ public class ProductControllerImpl implements ProductController {
         out.println("alert('상품 문의가 삭제되었습니다.');");
         out.println("window.location.href='/product/qna/list';");
         out.println("</script>");
+    }
+    
+    // 최근본 상품
+    private void RecentProductView(int pdt_id, ProductDTO productDTO, HttpSession session) {
+        // 세션에서 '최근 본 상품' 리스트를 가져옴
+        List<ProductDTO> recentProductList = (List<ProductDTO>) session.getAttribute("recentProductList");
+
+        // recentRecipeList가 null인 경우 빈 리스트로 초기화
+        if (recentProductList == null) {
+        	recentProductList = new ArrayList<>();
+        }
+
+        // ▼비상용 코드 최근본 상품에 불량값이 들어올경우 주석을풀고 쓸것
+//        if (recentProductList.isEmpty() || recentProductList.get(0) == null) {
+//            recentProductList.clear();
+//        }
+
+        // 최근 본 상품이 세션에 존재할 경우
+        if (recentProductList != null) {
+            boolean alreadyExisted = false;
+
+            // 이미 해당 상품이 최근 본 리스트에 있는지 확인
+            for (int i = 0; i < recentProductList.size(); i++) {
+            	ProductDTO _product = recentProductList.get(i);
+                if (pdt_id == _product.getPdt_id()) {
+                    alreadyExisted = true;
+                    // 이미 리스트에 있으면 해당 레시피를 가장 앞에 오도록 이동
+                    recentProductList.remove(i);  // 기존 항목 삭제
+                    recentProductList.add(0, _product);  // 최근 항목으로 추가
+                    break;
+                }
+            }
+
+            // 최근 본 상품 리스트에 없다면
+            if (!alreadyExisted) {
+                // 리스트가 20개 이상일 경우, 가장 오래된 상품을 제거
+                if (recentProductList.size() >= 20) {
+                	recentProductList.remove(recentProductList.size() - 1);  // 가장 오래된 레시피 제거
+                }
+                // 새로운 상품을 리스트 앞에 추가
+                recentProductList.add(0, productDTO);
+            }
+        }       
+        // 세션에 최근 본 상품 리스트 저장
+        session.setAttribute("recentProductList", recentProductList);
+        session.setAttribute("recentProductListNum", recentProductList.size());
     }
 }

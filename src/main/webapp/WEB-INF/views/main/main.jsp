@@ -66,7 +66,7 @@
 			        <div class="item-title d-flex flex-column justify-content-center align-items-center">
 			            <h5><strong>${recipe.title}</strong></h5>
 			            <div class="item_etc">
-		                	<p><span>${recipe.create_date}</span>  리뷰 <span>${recipe.review_count}</span>개  조회수: <span>0</span></p>
+		                	<p><span>${recipe.create_date}</span>  리뷰 <span>${recipe.review_count}</span>개  조회수: <span>${recipe.views}</span></p>
 		                </div>
 		               	<div class="item_review_star">
 		                	<p><span>
@@ -98,7 +98,7 @@
 			        <div class="item-title d-flex flex-column justify-content-center align-items-center">
 			            <h5><strong>${recipe.title}</strong></h5>
 			            <div class="item_etc">
-		                	<p><span>${recipe.create_date}</span>  리뷰 <span>${recipe.review_count}</span>개  조회수: <span>0</span></p>
+		                	<p><span>${recipe.create_date}</span>  리뷰 <span>${recipe.review_count}</span>개  조회수: <span>${recipe.views}</span></p>
 		                </div>
 		                <div class="item_review_star">
 		                	<p><span>

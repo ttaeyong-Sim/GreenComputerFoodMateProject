@@ -48,6 +48,26 @@
 	      vertical-align: middle;
 	      text-align: center;
 	    }
+	    
+	    /* Swiper 슬라이드 컨테이너 크기 조절하는곳 */
+		.swiper-container { 
+		    width: 100%;
+		    overflow: hidden;
+		    display: flex;
+		    justify-content: center; /* 하나일 때는 중앙 정렬 */
+		}
+		
+		.swiper-container img {
+            width: 100%; /* 이미지 너비 조정 */
+            height: 200px; /* 이미지 비율 유지 */
+            object-fit: cover;
+        }
+		
+		.swiper-wrapper {
+		    display: flex;
+		    justify-content: flex-start; /* 여러 개일 때는 왼쪽 정렬 */
+		    gap: 10px;  /* 슬라이드 간격 */
+		}
 </style>
 <script>
 var contextPath = '${contextPath}';
@@ -185,7 +205,7 @@ var contextPath = '${contextPath}';
 						        <div class="item-title d-flex flex-column justify-content-center align-items-center">
 						            <h5><strong>${recipe.title}</strong></h5>
 						            <div class="item_etc">
-					                	<p><span>${recipe.create_date}</span>  리뷰 <span>${recipe.review_count}</span>개  조회수: <span>0</span></p>
+					                	<p><span>${recipe.create_date}</span>  리뷰 <span>${recipe.review_count}</span>개  조회수: <span>${recipe.views}</span></p>
 					                </div>
 					               	<div class="item_review_star">
 					                	<p><span>
@@ -315,7 +335,68 @@ var contextPath = '${contextPath}';
 		<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
 	      		<h5 class="mb-0 fw-bold">최근 본 상품</h5>
 	    </div>
+	    <c:if test="${not empty recentProductList}">
+		        <!-- Swiper 컨테이너로 최근 본 레시피 출력 -->
+		        <div class="swiper-container">
+		            <div class="swiper-wrapper">
+		                <c:forEach var="product" items="${recentProductList}">
+		                    <div class="swiper-slide">
+		                        <a href="${contextPath}/product/pdtdetail?pdt_id=${product.pdt_id}">
+								    <div class="item-img position-relative">
+								        <img src="${contextPath}/resources/images/${product.img_path}" alt="Product Image" class="img-fluid">
+								        <div class="item-title d-flex flex-column justify-content-center align-items-center">
+								            <h5><strong>${product.name}</strong></h5>
+								            <div class="item_etc">
+							                	<p><span class="item_product_price"><fmt:formatNumber value="${product.price}" type="number" groupingUsed="true" />원</span></p>
+							                </div>
+							                <div class="item_review_star">
+							                	<p><span>⭐⭐⭐⭐⭐</span></p>
+							                </div>
+							                <div class="item-footer">
+							              		<p><span>판매자: ${product.slr_nickname}</span></p>
+							            	</div>
+								        </div>
+								    </div>
+					    		</a>
+		                
+		            </div>
+		            </c:forEach>
+		            </div>
+		            <!-- Swiper 네비게이션 버튼 -->
+		            <div class="swiper-button-prev"></div>
+		            <div class="swiper-button-next"></div>
+		        </div>
+		    </c:if>
 	</div>
+	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<script>
+	const swiper = new Swiper(".swiper-container", {
+	    slidesPerView: 'auto',  // 슬라이드 수를 자동으로 조정
+	    spaceBetween: 20,  // 슬라이드 간격
+	    navigation: {
+	        nextEl: ".swiper-button-next",
+	        prevEl: ".swiper-button-prev"
+	    },
+	    breakpoints: {
+	        1024: {
+	            slidesPerView: 4, // 1024px 이상일 때 슬라이드 4개
+	        },
+	        768: {
+	            slidesPerView: 2, // 768px 이하일 때 슬라이드 2개
+	        },
+	        480: {
+	            slidesPerView: 1, // 480px 이하일 때 슬라이드 1개
+	        }
+	    }
+	});
+	
+	// 최근본 레시피가 하나일 때 중앙 배치
+	if (document.querySelectorAll('.swiper-slide').length === 1) {
+	    const swiperContainer = document.querySelector('.swiper-container');
+	    swiperContainer.style.justifyContent = 'center'; // 중앙 정렬
+	    swiperContainer.style.display = 'flex'; // flexbox로 설정하여 중앙 정렬
+	}
+	</script>
 	
 </body>
 </html>

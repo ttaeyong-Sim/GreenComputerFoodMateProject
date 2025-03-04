@@ -53,8 +53,8 @@
         
         <h5>내 정보관리</h5>
         <ul>
-	        <li><a href="${contextPath}/mypage/myInfoManage/profileEditForm">프로필 수정</a></li>
-	        <li><a href="${contextPath}/mypage/myInfoManage/memberEditForm">회원정보 수정</a></li>
+	        <li><a href="${contextPath}/mypage_seller/myInfoManage/profileEditForm">프로필 수정</a></li>
+	        <li><a href="${contextPath}/mypage_seller/myInfoManage/memberEditForm">회원정보 수정</a></li>
         </ul>
         <hr>
         

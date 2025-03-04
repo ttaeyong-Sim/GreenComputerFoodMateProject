@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 <!DOCTYPE html>
 <html lang="ko">
@@ -317,7 +319,16 @@
 </style>
 
 </head>
+<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+<c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+<c:set var="itemsPerPage" value="8" />
+<c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
+<c:set var="endIndex" value="${currentPage * itemsPerPage}" />
 
+<%-- 전체 데이터 개수 구하기 --%>
+<c:set var="totalItems" value="${fn:length(recipeList)}" />
+<fmt:parseNumber var="parsedTotalPages" value="${(totalItems + itemsPerPage - 1) / itemsPerPage}" integerOnly="true" />
+<c:set var="totalPages" value="${parsedTotalPages}" />
 <body>
 
 <div class="category-section mt-4">
@@ -393,7 +404,8 @@
 
     <div class="row">
        
-        <c:forEach var="recipe" items="${recipeList}">
+        <c:forEach var="recipe" items="${recipeList}" varStatus="status">
+        <c:if test="${status.index >= startIndex && status.index < endIndex}">
             <div class="col-md-3 col-sm-6">
                 <a href="${contextPath}/recipe/recipe_Detail?rcp_id=${recipe.rcp_id}" class="text-decoration-none">
                     <div class="card recipe-card">
@@ -422,17 +434,28 @@
                     </div>
                 </a>
             </div>
+            </c:if>
         </c:forEach>
     </div>
 
-    <div class="pagination">
-        <!-- 페이지 네비게이션(기본적으로 하드코딩된 부분을 동적으로 처리하려면 추가적인 로직 필요) -->
-        <a href="#" class="active">1</a> 
-        <a href="#">2</a> 
-        <a href="#">3</a> 
-        <a href="#">4</a> 
-        <a href="#">5</a>
-    </div>
+
+	<div class="pagination">
+	    <!-- 이전 페이지 -->
+	    <c:if test="${currentPage > 1}">
+	        <a href="?page=${currentPage - 1}">Prev</a>
+	    </c:if>
+	
+	    <!-- 동적 페이지 생성 -->
+	    <c:forEach var="i" begin="1" end="${totalPages}">
+	        <a href="?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+	    </c:forEach>
+	
+	    <!-- 다음 페이지 -->
+	    <c:if test="${currentPage < totalPages}">
+	        <a href="?page=${currentPage + 1}">Next</a>
+	    </c:if>
+	</div>
+
 </div>
 
 

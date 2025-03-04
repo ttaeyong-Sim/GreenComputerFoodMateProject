@@ -158,7 +158,12 @@
 			function checkLoginAndRedirect() { 
 				
 			var buyerInfo = "${sessionScope.buyerInfo}";
+			var sellerInfo = "${sessionScope.sellerInfo}";
 		    
+			if(sellerInfo != null){
+				window.location.href = "${contextPath}/product/pdtaddform";
+			}
+			
 		    if (buyerInfo == null || buyerInfo === "") {
 		        console.log("현재 세션에 buyerInfo가 없습니다.");
 		    } else {
@@ -166,7 +171,8 @@
 		    }
 		    // 세션에 buyerInfo가 없으면 로그인 페이지로 이동
 		    var isBuyerLogOn = "${empty sessionScope.buyerInfo}";
-		    if (isBuyerLogOn == 'true') {
+		    var isSellerLogOn = "${empty sessionScope.sellerInfo}";
+		    if (isBuyerLogOn == 'true' && isSellerLogOn == 'true') {
 		        alert("로그인 후에 레시피를 작성할 수 있습니다.");
 		        window.location.href = "${contextPath}/member/loginForm";
 		    } else {

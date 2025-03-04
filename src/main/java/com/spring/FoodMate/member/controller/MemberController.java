@@ -420,6 +420,52 @@ public class MemberController {
 		return resEntity;
 	}
 	
+	@RequestMapping(value="/member/updateSeller" ,method = RequestMethod.POST)
+	public ResponseEntity updateSeller(@ModelAttribute("sellerDTO") SellerDTO _sellerDTO,
+			                HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("utf-8");
+		String message = null;
+		ResponseEntity resEntity = null;
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+		try {
+			
+			_sellerDTO.setEmail(_sellerDTO.getEmail_id() + "@" + _sellerDTO.getEmail_domain());
+			
+			if (_sellerDTO.getPassword_confirm() == "" || !_sellerDTO.getPassword().equals(_sellerDTO.getPassword_confirm())) {
+				message  = "<script>";
+			    message +=" alert('비밀번호가 일치하지 않거나, 비밀번호를 입력하지 않았습니다.');";
+			    message += " location.href='"+request.getContextPath()+"/mypage_seller/myInfoManage/memberEditForm';";
+			    message += " </script>";
+			    resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);
+				return resEntity;
+		    }
+			memberService.updateSeller(_sellerDTO);
+			Map<String, String> loginMap = new HashMap<>();
+			loginMap.put("slr_id", _sellerDTO.getSlr_id());
+			loginMap.put("password", _sellerDTO.getPassword());
+			sellerDTO=memberService.loginslr(loginMap);
+			
+			HttpSession session=request.getSession();
+			session=request.getSession();
+			session.setAttribute("sellerInfo", sellerDTO);
+		    
+		    message  = "<script>";
+		    message +=" alert('성공적으로 회원 정보를 수정했습니다.');";
+		    message += " location.href='"+request.getContextPath()+"/mypage_seller/myInfoManage/memberEditForm';";
+		    message += " </script>";
+		    
+		}catch(Exception e) {
+			message  = "<script>";
+		    message +=" alert('작업 중 오류가 발생했습니다. 다시 시도해 주세요.');";
+		    message += " location.href='"+request.getContextPath()+"/mypage_seller/myInfoManage/memberEditForm';";
+		    message += " </script>";
+			e.printStackTrace();
+		}
+		resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);
+		return resEntity;
+	}
 
 
 }

@@ -68,8 +68,13 @@ public class MemberDAO {
 	public void insertNewSeller(SellerDTO sellerVO) throws DataAccessException{
 		sqlSession.insert("mapper.member.insertNewSeller",sellerVO);
 	}
+	
 	public void updateBuyer(BuyerDTO buyerDTO) throws DataAccessException{
-		sqlSession.insert("mapper.member.updateBuyer",buyerDTO);
+		sqlSession.update("mapper.member.updateBuyer",buyerDTO);
+	}
+	
+	public void updateSeller(SellerDTO sellerDTO) throws DataAccessException{
+		sqlSession.update("mapper.member.updateSeller",sellerDTO);
 	}
 	
 	public int deleteMember(BuyerDTO buyerDTO) throws DataAccessException{

@@ -186,4 +186,10 @@ public class RecipeDAOImpl implements RecipeDAO {
 	    sqlSession.insert("mapper.recipe.addRecipeQnaAnswer", answerDTO);
 	}
 	
+	//레시피 조회수더하기
+	@Override
+	public void updateRecipeViews(int rcp_id) throws Exception{
+	    sqlSession.update("mapper.recipe.updateRecipeViews", rcp_id);
+	}
+	
 }

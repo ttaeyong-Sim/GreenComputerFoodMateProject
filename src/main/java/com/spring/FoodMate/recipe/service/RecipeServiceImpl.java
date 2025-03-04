@@ -228,4 +228,10 @@ public class RecipeServiceImpl implements RecipeService {
     public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception {
         recipeDAO.addRecipeQnaAnswer(answerDTO);
     }
+    
+    //조회수 더하기
+    @Override
+    public void setViewsCount(int rcp_id) throws Exception{
+    	recipeDAO.updateRecipeViews(rcp_id);
+    }
 }
