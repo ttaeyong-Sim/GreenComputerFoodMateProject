@@ -44,6 +44,7 @@
             <mvc:mapping path="/cart/**"/>
             <mvc:mapping path="/mypage/**"/>
             <mvc:mapping path="/product/startcompare"/>
+            <mvc:mapping path="/product/pdtreview"/>
             <mvc:mapping path="/recipe/recipe_Add"/>
             <mvc:mapping path="/recipe/addRecipeRating"/>
 			<mvc:mapping path="/recipe/addRecipeQna"/>

@@ -20,7 +20,7 @@ public class SellerInterceptor implements HandlerInterceptor {
 
         // 로그인 안 되어 있을 때
         if (sessionInfo == null) {
-        	throw new UnauthorizedException(101);
+        	throw new UnauthorizedException(103);
         }
 
         // 판매자 권한이 아닐 때

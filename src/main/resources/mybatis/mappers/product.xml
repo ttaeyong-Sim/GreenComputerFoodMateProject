@@ -219,7 +219,31 @@
         INSERT INTO FOODMATE_PRODUCT_RATING (CMT_PDT_RATING_ID, PDT_ID, BYR_ID, RATING, COMMENTS, CREATE_DATE)
         VALUES (FOODMATE_PRODUCT_RATING_SEQ.NEXTVAL, #{pdt_id}, #{byr_id}, #{rating}, #{comments}, SYSDATE)
     </insert>
-
+	
+	<!-- 상품 후기 수정 -->
+    <update id="updateProductRating" parameterType="ProductRatingDTO">
+        UPDATE FOODMATE_PRODUCT_RATING
+        SET RATING = #{rating}, COMMENTS = #{comments}, CREATE_DATE = SYSDATE
+        WHERE CMT_PDT_RATING_ID = #{cmt_pdt_rating_id}
+    </update>
+	
+	<!-- 이 구매자가 이 상품을 샀었냐? 4~9가 뭔지는 주문테이블 코드확인 -->
+    <select id="isByrConfirmPdt" parameterType="ProductRatingDTO" resultType="int">
+    	SELECT count(*)
+		FROM foodmate_order o
+		JOIN foodmate_order_detail od ON o.ord_id = od.ord_id
+		where byr_id = #{byr_id} and pdt_id = #{pdt_id}
+		and ord_stat in (4, 5, 6, 7, 8, 9)
+    </select>
+	
+	<select id="isReviewed" parameterType="ProductRatingDTO" resultType="ProductRatingDTO">
+		SELECT *
+		FROM FOODMATE_PRODUCT_RATING
+		WHERE BYR_ID = #{byr_id} AND PDT_ID = #{pdt_id}
+	</select>
+	
+	<!-- 밑부터 made by 류세환, 아직안씀 --> 
+	
     <!-- 상품 후기 조회 (상품 ID에 해당하는 후기들) -->
     <select id="getProductRatings" resultType="ProductRatingDTO" parameterType="int">
         SELECT CMT_PDT_RATING_ID, PDT_ID, BYR_ID, RATING, COMMENTS, CREATE_DATE
@@ -233,14 +257,6 @@
         DELETE FROM FOODMATE_PRODUCT_RATING
         WHERE CMT_PDT_RATING_ID = #{cmt_pdt_rating_id}
     </delete>
-
-    <!-- 상품 후기 수정 -->
-    <update id="updateProductRating" parameterType="ProductRatingDTO">
-        UPDATE FOODMATE_PRODUCT_RATING
-        SET RATING = #{rating}, COMMENTS = #{comments}, CREATE_DATE = SYSDATE
-        WHERE CMT_PDT_RATING_ID = #{cmt_pdt_rating_id}
-    </update>
-
 
 	<!-- 상품 문의 등록 -->
     <insert id="insertProductQna" parameterType="ProductQnaDTO">
@@ -276,6 +292,7 @@
         SET COMMENTS = #{comments}, CREATE_DATE = SYSDATE
         WHERE CMT_PDT_QNA_ID = #{cmt_pdt_qna_id}
     </update>
-
+    
+    
 	
 </mapper>

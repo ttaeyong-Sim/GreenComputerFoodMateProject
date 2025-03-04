@@ -17,7 +17,7 @@
     /* 부모 컨테이너 */
     .tab-container {
         display: flex; /* 수평 배치를 위한 flex 사용 */
-        width: 1350px; /* 고정 폭 */
+        width: 1200px; /* 고정 폭 */
         margin: 100px auto; /* 가운데 정렬 */
         background-color: #dbdbdb; /* 탭 배경색 */
         border-top: 2px solid black; /* 위쪽 검은선 */
@@ -36,6 +36,9 @@
         border-right: 1px solid black; /* 각 탭 사이에 경계선 */
         padding: 5px 0 5px;
         cursor: pointer;
+/*         display: flex; */
+/*         justify-content: center; */
+/*         align-items: center; */
     }
 
     .tab:last-child {
@@ -59,11 +62,25 @@
     .tab-content.active {
         display: block;
     }
-    
+
     #tabContent1 img {
     	margin: 10px auto;
     	width: 100%;
     }
+    
+    #tabContent2 form {
+    	font-size : 1.5rem;
+    }
+    
+    #tabContent2 button { 
+	    background-color: #f39c12;
+	    color: white;
+	    border-radius: 8px;
+	    padding: 5px 10px;
+	    font-size: 1.25rem;
+	    margin-top: 10px;
+	    border: none;
+	}
     
 </style>
 
@@ -90,9 +107,9 @@ $(document).ready(function() {
         }
     });
 });
-
+ 
 </script>
-    
+
 </head>
 <body>
 <section id = "wrapper">
@@ -112,34 +129,10 @@ $(document).ready(function() {
 <!-- 상품 후기 탭 -->
 <article id="tabContent2" class="tab-content">
     <h3>상품 후기</h3>
-    <div id="ratingSection">
-        <h4>별점 남기기</h4>
-        <div id="starRating">
-            <button class="star" data-rating="1">★</button>
-            <button class="star" data-rating="2">★</button>
-            <button class="star" data-rating="3">★</button>
-            <button class="star" data-rating="4">★</button>
-            <button class="star" data-rating="5">★</button>
-        </div>
-        <p id="selectedRating">선택한 평점: <span id="ratingValue">0</span> / 5</p>
-
-        <h4>후기 작성</h4>
-        <textarea id="reviewText" placeholder="상품에 대한 후기를 작성해 주세요."></textarea>
-        <button id="submitReview">후기 작성</button>
-        
-        <h4>기존 상품 후기</h4>
-        <ul>
-            <!-- 기존 후기 리스트 출력 -->
-            <c:forEach var="rating" items="${ratingList}">
-                <li>
-                    <p>평점: ${rating.rating} / 5</p>
-                    <p>후기: ${rating.reviewText}</p>
-                </li>
-            </c:forEach>
-        </ul>
-    </div>
+    
+    <hr class="comment-separator">
+    
 </article>
-
 <!-- 상품 문의 탭 -->
 <article id="tabContent3" class="tab-content">
     <h3>상품 문의</h3>
@@ -159,6 +152,11 @@ $(document).ready(function() {
             </c:forEach>
         </ul>
     </div>
+</article>
+
+<article id="tabContent4" class="tab-content">
+    <h3>교환/반품문의</h3>
+    
 </article>
 
 </section>

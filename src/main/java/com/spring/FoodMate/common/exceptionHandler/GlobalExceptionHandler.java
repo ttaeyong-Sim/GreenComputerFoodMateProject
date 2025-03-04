@@ -75,10 +75,12 @@ public class GlobalExceptionHandler {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("alertMsg", alertMsg + " 로그인 화면으로 이동하시겠습니까?");
+            errorResponse.put("errorCode", ex.getErrorCode());
             return errorResponse;
         } else {
             try {
                 session.setAttribute("alertMsg", alertMsg);
+                session.setAttribute("errorCode", ex.getErrorCode());
                 response.sendRedirect(request.getContextPath() + "/member/loginForm");
             } catch (IOException ioEx) {
                 logger.error("IOException 발생: " + ioEx.getMessage(), ioEx);

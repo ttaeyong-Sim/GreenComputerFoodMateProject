@@ -11,6 +11,8 @@ public class ProductException extends RuntimeException {
 	// 204 = 상품 수정 실패?
 	// 205 = 상품 삭제 실패?
 	
+	// 207 = 상품 후기 작성 실패?
+	
 	public String message() {
 		return errorMessage;
 	}

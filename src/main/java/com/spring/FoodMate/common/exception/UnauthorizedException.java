@@ -10,7 +10,8 @@ public class UnauthorizedException extends RuntimeException {
     // 104 : sessionDTO의 userRole이 관리자가 아님
     // 105 : sessionDTO의 userId가 없음 (비정상적 로그인?)
     
-    // 106 : 권한이 없는 일을 하려고 함(1.내 주문이 아닌 주문에 관해 뭔가 하려고함)
+    // 106 : 권한이 없는 일을 하려고 함(내 주문이 아닌 주문에 관해 뭔가 하려고함)
+    // 107 : 권한오류 (상품 사지도 않고 리뷰하려고 함)
     // OrderController의 getOrderAddress 메서드에서 사용중
     // OrderController의 updateOrderStatus 메서드에서 사용중
 

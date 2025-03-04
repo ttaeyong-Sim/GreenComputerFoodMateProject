@@ -58,6 +58,46 @@
 	width: 40px;
 	height: 40px;
 }
+
+/* 후기 작성 모달 전용 스타일 */
+#reviewModal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#reviewModal .modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 50%;
+    border-radius: 10px;
+    position: relative;
+}
+
+#reviewModal .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#reviewModal .star {
+    font-size: 30px;
+    cursor: pointer;
+    color: gray;
+}
+
+#reviewModal .star.selected {
+    color: gold;
+}
+
 </style>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -259,8 +299,141 @@ $(document).ready(function(){ //페이지가 준비되면
 	   	if (confirm("구매를 확정하시겠습니까?")) {
 	   	    updateOrderStatus(ordId, null, null, 4);
 	   	}
+	   	
+ // 리뷰 버튼 클릭 시 모달 띄우기
+    $(".btn-review").click(function() {
+        let pdtId = $(this).data("pdt-id"); // 상품 ID 가져오기
+        isReviewed(pdtId, function(reviewData) {
+            if (reviewData) { // 자바스크립트는 truthy, falsy로 확인함!! 
+                if (confirm("이미 작성한 리뷰가 있습니다. 수정하시겠습니까?")) {
+                    showReviewForm(pdtId, reviewData.rating, reviewData.comments);
+                }
+            } else {
+                showReviewForm(pdtId, 0, "");
+            }
+        });
     });
 
+    // 모달 표시 함수
+    function showReviewForm(pdtId, rating, comments, mode) {
+        $("#pdtId").val(pdtId); // 상품 ID 저장
+        $("#rating-text").text(rating); // 평점 반영
+        $("#review-comments").val(comments); // 댓글 반영
+
+        // 별점 UI 반영 (선택된 별 표시)
+        $(".star").removeClass("selected");
+        $(".star").each(function() {
+            if ($(this).data("value") <= rating) {
+                $(this).addClass("selected");
+            }
+        });
+
+        $("#reviewModal").fadeIn(); // 모달 표시
+    }
+    
+    // 이미 작성한 리뷰 있는지 db에 물어보는 함수. 콜백을 써야한다...는듯?
+	function isReviewed(pdt_id, callback) {
+	    $.ajax({
+	        type: "POST",
+	        url: contextPath + "/product/isReviewed",
+	        data: { pdt_id: pdt_id },
+	        success: function(response) {
+	            callback(response.review); // 작성한 리뷰 데이터 전달
+	        },
+	        error: function() {
+	            alert("알 수 없는 오류가 발생했습니다.");
+	            callback(false); // 오류 발생 시 false 반환
+	        }
+	    });
+	}
+
+    // 모달 닫기 버튼
+    $(".close").click(function() {
+        $("#reviewModal").fadeOut(); // 모달 숨기기
+    });
+
+    // 바깥 클릭하면 모달 닫기
+    $(window).click(function(event) {
+        if ($(event.target).is("#reviewModal")) {
+            $("#reviewModal").fadeOut();
+        }
+    });
+
+    // ⭐ 별점 선택 기능
+    $(".star").click(function() {
+        let rating = $(this).data("value"); // 선택한 별점 값
+        $("#rating-text").text(rating); // 화면에 표시
+        $(".star").removeClass("selected"); // 기존 선택 제거
+        $(this).prevAll().addBack().addClass("selected"); // 선택한 별까지 색칠
+    });
+
+    // 모달의 리뷰작성 버튼 클릭하면
+    $("#submitReview").click(function(event) {
+        event.preventDefault();
+		submitReview();
+    });
+
+    function submitReview() {
+    	// 후기 작성 폼에서 데이터를 가져옴
+    	let rating = $("#rating-text").text(); // 선택한 별점 값
+        let comments = $("#review-comments").val().trim();  // 댓글 값
+        let pdt_id = $("#pdtId").val();  // 모달에서 전달받은 상품 ID
+        
+     // ⭐ 1. 별점 유효성 검사
+        rating = Number(rating);  // rating을 숫자형으로 변환
+
+        if (isNaN(rating) || rating < 1 || rating > 5 || !Number.isInteger(rating)) {
+            if (rating == 0) {
+                alert("별점을 선택해주세요.");
+            } else {
+                alert("유효하지 않은 입력값입니다. 별점은 1~5 사이의 정수만 가능합니다.");
+                location.reload(); // 페이지 새로고침
+            }
+            return;
+        }
+
+        // ⭐ 2. 댓글 유효성 검사
+        if (comments === "") {
+            if (!confirm("후기 없이 별점 평가만 하시겠습니까?")) {
+                return;
+            }
+        }
+
+        // ⭐ 3. Ajax로 서버에 데이터 전송
+        $.ajax({
+            type: "POST",
+            url: contextPath + "/product/pdtreview",  // 후기를 작성할 서버의 URL
+            contentType: "application/json",
+            data: JSON.stringify({
+                pdt_id: pdt_id,       // 모달에서 가져온 상품 ID
+                rating: rating,       // 별점
+                comments: comments    // 댓글
+            }),
+            dataType: "json",
+            success: function(response) {
+                if (response.success === true) {
+                    alert("후기가 등록되었습니다!");
+                    location.reload(); // 성공 후 새로고침    
+                } else {
+                    console.log(response.errorCode);
+                    if (response.errorCode === 102) {
+                        // 로그인 필요한 경우 처리
+                        if (confirm(response.alertMsg)) {
+                            window.location.href = contextPath + "/member/loginForm";  // 로그인 페이지로 이동
+                        } else {
+                            alert("후기 등록이 취소되었습니다.");
+                        }
+                    } else {
+                        alert(response.alertMsg);
+                    }
+                }
+            },
+            error: function() {
+                alert("후기 등록 중 오류가 발생했습니다.");
+            }
+        });
+    }
+    
     // 배송 상태 자동 조회
     $('.shipping-status-2').each(function() {
       var delCode = $(this).data('delcode');  // 배송사 코드
@@ -461,7 +634,9 @@ $(document).ready(function(){ //페이지가 준비되면
 			                data-pdt-price="${order.tot_Pdt_Price}"
 				            >구매확정</button>
 				        </c:when>
-				        
+				        <c:when test="${order.ord_stat == 4}">
+				            <button class="btn btn-outline-disable">구매 확정됨</button>
+				        </c:when>
 				    </c:choose>
 				</div>
 				</td>
@@ -484,18 +659,14 @@ $(document).ready(function(){ //페이지가 준비되면
                     <td><img class="productImg" src=${contextPath}/resources/images/${detail.img_path}>${detail.pdt_name}</td>
                     <td><fmt:formatNumber value="${detail.pdt_price}" type="number" groupingUsed="true" />원</td>
                     <td>${detail.qty}</td>
+                    <c:if test="${order.ord_stat == 4}">
                     <td>
-	                    <c:choose>
-	                    	<c:when test="${order.ord_stat == 4}">
-					            <button class="btn btn-outline-success btn-sm" 
-								        onclick="location.href='${contextPath}/product/pdtdetail?pdt_id=${detail.pdt_id}'">
-								    리뷰하기
-								</button>
-					        </c:when>
-					    </c:choose>
+                    <button class="btn btn-outline-success btn-sm btn-review" data-pdt-id="${detail.pdt_id}">후기 작성</button>
                     </td>
+                    </c:if>
                 </tr>
             </c:forEach>
+            
         </tbody>
         </table>
         <div style="border:3px solid black; width:100%; margin-bottom: 10px;"></div>
@@ -525,6 +696,40 @@ $(document).ready(function(){ //페이지가 준비되면
     </div>
 </div>
 	
+<!-- 후기 작성 모달 -->
+<div id="reviewModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span> <!-- 닫기 버튼 -->
+        
+        <h2>상품 후기 작성</h2>
+        
+        <!-- 평점 표시 -->
+        <div class="rating-display">
+            <span id="rating-text">0</span> / <span>5</span>
+        </div>
+
+        <!-- 별점 선택 -->
+        <div id="star-rating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+
+        <!-- 댓글 입력 -->
+        <textarea id="review-comments" class="form-control" rows="3" placeholder="상품 후기를 남겨주세요..."></textarea>
+
+        <!-- 숨겨진 pdt_id -->
+        <input type="hidden" id="pdtId">
+
+        <!-- 제출 버튼 -->
+        <button id="submitReview" class="w-btn-outline w-btn-red-outline">후기 작성</button>
+        <!-- 후기 삭제 버튼 -->
+        <button id="deleteReview" class="w-btn-outline w-btn-red-outline" style="display: none;">후기 삭제</button>
+    </div>
+</div>
+
 	<%-- 페이지네이션 --%>
 	<nav>
 	    <ul class="pagination justify-content-center">
