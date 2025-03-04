@@ -230,7 +230,8 @@ $(document).on('click', '.rcp_Mtrs', function() {
 	        var productHtml = '';
 	
 	        products.forEach(function(product) {
-	        
+	        	let rating = Math.round(product.avg_rating); // 평균 평점을 반올림
+	            let stars = '⭐'.repeat(rating); // 별 개수 생성
             productHtml += '<article class="pdt_row">' +          
                 '<div>' +
 	                '<a href="' + contextPath + '/product/pdtdetail?pdt_id=' + product.pdt_id + '" target="_blank" rel="noopener noreferrer">' + 
@@ -243,7 +244,7 @@ $(document).on('click', '.rcp_Mtrs', function() {
                     '<span class="pdt_Name">' + product.name + '</span><br>' +
                     '<span class="pdt_Selr">판매자 : ' + product.slr_nickname + '</span><br>' +
                     '<span class="pdt_Id">상품번호 : ' + product.pdt_id + '</span><br>' +
-                    '<span class="pdt_Rank">' + '⭐⭐⭐⭐⭐' + '(후기 135)' + '</span><br>' +
+                    '<span class="pdt_Rank">' + stars + '(후기 ' + product.review_count + '개)' + '</span><br>' +
                 '</div>' +
                 '<div>' +
                 	'<span class="pdt_Qty">' + product.qty + '</span>' + '<span class="pdt_Unit">' + product.unit + '</span>' +
@@ -308,7 +309,9 @@ $(document).on('click', '.sort', function() {
 	        var productHtml = '';
 	
 	        products.forEach(function(product) {
-	        
+	        	let rating = Math.round(product.avg_rating); // 평균 평점을 반올림
+	            let stars = '⭐'.repeat(rating); // 별 개수 생성
+	        	
             productHtml += '<article class="pdt_row">' +          
                 '<div>' +
 	                '<a href="' + contextPath + '/product/pdtdetail?pdt_id=' + product.pdt_id + '" target="_blank" rel="noopener noreferrer">' + 
@@ -321,7 +324,7 @@ $(document).on('click', '.sort', function() {
                     '<span class="pdt_Name">' + product.name + '</span><br>' +
                     '<span class="pdt_Selr">판매자 : ' + product.slr_nickname + '</span><br>' +
                     '<span class="pdt_Id">상품번호 : ' + product.pdt_id + '</span><br>' +
-                    '<span class="pdt_Rank">' + '⭐⭐⭐⭐⭐' + '(후기 135)' + '</span><br>' +
+                    '<span class="pdt_Rank">' + stars + '(후기 ' + product.review_count + '개)' + '</span><br>' +
                 '</div>' +
                 '<div>' +
                 	'<span class="pdt_Qty">' + product.qty + '</span>' + '<span class="pdt_Unit">' + product.unit + '</span>' +

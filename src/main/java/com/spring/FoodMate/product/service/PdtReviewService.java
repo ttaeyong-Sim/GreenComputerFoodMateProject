@@ -1,5 +1,8 @@
 package com.spring.FoodMate.product.service;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +53,35 @@ public class PdtReviewService {
 	public boolean deleteReview(int reviewId) throws Exception {
 		return pdtReviewDAO.deleteProductRating(reviewId) > 0;
 	}
+	
+	// 상품 후기 댓글들 불러와서 html 태그로 준비해주는 메서드
+		public String getPdtReviews(int pdt_id) throws Exception {
+		    List<ProductRatingDTO> reviews = pdtReviewDAO.getPdtReviews(pdt_id);  // DAO에서 상품에 대한 후기 리스트 가져오기
+		    
+		    StringBuilder descriptionHtml = new StringBuilder();
+		    descriptionHtml.append("<h3>상품 후기</h3>");
+		    // 후기들 반복하여 HTML로 작성
+		    for (ProductRatingDTO review : reviews) {
+		        descriptionHtml.append("<div class='review'>")
+		                       .append("<div class='review-header'>")
+		                       .append("<span class='review-author'>").append(review.getByr_id()).append("</span>")
+		                       .append("<span class='review-date'>").append(new SimpleDateFormat("yyyy-MM-dd").format(review.getCreate_date())).append("</span>")
+		                       .append("</div>")  // 리뷰 헤더 끝
+		                       
+		                       .append("<div class='review-rating'>")
+		                       .append("<span class='stars'>")
+		                       .append("★".repeat(Math.max(0, review.getRating()))).append("</span>")  // 별점 표시
+		                       .append("</div>")  // 리뷰 평점 끝
+		                       
+		                       .append("<div class='review-comments'>")
+		                       .append(review.getComments())  // 댓글 내용
+		                       .append("</div>")  // 리뷰 댓글 끝
+		                       
+		                       .append("</div>");  // 전체 리뷰 div 끝
+		    }
+		    
+		    return descriptionHtml.toString();  // HTML로 구성된 상품 후기 태그들 반환
+		}
 	
 //	// 상품 후기 조회
 //		public List<ProductRatingDTO> getProductRatings(int pdt_id) {

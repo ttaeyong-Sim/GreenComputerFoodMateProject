@@ -238,7 +238,18 @@ body {
 						        1${product.unit}당 가격 : <span class="pdt_UnitPrice"><fmt:formatNumber value="${product.unit_price}" pattern="#,###"/>원</span><br>
 						    </c:otherwise>
 						</c:choose>
-                        ⭐⭐⭐⭐⭐<br>
+						<span>
+		                	<c:choose>
+				                <c:when test="${Math.round(product.avg_rating) == 5}">⭐⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 4}">⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 3}">⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 2}">⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 1}">⭐</c:when>
+				                <c:otherwise>평점 없음</c:otherwise>
+				            </c:choose>
+				            (후기 ${product.review_count}개)
+			            </span>
+                        <br>
                     </p>
                 </div>
             </article>
