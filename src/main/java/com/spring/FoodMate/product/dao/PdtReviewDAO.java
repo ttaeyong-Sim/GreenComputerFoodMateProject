@@ -42,47 +42,6 @@ public class PdtReviewDAO {
 	    }
 	}
 	
-	// 이 구매자가 이 상품 샀음? 안샀으면 0, 샀으면 산횟수만큼 숫자출력
-	public int isByrConfirmPdt(String byr_id, int pdt_id) throws DataAccessException {
-		ProductRatingDTO param = new ProductRatingDTO();
-		param.setByr_id(byr_id);
-		param.setPdt_id(pdt_id);
-		return sqlSession.selectOne("mapper.product.isByrConfirmPdt", param);
-	}
-
-	public ProductRatingDTO isReviewed(String byr_id, int pdt_id) throws DataAccessException {
-		ProductRatingDTO param = new ProductRatingDTO();
-		param.setByr_id(byr_id);
-		param.setPdt_id(pdt_id);
-		return sqlSession.selectOne("mapper.product.isReviewed", param);
-	
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// 상품 후기 조회 (상품 ID에 해당하는 후기들)
-	public List<ProductRatingDTO> getProductRatings(int pdt_id) {
-	    try {
-	        System.out.println("상품 후기 조회 시작: pdt_id = " + pdt_id);  // 로그 추가
-	        List<ProductRatingDTO> ratingsList = sqlSession.selectList("mapper.product.getProductRatings", pdt_id);
-	        System.out.println("상품 후기 조회 성공: " + ratingsList.size() + "개 후기");  // 성공 로그
-	        return ratingsList;
-	    } catch (DataAccessException e) {
-	        System.out.println("상품 후기 조회 실패: pdt_id = " + pdt_id);  // 실패 로그
-	        throw new DBException("ProductDAO.getProductRatings 에러! pdt_id = '" + pdt_id + "'", e);
-	    }
-	}
-
 	// 상품 후기 삭제
 	public int deleteProductRating(int cmt_pdt_rating_id) {
 	    try {
@@ -95,6 +54,47 @@ public class PdtReviewDAO {
 	        throw new DBException("ProductDAO.deleteProductRating 에러! cmt_pdt_rating_id = '" + cmt_pdt_rating_id + "'", e);
 	    }
 	}
+	
+	// 이 구매자가 이 상품 샀음? 안샀으면 0, 샀으면 산횟수만큼 숫자출력
+	public int isByrConfirmPdt(String byr_id, int pdt_id) throws DataAccessException {
+		ProductRatingDTO param = new ProductRatingDTO();
+		param.setByr_id(byr_id);
+		param.setPdt_id(pdt_id);
+		return sqlSession.selectOne("mapper.product.isByrConfirmPdt", param);
+	}
+	
+	// 이 구매자가 상품 리뷰 썼었음?
+	public ProductRatingDTO isReviewed(String byr_id, int pdt_id) throws DataAccessException {
+		ProductRatingDTO param = new ProductRatingDTO();
+		param.setByr_id(byr_id);
+		param.setPdt_id(pdt_id);
+		return sqlSession.selectOne("mapper.product.isReviewed", param);
+	}
+	
+	// 상품 후기 조회 (상품 ID에 해당하는 후기들)
+	public List<ProductRatingDTO> getPdtReviews(int pdt_id) {
+	    try {
+	        System.out.println("상품 후기 조회 시작: pdt_id = " + pdt_id);  // 로그 추가
+	        List<ProductRatingDTO> ratingsList = sqlSession.selectList("mapper.product.getProductRatings", pdt_id);
+	        System.out.println("상품 후기 조회 성공: " + ratingsList.size() + "개 후기");  // 성공 로그
+	        return ratingsList;
+	    } catch (DataAccessException e) {
+	        System.out.println("상품 후기 조회 실패: pdt_id = " + pdt_id);  // 실패 로그
+	        throw new DBException("ProductDAO.getProductRatings 에러! pdt_id = '" + pdt_id + "'", e);
+	    }
+	}
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
 

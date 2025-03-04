@@ -68,19 +68,62 @@
     	width: 100%;
     }
     
-    #tabContent2 form {
-    	font-size : 1.5rem;
-    }
-    
-    #tabContent2 button { 
-	    background-color: #f39c12;
-	    color: white;
-	    border-radius: 8px;
-	    padding: 5px 10px;
-	    font-size: 1.25rem;
-	    margin-top: 10px;
-	    border: none;
-	}
+    /* #tabContent2 내부의 모든 리뷰 컨테이너 */
+#tabContent2 .review {
+    background-color: #f9f9f9;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    font-family: Arial, sans-serif;
+}
+
+/* #tabContent2 내부의 리뷰 작성자와 날짜 표시 */
+#tabContent2 .review-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
+#tabContent2 .review-author {
+    font-weight: bold;
+}
+
+/* #tabContent2 내부의 날짜 */
+#tabContent2 .review-date {
+    color: #888;
+}
+
+/* #tabContent2 내부의 별점 영역 */
+#tabContent2 .review-rating {
+    margin: 10px 0;
+}
+
+#tabContent2 .stars {
+    color: #f39c12;  /* 별점 색상 */
+    font-size: 18px;
+}
+
+/* #tabContent2 내부의 댓글 내용 */
+#tabContent2 .review-comments {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* #tabContent2 내부의 별 모양을 위한 스타일 */
+#tabContent2 .stars {
+    display: inline-block;
+}
+
+#tabContent2 .stars span {
+    font-size: 20px;
+    color: #f39c12;
+}
+
     
 </style>
 
@@ -90,7 +133,8 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 
-$(document).ready(function() {
+$(document).ready(function() { // 페이지가 준비되면
+	
     const pdt_id = "<%=pdt_id%>";
     const contextPath = "${contextPath}";
     
@@ -106,7 +150,20 @@ $(document).ready(function() {
             alert("상품 설명 이미지를 불러오는 데 실패했습니다.");
         }
     });
-});
+    
+    // 상품 후기 데이터 로드
+    $.ajax({
+    	url: contextPath + "/product/pdtreviews",  // 서버로 Ajax 요청
+    	type: "GET",
+    	data: { pdt_id: pdt_id },
+    	success: function(response) {
+    		$("#tabContent2").html(response); // 받은데이터 탭콘2에 표시
+    	}, error: function() {
+    		alert("상품 후기를 불러오는 데 실패했습니다.");
+    	}
+    });
+    
+}); // 여기까지 페이지가 준비되면 할것들
  
 </script>
 

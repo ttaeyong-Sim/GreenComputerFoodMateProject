@@ -14,7 +14,7 @@ public class PdtReviewService {
 	@Autowired
 	private PdtReviewDAO pdtReviewDAO;
 	
-	// 상품 후기 등록
+	// 상품 후기 등록 및 수
 	public boolean addPdtReviewProcess(String userId, ProductRatingDTO review) throws Exception {
 	    try {
 	        // 먼저 이사람이 상품 구매확정했는지부터 확인해야함
@@ -45,6 +45,10 @@ public class PdtReviewService {
 	public ProductRatingDTO isReviewed(String byr_id, int pdt_id) throws Exception {
 		ProductRatingDTO review = pdtReviewDAO.isReviewed(byr_id, pdt_id);
 		return review;
+	}
+	
+	public boolean deleteReview(int reviewId) throws Exception {
+		return pdtReviewDAO.deleteProductRating(reviewId) > 0;
 	}
 	
 //	// 상품 후기 조회

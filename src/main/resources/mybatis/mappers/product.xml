@@ -242,21 +242,31 @@
 		WHERE BYR_ID = #{byr_id} AND PDT_ID = #{pdt_id}
 	</select>
 	
-	<!-- 밑부터 made by 류세환, 아직안씀 --> 
+	<!-- 상품 후기 삭제 -->
+    <delete id="deleteProductRating" parameterType="int">
+        DELETE FROM FOODMATE_PRODUCT_RATING
+        WHERE CMT_PDT_RATING_ID = #{cmt_pdt_rating_id}
+    </delete>
 	
-    <!-- 상품 후기 조회 (상품 ID에 해당하는 후기들) -->
+	<!-- 상품 후기 조회 (상품 ID에 해당하는 후기들) -->
     <select id="getProductRatings" resultType="ProductRatingDTO" parameterType="int">
         SELECT CMT_PDT_RATING_ID, PDT_ID, BYR_ID, RATING, COMMENTS, CREATE_DATE
         FROM FOODMATE_PRODUCT_RATING
         WHERE PDT_ID = #{pdt_id}
         ORDER BY CREATE_DATE DESC
     </select>
+	
+	
+	
+	
+	
+	
+	
+	<!-- 밑부터 made by 류세환, 아직안씀 --> 
+	
+    
 
-    <!-- 상품 후기 삭제 -->
-    <delete id="deleteProductRating" parameterType="int">
-        DELETE FROM FOODMATE_PRODUCT_RATING
-        WHERE CMT_PDT_RATING_ID = #{cmt_pdt_rating_id}
-    </delete>
+    
 
 	<!-- 상품 문의 등록 -->
     <insert id="insertProductQna" parameterType="ProductQnaDTO">

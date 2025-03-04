@@ -299,6 +299,14 @@ public class ProductController {
 		return descriptionHtml;
 	}
 	
+	// 상품 후기 댓글들 ajax 요청
+	@RequestMapping(value = "/product/pdtreviews", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String getPdtReviews(@RequestParam("pdt_id") int pdt_id) throws Exception {
+		String descriptionHtml = productService.getPdtReviews(pdt_id);
+		return descriptionHtml;
+	}
+	
 	// 상품 후기 작성 ajax 요청
     @RequestMapping(value="/product/pdtreview", method=RequestMethod.POST)
     @ResponseBody
@@ -332,6 +340,25 @@ public class ProductController {
         response.put("success", true);
         response.put("review", review);
 
+        return response;
+    }
+    
+    // 상품 후기 삭제 ajax 요청
+    @RequestMapping(value = "/product/deleteReview", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteReview(@RequestBody Map<String, Object> requestMap) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        int reviewId = Integer.parseInt(requestMap.get("review_id").toString());
+
+        // 삭제 처리 로직 (서비스 호출 등)
+        boolean success = pdtReviewService.deleteReview(reviewId);
+
+        if (success) {
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+            response.put("alertMsg", "리뷰 삭제에 실패했습니다.");
+        }
         return response;
     }
     
