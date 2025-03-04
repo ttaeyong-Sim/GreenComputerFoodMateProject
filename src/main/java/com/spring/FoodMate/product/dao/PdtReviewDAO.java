@@ -71,20 +71,8 @@ public class PdtReviewDAO {
 		return sqlSession.selectOne("mapper.product.isReviewed", param);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// 상품 후기 조회 (상품 ID에 해당하는 후기들)
-	public List<ProductRatingDTO> getProductRatings(int pdt_id) {
+	public List<ProductRatingDTO> getPdtReviews(int pdt_id) {
 	    try {
 	        System.out.println("상품 후기 조회 시작: pdt_id = " + pdt_id);  // 로그 추가
 	        List<ProductRatingDTO> ratingsList = sqlSession.selectList("mapper.product.getProductRatings", pdt_id);
@@ -96,6 +84,16 @@ public class PdtReviewDAO {
 	    }
 	}
 
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 	

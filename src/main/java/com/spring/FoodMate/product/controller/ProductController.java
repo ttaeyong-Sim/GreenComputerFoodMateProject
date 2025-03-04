@@ -299,6 +299,14 @@ public class ProductController {
 		return descriptionHtml;
 	}
 	
+	// 상품 후기 댓글들 ajax 요청
+	@RequestMapping(value = "/product/pdtreviews", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String getPdtReviews(@RequestParam("pdt_id") int pdt_id) throws Exception {
+		String descriptionHtml = productService.getPdtReviews(pdt_id);
+		return descriptionHtml;
+	}
+	
 	// 상품 후기 작성 ajax 요청
     @RequestMapping(value="/product/pdtreview", method=RequestMethod.POST)
     @ResponseBody
