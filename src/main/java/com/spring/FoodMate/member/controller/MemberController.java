@@ -407,6 +407,7 @@ public class MemberController {
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		try {
 		    memberService.addSeller(_sellerDTO);
+		    profileService.addNewSellerProfile(_sellerDTO.getSlr_id());
 		    
 		    message  = "<script>";
 		    message +=" alert('회원 가입을 마쳤습니다.로그인창으로 이동합니다.');";
