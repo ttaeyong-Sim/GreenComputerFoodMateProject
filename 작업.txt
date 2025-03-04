@@ -1,11 +1,9 @@
 메인: 어드민 페이지
 
 사이드
--> 식재료 통합구매 레시피접기피기
--> 아이디 중복확인시 셀러, 구매자 둘다검사
 -> 사업자번호 인증 후 가입되게
 -> 판매자 페이지 프로파일, 매출확인
--> 식재료 옆에 카카오지도넣고 내주변 마트표시
+-> 식재료 옆에 카카오지도넣고 자기 상점 표시
 
 
 되야하는것
@@ -258,3 +256,18 @@ NOCYCLE;
     
 </td>
 
+
+
+
+<<<<<<< HEAD
+                    <td>
+	                    <c:choose>
+	                    	<c:when test="${order.ord_stat == 4}">
+					            <button class="btn btn-outline-success btn-sm" 
+								        onclick="location.href='${contextPath}/product/pdtdetail?pdt_id=${detail.pdt_id}'">
+								    리뷰하기
+								</button>
+					        </c:when>
+					    </c:choose>
+                    </td>
+=======

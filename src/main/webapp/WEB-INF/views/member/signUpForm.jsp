@@ -44,7 +44,7 @@
 	    $.ajax({
 	       type:"post",
 	       async:false,  
-	       url:"${contextPath}/member/overlapped.do",
+	       url:"${contextPath}/member/overlapped",
 	       dataType:"text",
 	       data: {id:_id},
 	       success:function (data,textStatus){
