@@ -62,7 +62,8 @@
 			</tr>
 		</thead>
       	<tbody>
-      	<c:forEach var="review" items="${myrecipeReviewList}">
+      	<c:forEach var="review" items="${myrecipeReviewList}" varStatus="status">
+      		<c:if test="${status.index >= startIndex && status.index < endIndex}">
 	      	<tr>
 	          <td class="review-cell">
 	          	<img src="${contextPath}/resources/images/${review.mainimg_path}" alt="${review.mainimg_path}" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
@@ -83,6 +84,7 @@
 	            <button class="btn btn-outline-secondary btn-sm" onclick="location.href='${contextPath}/recipe/recipe_Detail?rcp_id=${review.rcp_id}';">바로가기</button>
 	          </td>
 	        </tr>
+	        </c:if>
 	    </c:forEach>
 		</tbody>
 	</table>

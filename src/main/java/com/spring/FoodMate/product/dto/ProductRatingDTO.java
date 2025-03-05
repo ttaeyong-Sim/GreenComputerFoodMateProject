@@ -9,6 +9,7 @@ public class ProductRatingDTO {
     private int rating;  // 평점
     private String comments;  // 댓글 내용
     private Date create_date;  // 작성 일시
+    private String img_path; // JOIN을 통해 가져온 IMG_PATH
 
     // Getters and Setters
     public int getCmt_pdt_rating_id() { return cmt_pdt_rating_id; }
@@ -45,7 +46,14 @@ public class ProductRatingDTO {
         this.byr_id = userId;  // byr_id를 userId로 설정
     }
     
-    // toLogString() 메서드 추가
+    public String getImg_path() {
+		return img_path;
+	}
+	public void setImg_path(String img_path) {
+		this.img_path = img_path;
+	}
+	
+	// toLogString() 메서드 추가
     public String toLogString() {
     	if(comments==null) {comments="null";}
         return "ProductRatingDTO{" +

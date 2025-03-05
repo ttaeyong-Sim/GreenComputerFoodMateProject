@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.spring.FoodMate.common.exception.DBException;
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.dto.ProductRatingDTO;
+import com.spring.FoodMate.recipe.dto.RecipeRatingDTO;
 
 @Repository("productDAO")
 public class ProductDAO {
@@ -183,4 +185,8 @@ public class ProductDAO {
 	public List<String> getDescImgPaths(int pdt_id) throws Exception {
 	    return sqlSession.selectList("mapper.product.getDescImgPaths", pdt_id);
 	}
+	
+	public List<ProductRatingDTO> selectProductReviewByrIDList(String byr_id) throws Exception {
+        return sqlSession.selectList("mapper.product.selectProductReviewByrIDList", byr_id);  // 상품 리뷰 목록 조회
+    }
 }

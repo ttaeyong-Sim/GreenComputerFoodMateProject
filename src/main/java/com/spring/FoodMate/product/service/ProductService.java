@@ -16,7 +16,9 @@ import com.spring.FoodMate.product.dao.PdtReviewDAO;
 import com.spring.FoodMate.product.dao.ProductDAO;
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
+import com.spring.FoodMate.product.dto.ProductRatingDTO;
 import com.spring.FoodMate.product.exception.ProductException;
+import com.spring.FoodMate.recipe.dto.RecipeRatingDTO;
 
 @Service("productService")
 public class ProductService {
@@ -231,6 +233,12 @@ public class ProductService {
 	    
 	    return descriptionHtml.toString();  // HTML로 구성된 이미지 태그 반환
 	}
+	
+	// 레시피 정보 가져오기
+    public List<ProductRatingDTO> selectProductReviewByrIDList(String byr_id) throws Exception {
+        return productDAO.selectProductReviewByrIDList(byr_id);  // 레시피 목록 조회
+        
+    }
 	
 	
 

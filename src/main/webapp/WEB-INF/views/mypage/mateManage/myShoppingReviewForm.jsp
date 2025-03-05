@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 <!DOCTYPE html>
 <html>
@@ -28,8 +30,22 @@
 	      vertical-align: middle;
 	      text-align: center;
 	    }
+	    .review { min-width: 600px; max-width: 600px; }
+		.rating { min-width: 80px; max-width: 80px; }
+		.date { min-width: 80px; max-width: 80px; }
+		.link { min-width: 80px; max-width: 80px; }
 </style>
 </head>
+<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+<c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+<c:set var="itemsPerPage" value="8" />
+<c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
+<c:set var="endIndex" value="${currentPage * itemsPerPage}" />
+
+<%-- 전체 데이터 개수 구하기 --%>
+<c:set var="totalItems" value="${fn:length(myproductReviewList)}" />
+<fmt:parseNumber var="parsedTotalPages" value="${(totalItems + itemsPerPage - 1) / itemsPerPage}" integerOnly="true" />
+<c:set var="totalPages" value="${parsedTotalPages}" />
 <body>
 <div class="container mt-1">
 	<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
@@ -38,66 +54,63 @@
 	<table class="table table-hover table-custom">
 		<thead class="table-header table-secondary">
 			<tr>
-				<td>리뷰</td>
-				<td>별점</td>
-				<td>작성날짜</td>
-				<td>바로가기</td>
+				<td class="review">리뷰</td>
+		        <td class="rating">별점</td>
+		        <td class="date">작성날짜</td>
+		        <td class="link">바로가기</td>
 			</tr>
 		</thead>
       	<tbody>
-      	<tr>
-          <td class="review-cell">
-          	<img src="${contextPath}/resources/images/Shopping/shoppingpot.jpg" alt="냄비" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
-          	<span class="text-truncate-multiline">
-          		큰 기대를 가지고 샀는데, 처음 몇 번은 정말 재미있고 편리하게 사용했어요. 하지만 시간이 지나면서 모든 요리에 적용하기에는 약간 한계가 느껴졌습니다. 그래도 요리를 자주 하고 다양한 메뉴를 시도하는 분들에겐 괜찮은 선택이 될 것 같아요.
-          	</span>
-          </td>
-          <td>⭐⭐⭐</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm" disabled>바로가기</button>
-          </td>
-        </tr>
-        <tr>
-          <td class="review-cell">
-          	<img src="${contextPath}/resources/images/Shopping/shoppingflipper.jpg" alt="뒤집개" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
-          	<span class="text-truncate-multiline">
-          		트루쿡 자이언트 계란말이팬과 뒤집개는 대용량 요리나 특별한 요리를 자주 하는 분들에겐 유용한 제품이지만, 일상적인 소량 요리에 사용하기엔 조금 부담스럽습니다. 팬의 크기와 뒤집개의 활용성은 분명 장점이지만, 크기와 보관의 불편함이 단점으로 다가올 수 있습니다.
-          	</span>
-          </td>
-          <td>⭐⭐⭐⭐</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm" disabled>바로가기</button>
-          </td>
-        </tr>
+      	<c:forEach var="review" items="${myproductReviewList}" varStatus="status">
+      		<c:if test="${status.index >= startIndex && status.index < endIndex}">
+	      	<tr>
+	          <td class="review-cell">
+	          	<img src="${contextPath}/resources/images/${review.img_path}" alt="${review.img_path}" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
+	          	<span class="text-truncate-multiline">
+	          		${review.comments}
+	          	</span>
+	          </td>
+	          <td><c:choose>
+	          <c:when test="${review.rating == 5}">⭐⭐⭐⭐⭐</c:when>
+	          <c:when test="${review.rating == 4}">⭐⭐⭐⭐</c:when>
+	          <c:when test="${review.rating == 3}">⭐⭐⭐</c:when>
+	          <c:when test="${review.rating == 2}">⭐⭐</c:when>
+	          <c:when test="${review.rating == 1}">⭐</c:when>
+	          <c:otherwise></c:otherwise>
+	          </c:choose></td>
+	          <td>
+				    <fmt:formatDate value="${review.create_date}" pattern="yyyy-MM-dd" />
+				</td>
+
+	          <td>
+	            <button class="btn btn-outline-secondary btn-sm" onclick="location.href='${contextPath}/product/pdtdetail?pdt_id=${review.pdt_id}';">바로가기</button>
+	          </td>
+	        </tr>
+	        </c:if>
+	    </c:forEach>
 		</tbody>
 	</table>
-	<nav aria-label="Page navigation">
-	  <ul class="pagination justify-content-center">
-	    <li class="page-item">
-	      <a class="page-link" href="#" aria-label="Previous">
-	        <span aria-hidden="true">Prev</span>
-	      </a>
-	    </li>
-	    <li class="page-item active" aria-current="page">
-	      <a class="page-link" href="#">1</a>
-	    </li>
-	    <li class="page-item"><a class="page-link" href="#">2</a></li>
-	    <li class="page-item"><a class="page-link" href="#">3</a></li>
-	    <li class="page-item"><a class="page-link" href="#">4</a></li>
-	    <li class="page-item"><a class="page-link" href="#">5</a></li>
-	    <li class="page-item"><a class="page-link" href="#">6</a></li>
-	    <li class="page-item"><a class="page-link" href="#">7</a></li>
-	    <li class="page-item"><a class="page-link" href="#">8</a></li>
-	    <li class="page-item"><a class="page-link" href="#">9</a></li>
-	    <li class="page-item"><a class="page-link" href="#">10</a></li>
-	    <li class="page-item">
-	      <a class="page-link" href="#" aria-label="Next">
-	        <span aria-hidden="true">Next</span>
-	      </a>
-	    </li>
-	  </ul>
+	<%-- 페이지네이션 --%>
+	<nav>
+	    <ul class="pagination justify-content-center">
+	        <c:if test="${currentPage > 1}">
+	            <li class="page-item">
+	                <a class="page-link" href="?page=${currentPage - 1}">Prev</a>
+	            </li>
+	        </c:if>
+	
+	        <c:forEach var="i" begin="1" end="${totalPages}">
+	            <li class="page-item ${i == currentPage ? 'active' : ''}">
+	                <a class="page-link" href="?page=${i}">${i}</a>
+	            </li>
+	        </c:forEach>
+	
+	        <c:if test="${currentPage < totalPages}">
+	            <li class="page-item">
+	                <a class="page-link" href="?page=${currentPage + 1}">Next</a>
+	            </li>
+	        </c:if>
+	    </ul>
 	</nav>
 </div>
 </body>

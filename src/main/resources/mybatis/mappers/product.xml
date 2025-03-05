@@ -327,6 +327,20 @@
         WHERE CMT_PDT_QNA_ID = #{cmt_pdt_qna_id}
     </update>
     
+    <!-- 상품 리뷰 가져오기 -->
+    <select id="selectProductReviewByrIDList" resultType="ProductRatingDTO" parameterType="String">
+        SELECT 
+		    pr.CMT_PDT_RATING_ID,  -- 댓글 ID
+		    pr.PDT_ID,             -- 상품 ID
+		    pr.BYR_ID,             -- 작성자 ID
+		    pr.RATING,             -- 평점
+		    pr.COMMENTS,           -- 댓글 내용
+		    pr.CREATE_DATE,        -- 작성일
+		    p.IMG_PATH        -- 상품 이미지 경로 (조인)
+		FROM FOODMATE_PRODUCT_RATING pr
+		LEFT JOIN FOODMATE_PRODUCT p ON pr.PDT_ID = p.PDT_ID
+        WHERE pr.BYR_ID = #{byr_id}
+	</select>
     
 	
 </mapper>

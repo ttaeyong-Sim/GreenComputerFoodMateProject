@@ -35,6 +35,11 @@ import com.spring.FoodMate.recipe.dto.RecipeDTO;
 import com.spring.FoodMate.recipe.exception.RecipeException;
 import com.spring.FoodMate.recipe.service.RecipeService;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
+import com.spring.FoodMate.mypage.dto.SellerProfileDTO;
+import com.spring.FoodMate.mypage.service.ProfileService;
+
 @Controller
 public class ProductController {
 	@Autowired
@@ -43,6 +48,11 @@ public class ProductController {
 	private PdtReviewService pdtReviewService;
 	@Autowired
 	private RecipeService recipeService;
+	@Autowired
+	private ProfileService profileService;
+	
+	private final Dotenv dotenv = Dotenv.load();
+	private final String KAKAO_JS = dotenv.get("KAKAO_JS");  //  카카오 JS API 키
 	
 	// nav 의 "식료품" 눌렀을 때나 식재료 검색했을 때 
 	
@@ -72,6 +82,7 @@ public class ProductController {
 			@RequestParam(value = "pdt_id", required = true) int pdt_id,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {		
 		ProductDTO product = productService.select1PdtByPdtId(pdt_id); // pdt_id로 pdt 전체행 받아옴
+		SellerProfileDTO sellerprofile = profileService.getSellerProfile(product.getSlr_id());
 		
 		HttpSession session = request.getSession();
 		RecentProductView(pdt_id, product, session);
@@ -86,6 +97,8 @@ public class ProductController {
 			mav.addObject("category", categoryStep);
 		}
 		// pdt의 카테고리id 받아서 최상위 부모카테고리까지 싹 받아옴
+		mav.addObject("slr_profile", sellerprofile);
+		mav.addObject("KAKAO_JS_KEY", KAKAO_JS);
 		mav.addObject("pdt", product);
 		return mav;
 	}

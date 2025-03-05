@@ -8,6 +8,12 @@
 <link href="<c:url value="/resources/css/pdtdetail.css" />" rel="stylesheet">
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_JS_KEY}&libraries=services"></script>
+
+<style>
+        #map { width: 100%; height: 400px; margin-top: 10px; display: none; }
+        button { padding: 10px; font-size: 16px; margin-top: 10px; }
+</style>
 
 <script>
 
@@ -121,7 +127,8 @@ function addToWish() {
 		</div>
 		<div class="info2">
 			<div id="pdt_Name">${product.name}</div>
-			<div id="pdt_Selr">판매자 : ${product.slr_nickname}</div>
+			<div id="pdt_Selr">판매자 : ${product.slr_nickname}</div> <button onclick="showMap()">카카오 지도 보기</button>
+			<div id="map"></div>
 			<div id="pdt_Dsc">${product.description}</div>
 		</div>
 		<div class="info3">
@@ -236,6 +243,37 @@ function addToWish() {
             changeQuantity(1);
         });
     });
+    
+    var storeAddress = "${slr_profile.store_address}"; // 판매자 주소 가져오기
+    var mapContainer = document.getElementById('map'); 
+    var mapOption = { center: new kakao.maps.LatLng(37.5665, 126.9780), level: 4 };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    function showMap() {
+    	if (mapContainer.style.display === "none" || mapContainer.style.display === "") {
+	        mapContainer.style.display = "block"; // 지도 표시
+			map.relayout();
+	        geocoder.addressSearch(storeAddress, function(result, status) {
+	            if (status === kakao.maps.services.Status.OK) {
+	                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+	                map.setCenter(coords);
+	
+	                var marker = new kakao.maps.Marker({ map: map, position: coords });
+	
+	                var infowindow = new kakao.maps.InfoWindow({
+	                    content: `<div style="padding:5px;">${product.slr_nickname}</div>`
+	                });
+	
+	                infowindow.open(map, marker);
+	            } else {
+	                alert("주소를 찾을 수 없습니다.");
+	            }
+	        });
+    	} else {
+            mapContainer.style.display = "none"; // 지도 숨김
+        }
+    }
 </script>
 
 
