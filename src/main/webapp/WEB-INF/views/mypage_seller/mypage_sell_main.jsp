@@ -126,7 +126,6 @@
       	<tbody>
       	
       	<c:forEach var="ord" items="${ordList}">
-      	
       	<tr>
           <td>${ord.ord_id}</td>
           <td>${ord.create_Date}</td>
@@ -148,7 +147,7 @@
 		            </td>
 		        </tr>
 		    </c:forEach>
-        
+        </c:forEach>
         
 		</tbody>
 	</table>

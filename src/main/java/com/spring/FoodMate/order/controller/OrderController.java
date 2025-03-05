@@ -238,13 +238,16 @@ public class OrderController {
 	    
 	    // cartItems에 들어있는 pdt_id, qty로 각각 재고 떨어뜨리기 (작성자 송태호)
 	    orderService.reducePdtStockProcess(cartItems);
-
-		PointDTO pointDTO = new PointDTO();
-		pointDTO.setByr_id(byrId);
-		pointDTO.setAmount(used_point);
-		pointDTO.setDescription(used_point + "원 사용");
-		pointDTO.setPoint_type("상품 구매 사용");
-	    pointService.usePoint(pointDTO);
+	    
+	    // 포인트 사용시에만 로그 작성
+	    if(used_point > 0) {
+	    	PointDTO pointDTO = new PointDTO();
+			pointDTO.setByr_id(byrId);
+			pointDTO.setAmount(used_point);
+			pointDTO.setDescription(used_point + "원 사용");
+			pointDTO.setPoint_type("상품 구매 사용");
+		    pointService.usePoint(pointDTO);
+	    }
 	    
 	    buyerInfo.setPoints(pointService.inquiryPoints(byrId));
 	    session.setAttribute("buyerInfo", buyerInfo);
