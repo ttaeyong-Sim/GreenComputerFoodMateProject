@@ -54,44 +54,6 @@ $(document).ready(function(){ //페이지가 준비되면
     }); 
 });
 
-$(document).on("click", ".waybill-button", function() {
-    let ordId = $(this).data("ord-id"); // 버튼에서 ord_id 가져오기
-    $("#ord_id").val(ordId); // 모달 내부에 설정
-    $("#waybillModal").modal("show"); // 모달 열기
-});
-
-$(document).on("click", "#saveWaybill", function() {
-    let ordId = $("#ord_id").val();
-    let delCode = $("#del_code").val();
-    let waybillNum = $("#waybill_num").val();
-
-    if (!waybillNum.trim()) {
-        alert("운송장번호를 입력하세요.");
-        return;
-    }
-
-    $.ajax({
-        url: contextPath + "/order/updateWaybill",
-        type: "POST",
-        data: {
-            ord_id: ordId,
-            del_code: delCode,
-            waybill_num: waybillNum
-        },
-        success: function(response) {
-            if (response.success) {
-                alert("운송장 정보가 저장되었습니다.");
-                $("#waybillModal").modal("hide"); // 모달 닫기
-                location.reload(); // 페이지 새로고침
-            } else {
-                alert("저장 실패: " + response.message);
-            }
-        },
-        error: function() {
-            alert("오류 발생. 다시 시도해주세요.");
-        }
-    });
-});
 
 </script>
 
@@ -158,8 +120,6 @@ $(document).on("click", "#saveWaybill", function() {
         		</td>
         		<td>
         		${order.del_company_name}, ${order.waybill_Num}<br>
-        		<button class="btn btn-outline-secondary btn-sm waybill-button" data-ord-id="${order.ord_id}">
-        		운송장번호 수정</button>
         		</td>
         	</tr>
         </tbody>
@@ -208,41 +168,6 @@ $(document).on("click", "#saveWaybill", function() {
         </div>
     </div>
 </div>
-
-<!-- 운송장번호 입력하는 모달 창 -->
-<div id="waybillModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">운송장번호 입력</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="ord_id">
-                <div class="form-group">
-                    <label for="del_code">택배사</label>
-                    <select id="del_code" class="form-control">
-                        <option value="kr.cjlogistics">CJ대한통운</option>
-                        <option value="kr.lotte">롯데택배</option>
-                        <option value="kr.hanjin">한진택배</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="waybill_num">운송장번호</label>
-                    <input type="text" id="waybill_num" class="form-control">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="saveWaybill">저장</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 <!-- 얘네는 옛날에 쓰던거임 -->
 <!-- 	<table class="table table-hover table-custom"> -->
