@@ -339,6 +339,47 @@ public class MypageController {
 		return mav;
 	}
 	
+	@RequestMapping(value="/mypage_seller/orderlist_confirmed", method=RequestMethod.GET)
+	private ModelAndView orderList_confirmed(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		SessionDTO sessionDTO = (SessionDTO) session.getAttribute("sessionDTO");
+		// 아이디 꺼내올준비
+		
+		List<OrderDTOoutput> orders = orderService.getOrdersBySlrId(sessionDTO.getUserId(), 4);
+		// 아이디 넣어서 오더들 output전용으로 가져오기, 상태가 4(구매확정) 인 주문만 표시
+
+		for (OrderDTOoutput order : orders) { // List인 orders에서 하나씩 OrderDTOoutput을 꺼내서 order에 저장, 자동반복
+            List<OrderDetailDTOoutput> orderDetails = orderService.getOrderDetailsByOrderId(order.getOrd_id());
+            // 현재 ord_id 갖고와서 orderService의 그 긴거 메서드로 주문상세정보 리스트로 가져옴
+            order.setOrderDetails(orderDetails);
+            //orderDTOoutput에 그 리스트 저장함
+        }
+		mav.addObject("title", "FoodMate - 구매확정된 주문");
+		mav.addObject("orderList", orders);
+		// orderLilst 속성으로 그 긴거 전달
+		return mav;
+	}
+	
+	@RequestMapping(value="/mypage_seller/orderlist_cancelled", method=RequestMethod.GET)
+	private ModelAndView orderList_cancelled(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		SessionDTO sessionDTO = (SessionDTO) session.getAttribute("sessionDTO");
+		// 아이디 꺼내올준비
+		
+		List<OrderDTOoutput> orders = orderService.getOrdersBySlrId(sessionDTO.getUserId(), 5);
+		// 아이디 넣어서 오더들 output전용으로 가져오기, 상태가 5(취소됨) 인 주문만 표시
+
+		for (OrderDTOoutput order : orders) { // List인 orders에서 하나씩 OrderDTOoutput을 꺼내서 order에 저장, 자동반복
+            List<OrderDetailDTOoutput> orderDetails = orderService.getOrderDetailsByOrderId(order.getOrd_id());
+            // 현재 ord_id 갖고와서 orderService의 그 긴거 메서드로 주문상세정보 리스트로 가져옴
+            order.setOrderDetails(orderDetails);
+            //orderDTOoutput에 그 리스트 저장함
+        }
+		mav.addObject("title", "FoodMate - 취소된 주문");
+		mav.addObject("orderList", orders);
+		// orderLilst 속성으로 그 긴거 전달
+		return mav;
+	}
 	
 	@RequestMapping(value="/mypage/customerManage/*Form", method=RequestMethod.GET)
 	private ModelAndView customerManageform(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
