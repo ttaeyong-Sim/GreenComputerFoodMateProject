@@ -72,6 +72,17 @@ public class ProductService {
 		}
 	}
 	
+	// 판매자 마이페이지 메인 내 best3
+	public List<ProductDTO> myBest3(String slr_id) {
+		try {
+			return productDAO.myBest3(slr_id);
+		} catch (DBException e) {
+			throw new ProductException("ProductService에서 DB예외 전달.", e);
+		} catch (Exception e) {
+			throw new ProductException("ProductService.myBest3 에러! slr_id = '" + slr_id + "'", e);
+		}
+	}
+	
 	// 상품 상태 변경 메서드
 	public boolean changeStatus(int pdt_id, String currentStatus) {
         String newStatus = (currentStatus.equals("Y")) ? "N" : "Y";  // 상태 반전

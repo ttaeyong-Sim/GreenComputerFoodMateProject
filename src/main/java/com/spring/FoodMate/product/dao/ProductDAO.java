@@ -46,12 +46,23 @@ public class ProductDAO {
 		}
 	}
 	
+	// 판매자 본인이 재고관리페이지에서 볼때 쓰는거
 	public List<ProductDTO> pdtListForStockBySlrId(String slr_id) {
 		try {
 			List<ProductDTO> searchList = sqlSession.selectList("mapper.product.listForStockBySlrSelf", slr_id);
 			return searchList;
 		} catch (DataAccessException e) {
 			throw new DBException("ProductDAO.pdtListBySlrId 에러! 판매자 id : '" + slr_id + "'", e);
+		}
+	}
+	
+	//판매자 본인 마이페이지 best3상품용
+	public List<ProductDTO> myBest3(String slr_id) {
+		try {
+			List<ProductDTO> searchList = sqlSession.selectList("mapper.product.myBest3", slr_id);
+			return searchList;
+		} catch (DataAccessException e) {
+			throw new DBException("ProductDAO.myBest3 에러! 판매자 id : '" + slr_id + "'", e);
 		}
 	}
 

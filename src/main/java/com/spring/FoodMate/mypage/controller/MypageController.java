@@ -350,14 +350,21 @@ public class MypageController {
 	// 여기부터 판매자 마이페이지
 	
 	@RequestMapping(value="/mypage_seller/mypage_sell_main", method=RequestMethod.GET)
-	private ModelAndView seller_Mypage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ModelAndView seller_Mypage(HttpSession session) throws Exception {
+		SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
+		String slr_id = sellerInfo.getUserId();
+		List<ProductDTO> stockList = productService.myBest3(slr_id);
+		List<OrderDTOoutput> ordList = orderService.mypageMainOrdList(slr_id);
+		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("title", "FoodMate - 판매자 마이페이지");
+		mav.addObject("stockList", stockList);
+		mav.addObject("ordList", ordList);
 		return mav;
 	}
 	
 	@RequestMapping(value="/mypage_seller/mypage_sell_productlist", method=RequestMethod.GET)
-	public ModelAndView seller_Mypage_productList(HttpServletRequest request, HttpSession session) throws Exception {
+	public ModelAndView seller_Mypage_productList(HttpSession session) throws Exception {
 	    SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
 	    List<ProductDTO> searchList = productService.ms_pdtList(sellerInfo.getUserId());
 	    
@@ -369,7 +376,7 @@ public class MypageController {
 	}
 	
 	@RequestMapping(value="/mypage_seller/myInfoManage/memberEditForm", method=RequestMethod.GET)
-	private ModelAndView sellermyInfoManageMemberEditform(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ModelAndView sellermyInfoManageMemberEditform(HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("sellerInfo", (SellerDTO) session.getAttribute("sellerInfo"));
@@ -377,7 +384,7 @@ public class MypageController {
 	}
 	
 	@RequestMapping(value="/mypage_seller/myInfoManage/profileEditForm", method=RequestMethod.GET)
-	private ModelAndView sellerprofileEditform(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ModelAndView sellerprofileEditform(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
 		
 		SellerDTO sellerInfo = (SellerDTO) session.getAttribute("sellerInfo"); // 세션에서 buyerInfo 가져오기
@@ -396,7 +403,7 @@ public class MypageController {
 	
 	
 	@RequestMapping(value="/mypage_seller/mypage_sell_productamount", method=RequestMethod.GET)
-	private ModelAndView seller_Mypage_productAmount(HttpServletRequest request, HttpSession session) throws Exception {
+	private ModelAndView seller_Mypage_productAmount(HttpSession session) throws Exception {
 		SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
 	    List<ProductDTO> searchList = productService.mypageseller_pdtListForStock(sellerInfo.getUserId());
 	    

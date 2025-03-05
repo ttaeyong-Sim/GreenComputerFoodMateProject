@@ -141,7 +141,7 @@
 				                <c:when test="${Math.round(product.avg_rating) == 2}">⭐⭐</c:when>
 				                <c:when test="${Math.round(product.avg_rating) == 1}">⭐</c:when>
 				                <c:otherwise>평점 없음</c:otherwise>
-				            </c:choose>
+				            </c:choose>${product.avg_rating}
 				            (후기 ${product.review_count}개)
 				            </span></p>
 		                </div>

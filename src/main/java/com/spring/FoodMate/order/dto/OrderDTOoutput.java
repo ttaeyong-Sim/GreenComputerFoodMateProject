@@ -17,6 +17,12 @@ public class OrderDTOoutput {
     private int used_point; // 사용한 포인트
     
     private List<OrderDetailDTOoutput> orderDetails;
+    
+    private char postal_code;
+	private String addr;
+	private String addr_detail;
+	private String to_name;
+	
 
     // 기본 생성자
     public OrderDTOoutput() {}
@@ -64,6 +70,17 @@ public class OrderDTOoutput {
 	public void setUsed_point(int used_point) {
 		this.used_point = used_point;
 	}
+
+	public char getPostal_code() {		return postal_code;	}
+	public void setPostal_code(char postal_code) {		this.postal_code = postal_code;	}
+	public String getAddr() {		return addr;	}
+	public void setAddr(String addr) {		this.addr = addr;	}
+	public String getAddr_detail() {		return addr_detail;}
+	public void setAddr_detail(String addr_detail) {		this.addr_detail = addr_detail;	}
+	public String getTo_name() {		return to_name;	}
+	public void setTo_name(String to_name) {		this.to_name = to_name;	}
+	
+	
 
 	public String getDel_company_name() {
 		if(getDel_Code() == null) { return "없음"; }

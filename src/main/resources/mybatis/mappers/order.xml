@@ -146,6 +146,15 @@
 		WHERE o.ORD_ID = #{ord_id} 
     </select>
     
+	<!-- 판매자 마이페이지 메인의 배송대기중 주문 -->
+	<select id="mypageMainOrdList" resultType="OrderDTOoutput">
+		select o.ord_id, o.create_date, oa.postal_code, oa.addr, oa.addr_detail, oa.to_name
+		from foodmate_order o
+		left join foodmate_order_address oa
+		ON o.ord_id = oa.ord_id
+		where o.ord_stat = 1 and o.slr_id = #{slr_id}
+	</select>
+    
     <!-- 주문번호로 주문 조회 -->
     <select id="findOrderByOrderId" parameterType="int" resultType="OrderDTOoutput">
     	SELECT * FROM

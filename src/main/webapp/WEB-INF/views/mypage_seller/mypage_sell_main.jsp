@@ -58,54 +58,46 @@
 								<td>상품명</td>
 								<td>재고수</td>
 								<td>대기중인 주문</td>
-								<td>주문후 예상재고</td>
+								
 								<td>공개여부</td>
 								<td>삭제신청</td>
 							</tr>
 						</thead>
 						
 				      	<tbody>
-					      	<tr>
-					          <td>123</td>
-					          <td>돼지고기 뒷다리살</td>
-					          <td>152</td>
-					          <td>2건</td>
-					          <td>148</td>
-					          <td>
-					          	<button class="btn btn-outline-secondary btn-sm">비공개하기</button>
-					          </td>
-					          <td>
-					          	<button class="btn btn-outline-secondary btn-sm">삭제신청</button>
-					          </td>
-					        </tr>
-					        <tr>
-					          <td>124</td>
-					          <td>돼지고기 국거리</td>
-					          <td>75</td>
-					          <td>5건</td>
-					          <td>60</td>
-					          <td>
-					          	<button class="btn btn-outline-secondary btn-sm">비공개하기</button>
-					          </td>
-					          <td>
-					          	<button class="btn btn-outline-secondary btn-sm">삭제신청</button>
-					          </td>
-					        </tr>
-					        
-					        <tr>
-					          <td>125</td>
-					          <td>소고기 맛있는부위</td>
-					          <td>30</td>
-					          <td>15건</td>
-					          <td>2</td>
-					          <td>
-					          	<button class="btn btn-outline-secondary btn-sm">비공개하기</button>
-					          </td>
-					          <td>
-					          	<button class="btn btn-outline-secondary btn-sm">삭제신청</button>
-					          </td>
-					        </tr>
-					        
+				      	
+				      	<c:choose>
+							<c:when test="${empty stockList}">
+								<p>표시할 내용이 없습니다.</p>
+							</c:when>
+						
+						<c:otherwise>
+							<c:forEach var="product" items="${stockList}">
+							
+					      	<tr>				                
+				                <td>${product.pdt_id}</td>
+				                <td style="text-align: left">
+				                    <img src="${contextPath}/resources/images/${product.img_path}" alt="pdt_img" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
+				                    ${product.name}
+				                </td>
+				                <td>
+								    <input type="text" class="form-control form-control-sm" value="${product.stock}" min="0" style="width: 80px; display: inline-block;" />
+								    <button class="btn btn-outline-secondary btn-sm btn-stockchange" data-pdt-id="${product.pdt_id}">변경</button>
+								</td>
+								<td>${product.ord_count}건</td>
+				                <td>
+				                ${product.status == 'Y' ? '판매 중' : '판매 중지됨'}
+				                <button class="btn btn-outline-secondary btn-sm btn-changestat" data-pdt-id="${product.pdt_id}" data-status="${product.status}">변경</button>
+				                </td>
+				                <td>
+				                <button class="btn btn-outline-secondary btn-sm btn-deletepdt" data-pdt-id="${product.pdt_id}">삭제</button>
+				                </td>
+				            </tr>
+				            
+				            </c:forEach>
+						</c:otherwise>
+						</c:choose>
+				      	
 						</tbody>
 					</table>
 					
@@ -124,18 +116,23 @@
 			<tr>
 				<td>주문번호</td>
 				<td>주문일자</td>
-				<td>주문상품</td>
+				<td>수령인</td>
 				<td>배송주소</td>
-				<td>주문상태변경</td>
+				<td>상세주소</td>
+				<td>배송시작</td>
 				<td>주문취소</td>
 			</tr>
 		</thead>
       	<tbody>
+      	
+      	<c:forEach var="ord" items="${ordList}">
+      	
       	<tr>
-          <td>400</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>돼지고기 뒷다리살</td>
-          <td>대전 서구 오라클빌딩 10층</td>
+          <td>${ord.ord_id}</td>
+          <td>${ord.create_Date}</td>
+          <td>${ord.to_name}</td>
+          <td>${ord.addr}</td>
+          <td>${ord.addr_detail}</td>
           <td>
           	<button class="btn btn-outline-secondary btn-sm">배송시작</button>
           </td>
@@ -143,71 +140,14 @@
             <button class="btn btn-outline-secondary btn-sm">주문 취소</button>
           </td>
         </tr>
-        
-        <tr>
-          <td>401</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>돼지고기 국거리</td>
-          <td>대전 서구 오라클빌딩 3층</td>
-          <td>
-          	<button class="btn btn-outline-secondary btn-sm">배송시작</button>
-          </td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm">주문 취소</button>
-          </td>
-        </tr>
-        
-        <tr>
-          <td>401</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>돼지고기 국거리</td>
-          <td>대전 서구 오라클빌딩 3층</td>
-          <td>
-          	<button class="btn btn-outline-secondary btn-sm">배송시작</button>
-          </td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm">주문 취소</button>
-          </td>
-        </tr>
-        
-        <tr>
-          <td>401</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>돼지고기 국거리</td>
-          <td>대전 서구 오라클빌딩 3층</td>
-          <td>
-          	<button class="btn btn-outline-secondary btn-sm">배송시작</button>
-          </td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm">주문 취소</button>
-          </td>
-        </tr>
-        
-        <tr>
-          <td>401</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>돼지고기 국거리</td>
-          <td>대전 서구 오라클빌딩 3층</td>
-          <td>
-          	<button class="btn btn-outline-secondary btn-sm">배송시작</button>
-          </td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm">주문 취소</button>
-          </td>
-        </tr>
-        
-        <tr>
-          <td>401</td>
-          <td>2024-12-24 16:16:13</td>
-          <td>돼지고기 국거리</td>
-          <td>대전 서구 오라클빌딩 3층</td>
-          <td>
-          	<button class="btn btn-outline-secondary btn-sm">배송시작</button>
-          </td>
-          <td>
-            <button class="btn btn-outline-secondary btn-sm">주문 취소</button>
-          </td>
-        </tr>
+        	<c:forEach var="detail" items="${ord.orderDetails}">
+		        <tr>
+		            <td colspan="7">
+		                <img src="${contextPath}/resources/images/${detail.img_path}">
+		                ${detail.pdt_name} - ${detail.qty}
+		            </td>
+		        </tr>
+		    </c:forEach>
         
         
 		</tbody>

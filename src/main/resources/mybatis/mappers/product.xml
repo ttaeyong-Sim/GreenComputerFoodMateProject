@@ -35,7 +35,6 @@
 	</select>
 	
 	<!-- 특정 판매자와 일치하는 모든 상품 리스트 조회(당사자, 재고관리용) -->
-	
 	<select id="listForStockBySlrSelf" resultType="ProductDTO">
 		SELECT 
 		    fpv.*, 
@@ -44,6 +43,23 @@
 		     WHERE fod.pdt_id = fpv.pdt_id) AS ord_count
 		FROM FOODMATE_PRODUCT_VIEW fpv
 		WHERE fpv.SLR_ID = #{slr_id}
+	</select>
+	
+	<!-- 판매자 마이페이지 홈의 내 BEST3 상품 -->
+	<select id="myBest3" resultType="ProductDTO">
+		<![CDATA[
+		SELECT * FROM (
+		    SELECT 
+		        fpv.*, 
+		        (SELECT COUNT(*) 
+		         FROM foodmate_order_detail fod 
+		         WHERE fod.pdt_id = fpv.pdt_id) AS ord_count
+		    FROM FOODMATE_PRODUCT_VIEW fpv
+		    WHERE fpv.SLR_ID = #{slr_id}
+		    ORDER BY ord_count DESC
+		) 
+		WHERE ROWNUM <= 3
+		]]>
 	</select>
 	
 	<update id="changeStatus">
