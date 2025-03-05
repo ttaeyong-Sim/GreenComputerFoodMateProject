@@ -75,6 +75,11 @@ public class OrderDAO {
         params.put("ord_stat", ord_stat);
         return sqlSession.selectList("mapper.order.findOrdersBySeller", params);
     }
+    
+    // 판매자 마이페이지 메인화면 배송대기 주문들, 주문상세는 따로 넣어줘야함
+    public List<OrderDTOoutput> mypageMainOrdList(String slr_id) throws DataAccessException {
+        return sqlSession.selectList("mapper.order.mypageMainOrdList", slr_id);
+    }
 
     public List<OrderDetailDTOoutput> findOrderDetailsByOrderId(int ord_id) throws DataAccessException {
         return sqlSession.selectList("mapper.order.findOrderDetailsByOrderId", ord_id);

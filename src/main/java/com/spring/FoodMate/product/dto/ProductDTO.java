@@ -26,6 +26,8 @@ public class ProductDTO {
 	private char ort_stat;
 	private int ord_count;
 	private List<MultipartFile> pdt_descimg;
+	private Double avg_rating;
+	private int review_count;
 	
 	public void setPdt_id(int pdt_id) { this.pdt_id = pdt_id; }
 	public String getSlr_id() { return slr_id; }
@@ -61,6 +63,10 @@ public class ProductDTO {
 	public void setOrd_count(int ord_count) {this.ord_count = ord_count;}
 	public List<MultipartFile> getPdt_descimg() {return pdt_descimg;}
 	public void setPdt_descimg(List<MultipartFile> pdt_descimg) {this.pdt_descimg = pdt_descimg;}
+	public Double getAvg_rating() {		return avg_rating;	}
+	public void setAvg_rating(Double avg_rating) {		this.avg_rating = avg_rating;	}
+	public int getReview_count() {		return review_count;	}
+	public void setReview_count(int review_count) {		this.review_count = review_count;	}
 	
 	// 예외 로그 기록용
 	public String toLogString() {

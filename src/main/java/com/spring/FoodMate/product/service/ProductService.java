@@ -1,6 +1,4 @@
 package com.spring.FoodMate.product.service;
-
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +16,6 @@ import com.spring.FoodMate.product.dao.PdtReviewDAO;
 import com.spring.FoodMate.product.dao.ProductDAO;
 import com.spring.FoodMate.product.dto.CategoryDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
-import com.spring.FoodMate.product.dto.ProductRatingDTO;
 import com.spring.FoodMate.product.exception.ProductException;
 
 @Service("productService")
@@ -72,6 +69,17 @@ public class ProductService {
 			throw new ProductException("ProductService에서 DB예외 전달.", e);
 		} catch (Exception e) {
 			throw new ProductException("ProductService.ms_pdtList 에러! slr_id = '" + slr_id + "'", e);
+		}
+	}
+	
+	// 판매자 마이페이지 메인 내 best3
+	public List<ProductDTO> myBest3(String slr_id) {
+		try {
+			return productDAO.myBest3(slr_id);
+		} catch (DBException e) {
+			throw new ProductException("ProductService에서 DB예외 전달.", e);
+		} catch (Exception e) {
+			throw new ProductException("ProductService.myBest3 에러! slr_id = '" + slr_id + "'", e);
 		}
 	}
 	
@@ -152,6 +160,7 @@ public class ProductService {
 			}
 			
 			boolean result2 = insertProductDescImgs(newPdt);
+			// 상품설명이미지들 다른테이블에 저장
 			
 			boolean result3 = (result > 0) || result2;
 			
@@ -223,34 +232,6 @@ public class ProductService {
 	    return descriptionHtml.toString();  // HTML로 구성된 이미지 태그 반환
 	}
 	
-	// 상품 후기 댓글들 불러와서 html 태그로 준비해주는 메서드
-	public String getPdtReviews(int pdt_id) throws Exception {
-	    List<ProductRatingDTO> reviews = pdtReviewDAO.getPdtReviews(pdt_id);  // DAO에서 상품에 대한 후기 리스트 가져오기
-	    
-	    StringBuilder descriptionHtml = new StringBuilder();
-	    
-	    // 후기들 반복하여 HTML로 작성
-	    for (ProductRatingDTO review : reviews) {
-	        descriptionHtml.append("<h3>상품 후기</h3>")
-	        .append("<div class='review'>")
-	                       .append("<div class='review-header'>")
-	                       .append("<span class='review-author'>").append(review.getByr_id()).append("</span>")
-	                       .append("<span class='review-date'>").append(new SimpleDateFormat("yyyy-MM-dd").format(review.getCreate_date())).append("</span>")
-	                       .append("</div>")  // 리뷰 헤더 끝
-	                       
-	                       .append("<div class='review-rating'>")
-	                       .append("<span class='stars'>")
-	                       .append("★".repeat(Math.max(0, review.getRating()))).append("</span>")  // 별점 표시
-	                       .append("</div>")  // 리뷰 평점 끝
-	                       
-	                       .append("<div class='review-comments'>")
-	                       .append(review.getComments())  // 댓글 내용
-	                       .append("</div>")  // 리뷰 댓글 끝
-	                       
-	                       .append("</div>");  // 전체 리뷰 div 끝
-	    }
-	    
-	    return descriptionHtml.toString();  // HTML로 구성된 상품 후기 태그들 반환
-	}
+	
 
 }

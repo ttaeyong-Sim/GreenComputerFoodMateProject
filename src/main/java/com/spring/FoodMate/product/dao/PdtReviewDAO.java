@@ -84,19 +84,17 @@ public class PdtReviewDAO {
 	    }
 	}
 
-
+	// 상품ID 넣으면 평점 평균 반환, 후기하나도없으면 null반환
+	public Double getAvgRatingByPdtId(int pdt_id) throws DataAccessException {
+		return sqlSession.selectOne("mapper.product.selectAvgRatingByProductId", pdt_id);
+	}
 	
 	
 	
 	
 	
 	
-	
-	
-	
-	
-
-	
+	// made by 류세환, 사용X중
 
 	// 상품 후기 ID로 조회하는 메소드
 	public ProductRatingDTO getProductRatingById(int rating_id) {

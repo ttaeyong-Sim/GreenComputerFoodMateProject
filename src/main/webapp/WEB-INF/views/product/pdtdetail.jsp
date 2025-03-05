@@ -170,7 +170,14 @@ function addToWish() {
 
 			<div id="text_DelivFee">배송비</div>
 			<div id="pdt_DelivPee">3,000원(40,000원 이상 구매 시 무료)</div>
-			<div id="pdt_Rank">⭐⭐⭐⭐⭐</div><div id="pdt_ReviewAmt">(상품평 n개)</div>
+			<div id="pdt_Rank"><c:choose>
+				                <c:when test="${Math.round(product.avg_rating) == 5}">⭐⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 4}">⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 3}">⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 2}">⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 1}">⭐</c:when>
+				                <c:otherwise>평점 없음</c:otherwise>
+				            </c:choose></div><div id="pdt_ReviewAmt">(상품평 ${product.review_count}개)</div>
 		</div>
 		<div class="info4">
 			<div id="pdt_Amount">수량 : 

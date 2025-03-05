@@ -133,7 +133,17 @@
 		                	<p><span class="item_product_price"><fmt:formatNumber value="${product.price}" type="number" groupingUsed="true" />원</span></p>
 		                </div>
 		                <div class="item_review_star">
-		                	<p><span>⭐⭐⭐⭐⭐</span></p>
+		                	<p><span>
+		                	<c:choose>
+				                <c:when test="${Math.round(product.avg_rating) == 5}">⭐⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 4}">⭐⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 3}">⭐⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 2}">⭐⭐</c:when>
+				                <c:when test="${Math.round(product.avg_rating) == 1}">⭐</c:when>
+				                <c:otherwise>평점 없음</c:otherwise>
+				            </c:choose>${product.avg_rating}
+				            (후기 ${product.review_count}개)
+				            </span></p>
 		                </div>
 		                <div class="item-footer">
 		              		<p><span>판매자: ${product.slr_nickname}</span></p>

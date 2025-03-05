@@ -303,7 +303,7 @@ public class ProductController {
 	@RequestMapping(value = "/product/pdtreviews", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String getPdtReviews(@RequestParam("pdt_id") int pdt_id) throws Exception {
-		String descriptionHtml = productService.getPdtReviews(pdt_id);
+		String descriptionHtml = pdtReviewService.getPdtReviews(pdt_id);
 		return descriptionHtml;
 	}
 	

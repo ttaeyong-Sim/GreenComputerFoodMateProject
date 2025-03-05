@@ -16,7 +16,6 @@ import com.spring.FoodMate.order.dto.OrderDTOoutput;
 import com.spring.FoodMate.order.dto.OrderDetailDTO;
 import com.spring.FoodMate.order.dto.OrderDetailDTOoutput;
 import com.spring.FoodMate.order.dto.OrderPaymentDTO;
-import com.spring.FoodMate.order.dto.OrderRequestDTO;
 import com.spring.FoodMate.order.exception.OrderException;
 import com.spring.FoodMate.product.dto.ProductDTO;
 
@@ -75,6 +74,19 @@ public class OrderService {
 
     public List<OrderDTOoutput> getOrdersBySlrId(String slr_id, int ord_stat) throws Exception {
         return orderDAO.findOrdersBySeller(slr_id, ord_stat);
+    }
+    
+    // 판매자 마이페이지 밑에 던질 데이터 준비. orderDTOoutput 에 필드로 List<OrderDetailDTOoutput>이 들어있음.
+    public List<OrderDTOoutput> mypageMainOrdList(String slr_id) throws Exception {
+    	List<OrderDTOoutput> ordList = orderDAO.mypageMainOrdList(slr_id);
+    	System.out.println("판매자마이페이지배송준비데이터준비중");
+    	System.out.println(ordList.toString());
+    	// 오더리스트에 오더dto 하나씩 들어가서 상세정보 넣어주기
+    	for(OrderDTOoutput order : ordList) {
+    		order.setOrderDetails(getOrderDetailsByOrderId(order.getOrd_id()));
+    	}
+    	
+    	return ordList;
     }
 
     public List<OrderDetailDTOoutput> getOrderDetailsByOrderId(int ord_id) throws Exception {
