@@ -294,9 +294,6 @@ $(document).on("click", "#saveWaybill", function() {
 		                ${detail.pdt_name} - ${detail.qty}
 		            </td>
 		        </tr>
-		    </c:forEach>
-        </c:forEach>
-        
 		</tbody>
 	</table>
 
