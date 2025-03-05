@@ -75,7 +75,7 @@
 	</select>
 	
 		<!-- 대분류 카테고리 레시피 조회 -->
-	<select id="selectRecipeByParent" resultType="recipeDTO">
+	 <select id="selectRecipeByParent" resultType="recipeDTO">
     SELECT 
         R.RCP_ID, 
         R.BYR_ID, 
@@ -92,15 +92,15 @@
     FROM FOODMATE_RECIPE R
     LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
     LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
+    LEFT JOIN FOODMATE_RECIPE_category C ON R.CATEGORY_ID = C.CATEGORY_ID  <!-- 카테고리 테이블 조인 -->
     WHERE R.STATUS = 'Y' 
-    AND R.CATEGORY_ID = #{categoryId} 
-    AND R.CATEGORY_ID = #{parentId}  <!-- 대분류 카테고리로 필터링 -->
+    AND C.PARENT_ID = #{category_id}     <!-- PARENT_ID가 categoryId와 일치하는 카테고리만 필터링 -->
     GROUP BY 
         R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
         R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
         R.STATUS, R.CREATE_DATE
     ORDER BY R.CREATE_DATE DESC
-	</select>
+    </select>
 	
 	<!-- 중분류 카테고리의 레시피 조회 -->
 	<select id="selectRecipeByChild" resultType="recipeDTO">

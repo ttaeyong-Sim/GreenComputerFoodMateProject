@@ -126,7 +126,7 @@
         IS_SECRET
     ) 
     VALUES (
-        SEQ_PRO_INQUIRIES.NEXTVAL,        <!-- PRO_INQ_ID는 시퀀스를 사용 -->
+        PRO_INQUIRIES_SEQ.NEXTVAL,        <!-- PRO_INQ_ID는 시퀀스를 사용 -->
         #{buyerId},                       <!-- 문의 작성자의 구매자 ID -->
         #{inquiryType},                   <!-- 문의 유형 (상품 관련 문의라면 1~6, 기타 문의는 다르게 처리) -->
         #{content},                       <!-- 문의 내용 -->
@@ -148,7 +148,7 @@
         CRE_DATE
     )
     VALUES (
-        SEQ_GEN_INQUIRIES.NEXTVAL,        <!-- GEN_INQ_ID는 시퀀스를 사용 -->
+        GEN_INQUIRIES_SEQ.NEXTVAL,        <!-- GEN_INQ_ID는 시퀀스를 사용 -->
         #{buyerId},                       <!-- 문의 작성자의 구매자 ID -->
         #{inquiryType},                   <!-- 문의 유형 (기타 관련 문의는 1~3으로 처리) -->
         #{content},                       <!-- 문의 내용 -->
@@ -166,7 +166,7 @@
         CRE_DATE
     )
     VALUES (
-        SEQ_PRO_INQUIRY_IMAGES.NEXTVAL,  <!-- 이미지 ID는 시퀀스를 사용 -->
+        PRO_INQUIRY_IMAGES_SEQ.NEXTVAL,  <!-- 이미지 ID는 시퀀스를 사용 -->
         #{inquiryId},                    <!-- 상품 문의 ID -->
         #{imagePath},                    <!-- 이미지 경로 -->
         SYSDATE                          <!-- 업로드 날짜 -->
@@ -182,7 +182,7 @@
         CRE_DATE
     )
     VALUES (
-        SEQ_GEN_INQUIRY_IMAGES.NEXTVAL,   <!-- 이미지 ID는 시퀀스를 사용 -->
+        GEN_INQUIRY_IMAGES_SEQ.NEXTVAL,   <!-- 이미지 ID는 시퀀스를 사용 -->
         #{inquiryId},                     <!-- 기타 문의 ID -->
         #{imagePath},                     <!-- 이미지 경로 -->
         SYSDATE                           <!-- 업로드 날짜 -->

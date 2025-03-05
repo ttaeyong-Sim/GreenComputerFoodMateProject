@@ -13,8 +13,10 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
     .container { width: 100%; padding: 20px; display: flex; flex-direction: column; }
+
+    /* 헤더 스타일 */
     .header1 {
-      background-color: #3498db; 
+      background-color: #f39c12; /* 시그널 컬러 */
       color: white;
       padding: 20px;
       display: flex;
@@ -24,6 +26,8 @@
       margin-bottom: 0;
     }
     .header1 h2 { margin: 0; font-size: 24px; }
+
+    /* 고객센터 메뉴탭 스타일 */
     .menu-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; margin: 0; }
     .categories { display: flex; gap: 10px; }
     .category {
@@ -34,12 +38,43 @@
       color: black;
       transition: color 0.3s;
     }
-    .category:hover { background-color: #3498db; color: white; }
-    .category.active { background-color: #3498db; color: white; }
+
+    /* 메뉴탭 호버 시 색상 */
+    .category:hover { 
+      background-color: #f39c12; 
+      color: white; /* 호버 시 텍스트 흰색 */
+    }
+
+    /* 메뉴탭 활성화 상태에서 색상 */
+    .category.active { 
+      background-color: #f39c12; 
+      color: white; /* 활성화 상태에서도 흰색 텍스트 */
+    }
+
+    /* 고객센터 메뉴탭의 a태그 스타일 수정 */
+    .category a {
+      color: black; /* 기본 색상 검정 */
+      text-decoration: none; /* 링크 밑줄 제거 */
+    }
+
+    /* a태그 호버 시 색상 */
+    .category a:hover {
+      color: white; /* 호버 시 흰색 */
+    }
+
+    /* a태그 활성화 상태에서 색상 */
+    .category.active a {
+      color: white; /* 활성화 상태에서도 흰색 */
+    }
+
+    /* 고객센터 연락처 */
     .contact-info { font-size: 16px; font-weight: bold; }
+
+    /* 문의 내역 리스트 스타일 */
     .inquiry-list { margin-top: 20px; }
     .inquiry-item { padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; }
     .tab-content { padding-top: 10px; }
+
   </style>
 </head>
 <body>
@@ -69,7 +104,7 @@
         <div class="inquiry-item">
           <div><strong>카테고리:</strong> ${inquiry.getCategoryValue()}</div>
           <div><strong>내용:</strong> ${inquiry.content}</div>
-          <div><strong>상태:</strong> ${inquiry.status}</div>
+          <!--  <div><strong>상태:</strong> ${inquiry.status}</div>-->
           <div><strong>작성일:</strong> <fmt:formatDate value="${inquiry.createdDate}" pattern="yyyy.MM.dd" /></div>
 
           <!-- 답변 내용 부분 (자동으로 보여짐) -->
