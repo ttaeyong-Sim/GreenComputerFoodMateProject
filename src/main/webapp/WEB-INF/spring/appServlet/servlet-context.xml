@@ -36,8 +36,7 @@
     <mvc:interceptors>
     	<!-- 인터셉터 추가할때마다 위쪽엔 빈 등록하고 여기선 <mvc:interceptor> 태그로 적용시킬 주소 지정하면됨 -->
         <mvc:interceptor>            
-            <mvc:mapping path="/main/**"/>
-            <!-- 지금 공용인터셉터는 딱히 안씁니다 -->
+            <mvc:mapping path="/**"/>
         	<beans:ref bean="CommonInterceptor"/>    
         </mvc:interceptor>
         <mvc:interceptor>

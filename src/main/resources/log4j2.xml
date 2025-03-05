@@ -9,7 +9,7 @@
         </Console>
 
         <!-- 파일에 로그를 출력하는 Appender -->
-		<File name="File" fileName="logs/app.log">
+		<File name="File" fileName="C:/Temp/foodmatelog/foodmate.log">
 		    <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level: %msg%n%throwable"/>
 		</File>
 
@@ -18,11 +18,14 @@
 
     <!-- 로깅의 루트 레벨을 설정하는 부분 -->
     <Loggers>
-        <!-- 루트 로거의 레벨을 WARN으로 설정하고, 콘솔과 파일에 로그를 출력 -->
-        <Root level="warn">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="File"/>
-        </Root>
-    </Loggers>
+	    <Logger name="com.spring.FoodMate.interceptor.CommonInterceptor" level="info">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	    <Root level="warn">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Root>
+	</Loggers>
 
 </Configuration>

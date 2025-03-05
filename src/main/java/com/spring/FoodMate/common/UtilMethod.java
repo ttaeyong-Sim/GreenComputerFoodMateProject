@@ -52,7 +52,7 @@ public class UtilMethod {
 	
 	// 저장할 경로를 saveXXImage 메서드들에 뿌려줌
 	// 배포할 때는 배포환경에 맞게 바꿔주면 됨
-	private static final String imagePath5 = "C:/Users/Administrator/git/GreenComputerFoodMateProject/src/main/webapp/resources/images";
+	private static final String imagePath = "C:/Users/Administrator/git/GreenComputerFoodMateProject/src/main/webapp/resources/images";
 	
 	private static final String imagePath1 = "C:/Users/Administrator/git/GreenComputerFoodMateProject/src/main/webapp/resources/images";
 	// 그린컴퓨터학원 - 송태호 자리
@@ -60,10 +60,7 @@ public class UtilMethod {
 	// 송태호 자택의 경로.
 	private static final String imagePath3 = "C:/Web/FoodMate/src/main/webapp/resources/images";
 	// 강규진 자택 경로
-	private static final String imagePath = "E:/GreenComputerProject/GreenComputerFoodMateProject/src/main/webapp/resources/images";
-	
-	
-	// 그린컴퓨터학원 - 강규진.
+	private static final String imagePath4 = "E:/GreenComputerProject/GreenComputerFoodMateProject/src/main/webapp/resources/images";
 	
 	public static String savePdtImage(MultipartFile file, int type) throws Exception {
 	    // 저장할 디렉토리 경로 설정
