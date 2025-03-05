@@ -59,12 +59,22 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeDAO.selectRecipeList();  // 레시피 목록 조회
     }
     
+    // 대분류 카테고리 레시피 조회
+    public List<RecipeDTO> selectRecipeByParent(int categoryId, int parentId) {
+        return recipeDAO.selectRecipeByParent(categoryId, parentId);  // 대분류 카테고리 조회
+    }
+
+    // 중분류 카테고리 레시피 조회
+    public List<RecipeDTO> selectRecipeByChild(int categoryId) {
+        return recipeDAO.selectRecipeByChild(categoryId);  // 중분류 카테고리 조회
+    }
     // 레시피 목록 평점순으로 조회
     @Override
     public List<RecipeDTO> selectRecipeListByRating() throws Exception {
         return recipeDAO.selectRecipeListByRating();  // 레시피 목록 조회
     }
     
+    @Override
     // 레시피 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception {
         return recipeDAO.searchRecipeList(keyword);  // 레시피 목록 조회
@@ -133,6 +143,10 @@ public class RecipeServiceImpl implements RecipeService {
 			throw new RecipeException("RecipeServiceImpl.getGrandCategoryList 에러!", e);
 		}
 	}
+    // 중분류 카테고리 조회 (페이지 출력용)
+    public List<RecipeCategoryDTO> selectChildCategoryList() {
+        return recipeDAO.selectChildCategoryList();
+    }
 	
     // 레시피카테고리 자식만 가져옴(카테고리 선택시 ajax 로 자식카테고리 가져오는거임)
     @Override

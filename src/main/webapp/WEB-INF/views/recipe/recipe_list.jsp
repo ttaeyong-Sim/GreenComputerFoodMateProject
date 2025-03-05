@@ -327,70 +327,29 @@
 <c:set var="totalPages" value="${parsedTotalPages}" />
 <body>
 
-<div class="category-section mt-4">
-    <div class="category-container">
-        <!-- 모든 카테고리를 한 박스에 담기 -->
-        <div class="category-card">
-            <h5>원하는 레시피를 찾아보세요!</h5>
-            <div class="category-content">
-                <!-- 한식 카테고리 -->
-                <div class="category-category">
-                    <h6><a href="${contextPath}/recipe/recipe_list?categoryId=1">🥘한식</a></h6> <!-- 대분류 ID = 1 -->
-                    <ul>
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=5&parent_Id=1">국/찌개</a></li> <!-- 카테고리 ID = 5, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=6&parent_Id=1">구이</a></li> <!-- 카테고리 ID = 6, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=7&parent_Id=1">전/부침</a></li> <!-- 카테고리 ID = 7, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=8&parent_Id=1">볶음류</a></li> <!-- 카테고리 ID = 8, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=9&parent_Id=1">조림/찜류</a></li> <!-- 카테고리 ID = 9, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=10&parent_Id=1">반찬류</a></li> <!-- 카테고리 ID = 10, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=11&parent_Id=1">면류</a></li> <!-- 카테고리 ID = 11, 부모 ID = 1 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=12&parent_Id=1">전통 디저트</a></li> <!-- 카테고리 ID = 12, 부모 ID = 1 -->
-                    </ul>
-                </div>
-
-                <!-- 양식 카테고리 -->
-                <div class="category-category">
-                    <h6><a href="${contextPath}/recipe/recipe_list?categoryId=2">🍽️양식</a></h6> <!-- 대분류 ID = 2-->
-                    <ul>
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=13&parent_Id=2">스테이크</a></li> <!-- 카테고리 ID = 13, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=14&parent_Id=2">파스타</a></li> <!-- 카테고리 ID = 14, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=15&parent_Id=2">피자</a></li> <!-- 카테고리 ID = 15, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=16&parent_Id=2">수프</a></li> <!-- 카테고리 ID = 16, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=17&parent_Id=2">리조또</a></li> <!-- 카테고리 ID = 17, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=18&parent_Id=2">오믈렛</a></li> <!-- 카테고리 ID = 18, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=19&parent_Id=2">샌드위치/버거</a></li> <!-- 카테고리 ID = 19, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=20&parent_Id=2">치킨 요리</a></li> <!-- 카테고리 ID = 20, 부모 ID = 2 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=21&parent_Id=2">디저트</a></li> <!-- 카테고리 ID = 21, 부모 ID = 2 -->
-                    </ul>
-                </div>
-
-                <!-- 일식 카테고리 -->
-                <div class="category-category">
-                    <h6><a href="${contextPath}/recipe/recipe_list?categoryId=3">🍣일식</a></h6> <!-- 대분류 ID = 3 -->
-                    <ul>
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=22&parent_Id=3">회</a></li> <!-- 카테고리 ID = 22, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=23&parent_Id=3">스시</a></li> <!-- 카테고리 ID = 23, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=24&parent_Id=3">라멘</a></li> <!-- 카테고리 ID = 24, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=25&parent_Id=3">전골</a></li> <!-- 카테고리 ID = 25, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=26&parent_Id=3">튀김</a></li> <!-- 카테고리 ID = 26, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=27&parent_Id=3">덮밥</a></li> <!-- 카테고리 ID = 27, 부모 ID = 3 -->
-                    </ul>
-                </div>
-
-                <!-- 중식 카테고리 -->
-                <div class="category-category">
-                    <h6><a href="${contextPath}/recipe/recipe_list?categoryId=4">🍜중식</a></h6> <!-- 대분류 ID = 4 -->
-                    <ul>
-                    	<li><a href="${contextPath}/recipe/recipe_list?categoryId=28&parent_Id=4">볶음밥</a></li> <!-- 카테고리 ID = 28, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=29&parent_Id=4">딤섬</a></li> <!-- 카테고리 ID = 29, 부모 ID = 3 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=30&parent_Id=4">해물</a></li> <!-- 카테고리 ID = 30, 부모 ID = 4 -->
-                        <li><a href="${contextPath}/recipe/recipe_list?categoryId=31&parent_Id=4">육류</a></li> <!-- 카테고리 ID = 31, 부모 ID = 4 -->
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<div class="category-section mt-4">
+	    <div class="category-container">
+	        <div class="category-card">
+	            <h5>원하는 레시피를 찾아보세요!</h5>
+	            <div class="category-content">
+	                <!-- 대분류 출력 -->
+	                <c:forEach var="parent" items="${p_category}">
+	                    <div class="category-category">
+	                        <h6><a href="${contextPath}/recipe/selectRecipeByCategory?category_id=${parent.category_id}">${parent.name}</a></h6>
+	                        <ul>
+	                            <!-- 중분류 출력 -->
+	                            <c:forEach var="child" items="${c_category}">
+	                                <c:if test="${child.parent_id == parent.category_id}">
+	                                    <li><a href="${contextPath}/recipe/selectRecipeByCategory?category_id=${child.category_id}&parent_id=${parent.category_id}">${child.name}</a></li>
+	                                </c:if>
+	                            </c:forEach>
+	                        </ul>
+	                    </div>
+	                </c:forEach>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
 <div class="container mt-4">
     <div class="mb-3 text-end">                          	<!-- param값 sort로 불러올 목록 정렬 분류 -->

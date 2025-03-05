@@ -26,6 +26,12 @@ public interface RecipeService {
     // 레시피 목록 조회
     List<RecipeDTO> selectRecipeList() throws Exception;
     
+	//레시피 대분류 조회
+    public List<RecipeDTO> selectRecipeByParent(int categoryId, int parentId);
+    
+    //레시피 중분류 조회
+    public List<RecipeDTO> selectRecipeByChild(int categoryId);
+	
     //레시피 목록 평점순으로 조회
     public List<RecipeDTO> selectRecipeListByRating() throws Exception;
     
@@ -46,6 +52,8 @@ public interface RecipeService {
     Map<String, Object> selectRecipeDetail(int rcp_id) throws Exception;
     
     List<RecipeCategoryDTO> getGrandCategoryList();
+    // 중분류 카테고리 조회 (페이지 출력용)
+    public List<RecipeCategoryDTO> selectChildCategoryList();
 	
 	List<RecipeCategoryDTO> getChildCategoryList(int category_id);
 	
@@ -92,4 +100,6 @@ public interface RecipeService {
     
     //레시피 질문,답변 삭제
     public void deleteRecipeQna(RecipeQnaDTO qnaDTO);
+    
+    
 }

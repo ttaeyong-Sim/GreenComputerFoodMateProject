@@ -74,6 +74,61 @@
 	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
 	</select>
 	
+		<!-- 대분류 카테고리 레시피 조회 -->
+	<select id="selectRecipeByParent" resultType="recipeDTO">
+    SELECT 
+        R.RCP_ID, 
+        R.BYR_ID, 
+        BP.NICKNAME,
+        R.CATEGORY_ID, 
+        R.TITLE, 
+        R.MAINIMG_PATH, 
+        R.FOOD_NAME, 
+        R.REQ_TIME, 
+        R.DESCRIPTION, 
+        R.STATUS, 
+        R.CREATE_DATE,
+        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING
+    FROM FOODMATE_RECIPE R
+    LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
+    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
+    WHERE R.STATUS = 'Y' 
+    AND R.CATEGORY_ID = #{categoryId} 
+    AND R.CATEGORY_ID = #{parentId}  <!-- 대분류 카테고리로 필터링 -->
+    GROUP BY 
+        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
+        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
+        R.STATUS, R.CREATE_DATE
+    ORDER BY R.CREATE_DATE DESC
+	</select>
+	
+	<!-- 중분류 카테고리의 레시피 조회 -->
+	<select id="selectRecipeByChild" resultType="recipeDTO">
+	    SELECT 
+	        R.RCP_ID, 
+	        R.BYR_ID, 
+	        BP.NICKNAME,
+	        R.CATEGORY_ID, 
+	        R.TITLE, 
+	        R.MAINIMG_PATH, 
+	        R.FOOD_NAME, 
+	        R.REQ_TIME, 
+	        R.DESCRIPTION, 
+	        R.STATUS, 
+	        R.CREATE_DATE,
+	        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING
+	    FROM FOODMATE_RECIPE R
+	    LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
+	    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
+	    WHERE R.STATUS = 'Y' 
+	    AND R.CATEGORY_ID = #{categoryId}  <!-- 중분류 카테고리로 필터링 -->
+	    GROUP BY 
+	        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
+	        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
+	        R.STATUS, R.CREATE_DATE
+	    ORDER BY R.CREATE_DATE DESC
+	</select>
+	
 	<!-- 평점순 레시피 조회 -->
 	<select id="selectRecipeListByRating" resultType="recipeDTO">
 	    SELECT 
@@ -203,6 +258,12 @@
 	    WHERE PARENT_ID IS NULL
 	</select>
 	
+    <!-- 중분류 카테고리 조회 param값 받아오지않고 바로 페이지에서 출력할때 -->
+    <select id="selectChildCategoryList" resultType="RecipeCategoryDTO">
+        SELECT CATEGORY_ID, NAME, PARENT_ID
+        FROM FOODMATE_RECIPE_CATEGORY
+        WHERE PARENT_ID IS NOT NULL
+    </select>
 	<!-- 카테고리를 선택하면 그거에 해당하는 직계자식 카테고리만 가져온다. 상품등록할때 필요 -->
 	<select id="getChildCategory" resultType="RecipeCategoryDTO" parameterType="java.lang.Integer">
 		SELECT CATEGORY_ID, NAME, PARENT_ID

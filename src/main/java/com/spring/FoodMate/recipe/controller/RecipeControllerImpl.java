@@ -96,11 +96,49 @@ public class RecipeControllerImpl implements RecipeController {
         } else {
             recipeList = recipeService.selectRecipeList();  // 최신순 정렬 (기본값)
         }
-		System.out.println("정렬값:" + sort);
+		System.out.println("정렬값:" + sort);        
+        List<RecipeCategoryDTO> p_category = recipeService.getGrandCategoryList();  // 대분류 카테고리 조회 기존 레시피 작성시 있었던 메소드 활용
+        
+        List<RecipeCategoryDTO> c_category = recipeService.selectChildCategoryList();  // 중분류 카테고리 조회
+        
+        mav.addObject("p_category", p_category);
+        mav.addObject("c_category", c_category);      
         mav.addObject("recipeList", recipeList);
         mav.setViewName("common/layout");
         mav.addObject("showNavbar", true);
         mav.addObject("title","레시피 목록");
+        mav.addObject("body", "/WEB-INF/views/recipe/recipe_list.jsp");
+        return mav;
+    }
+	
+	//레시피 카테고리별 조회
+    @RequestMapping(value = "/recipe/selectRecipeByCategory", method = RequestMethod.GET)
+    public ModelAndView selectRecipeByCategory(
+            @RequestParam(value = "category_id") int categoryId, 
+            @RequestParam(value = "parent_id", required = false) Integer parentId) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        List<RecipeDTO> recipeList;
+
+        if (parentId == null) {
+            // parent_id가 null이면 대분류 카테고리만 조회
+            recipeList = recipeService.selectRecipeByParent(categoryId, categoryId);  // 대분류 조회
+        } else {
+            // parent_id가 있으면 중분류 카테고리만 조회
+            recipeList = recipeService.selectRecipeByChild(categoryId);  // 중분류 조회
+        }
+        
+        List<RecipeCategoryDTO> p_category = recipeService.getGrandCategoryList();  // 대분류 카테고리 조회 기존 레시피 작성시 있었던 메소드 활용
+        
+        List<RecipeCategoryDTO> c_category = recipeService.selectChildCategoryList();  // 중분류 카테고리 조회
+        
+        mav.addObject("p_category", p_category);
+        mav.addObject("c_category", c_category);      
+        
+        mav.addObject("recipeList", recipeList);
+        mav.setViewName("common/layout");
+        mav.addObject("showNavbar", true);
+        mav.addObject("title", "레시피 목록");
         mav.addObject("body", "/WEB-INF/views/recipe/recipe_list.jsp");
         return mav;
     }
