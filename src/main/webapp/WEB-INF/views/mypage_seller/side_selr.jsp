@@ -62,8 +62,8 @@
         <ul>
 	        <li><a href="${contextPath}/mypage_seller/orderlist_ready">배송대기 주문</a></li>
 	        <li><a href="${contextPath}/mypage_seller/orderlist_shipping">배송 중인 주문</a></li>
-	        <li><a href="#">구매확정 주문</a></li>
-	        <li><a href="#">취소/반품 내역</a></li>
+	        <li><a href="${contextPath}/mypage_seller/orderlist_confirmed">구매확정 주문</a></li>
+	        <li><a href="${contextPath}/mypage_seller/orderlist_cancelled">취소/반품 내역</a></li>
 	        
 	        <li><a href="#">환불/입금 내역</a></li>
 	        <li><a href="${contextPath}/mypage_seller/sales_inquiry">매출 조회</a></li>

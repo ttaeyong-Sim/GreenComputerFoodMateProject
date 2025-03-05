@@ -55,6 +55,8 @@
 <script>
 
 const contextPath = '${contextPath}';
+
+// 재고 변경
 $(document).on("click", ".btn-stockchange", function() {
     let pdtId = $(this).data("pdt-id"); // 상품 ID 가져오기
     let stockInput = $(this).prev("input"); // 해당 버튼 앞에 있는 입력 필드 찾기

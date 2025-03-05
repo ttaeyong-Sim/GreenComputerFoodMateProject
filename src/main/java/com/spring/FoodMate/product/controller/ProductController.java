@@ -201,6 +201,29 @@ public class ProductController {
         return "redirect:/mypage_seller/ms_pdtlist";
 	}
 	
+	@RequestMapping(value = "/product/pdtdeleteAjax", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> pdtDeleteAjax(@RequestBody Map<String, Integer> requestData,
+	                                         HttpSession session) throws Exception {
+	    int pdt_id = requestData.getOrDefault("pdt_id", 0);
+	    
+	    if (pdt_id <= 0) {
+	        throw new ProductException(201);
+	    }
+
+	    ProductDTO needDelete = productService.select1PdtByPdtId(pdt_id);
+	    SessionDTO sellerInfo = (SessionDTO) session.getAttribute("sessionDTO");
+
+	    if (!sellerInfo.getUserId().equals(needDelete.getSlr_id())) {
+	        throw new ProductException(203);
+	    }
+
+	    productService.deleteProduct(pdt_id);
+
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("success", true);
+	    return response;
+	}
 	
 	@RequestMapping(value="/product/getSubCategories/{category_id}", method=RequestMethod.GET)
 	@ResponseBody
