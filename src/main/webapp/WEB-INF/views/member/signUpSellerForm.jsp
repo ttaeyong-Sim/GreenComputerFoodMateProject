@@ -17,6 +17,62 @@
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+$(document).ready(function() {
+    $("#searchBtn").click(function() {
+        
+        // JSP에서 전달된 serviceKey 변수 저장
+        var serviceKey = "${servicekey}";
+        
+        // 사업자번호 입력값 가져오기
+        let bsnum1 = $("#bsnum1").val().trim();
+        let bsnum2 = $("#bsnum2").val().trim();
+        let bsnum3 = $("#bsnum3").val().trim();
+
+        // 입력값 유효성 검사
+        if (bsnum1.length !== 3 || bsnum2.length !== 2 || bsnum3.length !== 5) {
+            alert("올바른 사업자번호를 입력하세요 (예: 123-45-67890)");
+            return;
+        }
+
+        // 사업자번호 조합
+        let businessNumber = bsnum1 + bsnum2 + bsnum3;
+
+        // API 요청
+        $.ajax({
+            url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + serviceKey,
+            type: "POST",
+            data: JSON.stringify({ "b_no": [businessNumber] }), // 사업자번호 배열
+            dataType: "json",
+            contentType: "application/json",
+            accept: "application/json",
+            success: function(result) {
+                console.log("조회 결과:", result);
+
+                // API 응답 데이터 확인
+                if (result && result.data && result.data.length > 0) {
+                    let taxType = result.data[0].tax_type; // 응답에서 tax_type 가져오기
+                    
+                    if (taxType === "국세청에 등록되지 않은 사업자등록번호입니다.") {
+                        alert("유효하지 않은 사업자번호입니다. 다시 입력하세요.");
+                    } else {
+                        alert("유효한 사업자번호입니다.");
+                        // 입력 필드를 readonly로 변경
+                        $("#bsnum1, #bsnum2, #bsnum3").prop("readonly", true);
+                        $("#searchBtn").prop("disabled", true); // 조회 버튼 비활성화
+                    }
+                } else {
+                    alert("API 응답을 확인할 수 없습니다.");
+                }
+            },
+            error: function(xhr) {
+                console.log("오류 발생:", xhr.responseText);
+                alert("사업자 조회 실패!");
+            }
+        });
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
 	function toggleCustomInput() {
 	    const select = document.getElementById('email_domain');
@@ -77,6 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
 			return false;
 		}
 		
+		if(!document.getElementById("bsnum1").readOnly){
+			alert("사업자 등록 번호를 조회해 주십시오.");
+			return false;
+		}
+		
 		if((document.newSeller.email_domain.value == "custom") && !document.newSeller.customMail.value){
 			alert("이메일 도메인을 입력하세요.");
 			return false;
@@ -84,45 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
     
-    $(document).ready(function() {
-        $("#searchBtn").click(function() {
-        	
-        	// JSP에서 전달된 serviceKey 변수 저장
-            var serviceKey = "${servicekey}";
-            
-            // 사업자번호 입력값 가져오기
-            let bsnum1 = $("#bsnum1").val().trim();
-            let bsnum2 = $("#bsnum2").val().trim();
-            let bsnum3 = $("#bsnum3").val().trim();
-
-            // 입력값 유효성 검사
-            if (bsnum1.length !== 3 || bsnum2.length !== 2 || bsnum3.length !== 5) {
-                alert("올바른 사업자번호를 입력하세요 (예: 123-45-67890)");
-                return;
-            }
-
-            // 사업자번호 조합
-            let businessNumber = bsnum1 + bsnum2 + bsnum3;
-
-            // .env에서 serviceKey 가져오기 (백엔드에서 처리 필요)
-            $.ajax({
-                url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + serviceKey,
-                type: "POST",
-                data: JSON.stringify({ "b_no": [businessNumber] }), // 사업자번호 배열
-                dataType: "json",
-                contentType: "application/json",
-                accept: "application/json",
-                success: function(result) {
-                    console.log("조회 결과:", result);
-                    alert("사업자 조회 성공! 콘솔을 확인하세요.");
-                },
-                error: function(xhr) {
-                    console.log("오류 발생:", xhr.responseText);
-                    alert("사업자 조회 실패! 콘솔을 확인하세요.");
-                }
-            });
-        });
-    });
+    
 </script>
 <meta charset="UTF-8">
 <title>회원 가입</title>
@@ -168,26 +191,22 @@ document.addEventListener('DOMContentLoaded', function () {
 	                    </div>
 	                </div>
 	                <div class="mb-3 row">
-	                    <label class="col-sm-3 col-form-label text-end">사업자번호</label>
-	                    <div class="col-sm-7">
-	                        <div class="row">
-	                            <div class="col-sm-12">
-							        <div class="d-flex align-items-center">
-							            <!-- 사업자등록번호 입력 -->
-							            <input type="text" id="bsnum1" name="bsnum1" maxlength="3" class="form-control me-2" placeholder="" style="width: 55px;">
-							            <div class="col-sm-1 d-flex justify-content-center align-items-center me-2" style="width: auto; padding: 0 5px;">
-		            							<span>-</span>
-		        						</div>
-		        						<input type="text" id="bsnum2" name="bsnum2" maxlength="2" class="form-control me-2" placeholder="" style="width: 45px;">
-		        						<div class="col-sm-1 d-flex justify-content-center align-items-center me-2" style="width: auto; padding: 0 5px;">
-		            							<span>-</span>
-		        						</div>
-		        						<input type="text" id="bsnum3" name="bsnum3" maxlength="5" class="form-control me-2" placeholder="" style="width: 75px;">
-		        					</div>
-							    </div>
-	                        </div>
-	                    </div>
-	                </div>
+					    <label class="col-sm-3 col-form-label text-end">사업자번호</label>
+					    <div class="col-sm-7">
+					        <div class="d-flex align-items-center">
+					            <!-- 사업자등록번호 입력 -->
+					            <input type="text" id="bsnum1" name="bsnum1" maxlength="3" class="form-control me-2" placeholder="" style="width: 60px;">
+					            <span class="me-2">-</span>
+					            <input type="text" id="bsnum2" name="bsnum2" maxlength="2" class="form-control me-2" placeholder="" style="width: 50px;">
+					            <span class="me-2">-</span>
+					            <input type="text" id="bsnum3" name="bsnum3" maxlength="5" class="form-control me-2" placeholder="" style="width: 80px;">
+					            
+					            <!-- 조회 버튼 -->
+					            <button type="button" class="btn btn-primary ms-2" id="searchBtn" style="white-space: nowrap;">조회</button>
+					        </div>
+					    </div>
+					</div>
+
 					<div class="mb-3 row">
 					    <label class="col-sm-3 col-form-label text-end">이메일</label>
 					    <div class="col-sm-8">

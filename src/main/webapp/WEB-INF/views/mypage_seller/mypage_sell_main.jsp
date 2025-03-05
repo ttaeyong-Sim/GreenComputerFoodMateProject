@@ -181,7 +181,7 @@ $(document).on("click", "#saveWaybill", function() {
 			<div class="col-md-3 mt-3">
 				<div class="mainbox">
 					<div class="name_icon_btn">
-						<img src="${contextPath}/resources/images/profile_09.png" alt="" />
+						<img src="${contextPath}/resources/images/logo.png" alt="" />
 						<p> 프로필수정 </p>
 						<p> 그린축산 </p>
 						<p> 팔로워 : n명 </p>
@@ -268,7 +268,6 @@ $(document).on("click", "#saveWaybill", function() {
       	<tbody>
       	
       	<c:forEach var="ord" items="${ordList}">
-      	
       	<tr>
           <td>${ord.ord_id}</td>
           <td>${ord.create_Date}</td>
@@ -289,7 +288,14 @@ $(document).on("click", "#saveWaybill", function() {
 	        </tr>
 	        </c:forEach>
 	    </c:forEach>
-        
+		        <tr>
+		            <td colspan="7">
+		                <img src="${contextPath}/resources/images/${detail.img_path}">
+		                ${detail.pdt_name} - ${detail.qty}
+		            </td>
+		        </tr>
+		    </c:forEach>
+        </c:forEach>
         
 		</tbody>
 	</table>

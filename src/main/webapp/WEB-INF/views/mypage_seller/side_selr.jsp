@@ -66,7 +66,7 @@
 	        <li><a href="${contextPath}/mypage_seller/orderlist_cancelled">취소/반품 내역</a></li>
 	        
 	        <li><a href="#">환불/입금 내역</a></li>
-	        <li><a href="#">매출 조회</a></li>
+	        <li><a href="${contextPath}/mypage_seller/sales_inquiry">매출 조회</a></li>
         </ul>
         <hr>
         

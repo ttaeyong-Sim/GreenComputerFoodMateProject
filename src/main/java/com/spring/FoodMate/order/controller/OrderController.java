@@ -108,6 +108,7 @@ public class OrderController {
             orderItems.add(singleItem);
             orderItemList.add(pdt_id);  // 단일 상품의 ID를 리스트에 추가
         } else if (cartIds != null && !cartIds.isEmpty()) {
+        	directBuy = false;
             List<Integer> cartIdList = Arrays.stream(cartIds.split(","))
                                              .map(Integer::parseInt)
                                              .collect(Collectors.toList());
@@ -129,12 +130,28 @@ public class OrderController {
 		
 //		 System.out.println("받은 주문 ID 리스트: " + cartIds); // 디버깅용
 		BuyerDTO buyerInfo = (BuyerDTO) session.getAttribute("buyerInfo");
-		 
+		List<CartDTO> cartItems = new ArrayList<>();
 		// 받은 cartIds를 이용해 실제 주문 아이템 가져오기
-	    List<CartDTO> cartItems = orderService.getCartItems(orderRequestDTO.getCartItems());
+		if(directBuy) {
+			int pdt_id = orderRequestDTO.getCartItems().get(0);
+			ProductDTO pdt_info = productService.select1PdtByPdtId(pdt_id);
+        	CartDTO singleItem = new CartDTO();
+        	singleItem.setByr_id(buyerInfo.getByr_id());
+        	singleItem.setPdt_id(pdt_id);
+        	singleItem.setPdt_name(pdt_info.getName());
+        	singleItem.setQty(orderRequestDTO.getDirectqty());
+        	singleItem.setImg_path(pdt_info.getImg_path());
+        	singleItem.setSlr_id(pdt_info.getSlr_id());
+        	singleItem.setPrice(pdt_info.getPrice());
+        	singleItem.setStatus(pdt_info.getStatus());
+			cartItems.add(singleItem);
+		}else {
+			cartItems = orderService.getCartItems(orderRequestDTO.getCartItems());
+		}
+		session.setAttribute("orderItems", cartItems);
 	    int used_point = orderRequestDTO.getUsed_point();
 	    // FlashAttribute에 저장하여 order2에서도 사용 가능
-	    session.setAttribute("orderItems", cartItems);
+	    
 	    session.setAttribute("used_point", used_point);
 	    
 	    Map<String, List<CartDTO>> groupedBySeller = cartItems.stream()
@@ -221,13 +238,16 @@ public class OrderController {
 	    
 	    // cartItems에 들어있는 pdt_id, qty로 각각 재고 떨어뜨리기 (작성자 송태호)
 	    orderService.reducePdtStockProcess(cartItems);
-
-		PointDTO pointDTO = new PointDTO();
-		pointDTO.setByr_id(byrId);
-		pointDTO.setAmount(used_point);
-		pointDTO.setDescription(used_point + "원 사용");
-		pointDTO.setPoint_type("상품 구매 사용");
-	    pointService.usePoint(pointDTO);
+	    
+	    // 포인트 사용시에만 로그 작성
+	    if(used_point > 0) {
+	    	PointDTO pointDTO = new PointDTO();
+			pointDTO.setByr_id(byrId);
+			pointDTO.setAmount(used_point);
+			pointDTO.setDescription(used_point + "원 사용");
+			pointDTO.setPoint_type("상품 구매 사용");
+		    pointService.usePoint(pointDTO);
+	    }
 	    
 	    buyerInfo.setPoints(pointService.inquiryPoints(byrId));
 	    session.setAttribute("buyerInfo", buyerInfo);

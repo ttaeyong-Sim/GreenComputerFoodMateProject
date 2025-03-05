@@ -59,7 +59,7 @@
 		
 		.swiper-container img {
             width: 100%; /* 이미지 너비 조정 */
-            height: 200px; /* 이미지 비율 유지 */
+            height: 300px; /* 이미지 비율 유지 */
             object-fit: cover;
         }
 		

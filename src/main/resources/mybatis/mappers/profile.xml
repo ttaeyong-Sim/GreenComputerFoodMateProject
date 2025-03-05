@@ -28,9 +28,31 @@
 		]]>
 	</insert>
 	
+	<insert id="insertNewSellerProfile" parameterType="sellerprofileDTO">
+		<![CDATA[
+			insert into FOODMATE_SELLER_PROFILE(
+					slr_id, 
+			        nickname, 
+			        img_path, 
+			        store_address
+		        )values(
+			        #{slr_id}, 
+			        #{nickname}, 
+			        #{img_path},
+			        #{store_address}
+		        )
+		]]>
+	</insert>
+	
 	<select id="selectProfileByID" resultMap="ProfileResult" parameterType="String">
 		<![CDATA[
 			select * from FOODMATE_BUYER_PROFILE where byr_id = #{byr_id}
+		]]>
+	</select>
+	
+	<select id="selectSellerProfileByID" resultType="sellerprofileDTO" parameterType="String">
+		<![CDATA[
+			select * from FOODMATE_SELLER_PROFILE where slr_id = #{slr_id}
 		]]>
 	</select>
 	
@@ -42,6 +64,17 @@
             		bio = #{BIO}, 
             		img_path = #{img_path}
 		 	       where byr_id=#{byr_id}
+    	]]>
+	</update>
+	
+	<update id="updateSellerProfile" parameterType="sellerprofileDTO">
+	    <![CDATA[
+			update FOODMATE_SELLER_PROFILE
+			       set 
+			        nickname = #{nickname}, 
+            		store_address = #{store_address}, 
+            		img_path = #{img_path}
+		 	       where slr_id=#{slr_id}
     	]]>
 	</update>
 	

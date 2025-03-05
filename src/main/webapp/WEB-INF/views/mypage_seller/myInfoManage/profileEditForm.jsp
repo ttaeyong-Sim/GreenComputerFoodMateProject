@@ -98,7 +98,7 @@
 	<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
       <h5 class="mb-0 fw-bold">프로필 수정</h5>
     </div>
-    	<form name="profileEdit" action="${contextPath}/mypage/profileUpdate" method="post" enctype="multipart/form-data" onsubmit="return prepareFormSubmission()">
+    	<form name="profileEdit" action="${contextPath}/mypage_seller/sellerProfileUpdate" method="post" enctype="multipart/form-data" onsubmit="return prepareFormSubmission()">
 	    	<div class="signUp-container">
 				<div class="row justify-content-start">
 					<div class="d-flex flex-column align-items-center mb-3">
@@ -109,12 +109,12 @@
 					    </div>
 					    <!-- 닉네임 입력 -->
 					    <div class="text-center" style="width: 100%; max-width: 300px;">
-					        <label class="form-label">닉네임</label>
-					        <input name="nickname" type="text" class="form-control" placeholder="nickname" value="${profile.nickname}">
+					        <label class="form-label">상점 이름</label>
+					        <input name="nickname" type="text" class="form-control" placeholder="store name" value="${profile.nickname}">
 					    </div>
 					    <div class="text-center mt-2" style="width: 100%; max-width: 300px;">
-					        <label class="form-label">자기소개</label>
-					        <textarea name="BIO" class="form-control" >${profile.BIO}</textarea>
+					        <label class="form-label">상점 주소</label>
+					        <textarea name="store_address" class="form-control" >${profile.store_address}</textarea>
 					    </div>
 					    <div class="mt-3 row">
 							<div class="col-12 text-center">

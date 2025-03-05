@@ -13,6 +13,7 @@
 		<typeAlias type="com.spring.FoodMate.member.dto.SellerDTO" alias="sellerDTO"/>
 		<typeAlias type="com.spring.FoodMate.member.dto.AdminDTO" alias="adminDTO"/>
 		<typeAlias type="com.spring.FoodMate.mypage.dto.ProfileDTO" alias="profileDTO"/>
+		<typeAlias type="com.spring.FoodMate.mypage.dto.SellerProfileDTO" alias="sellerprofileDTO"/>
 		<typeAlias type="com.spring.FoodMate.mypage.dto.DeliveryDTO" alias="deliveryDTO"/>
 		<typeAlias type="com.spring.FoodMate.mypage.dto.PointDTO" alias="pointDTO"/>
 		<typeAlias type="com.spring.FoodMate.mypage.dto.WishDTO" alias="wishDTO"/>
@@ -33,7 +34,6 @@
         <typeAlias type="com.spring.FoodMate.recipe.dto.RecipeQnaDTO" alias="RecipeQnaDTO"/>
         
         <typeAlias type="com.spring.FoodMate.product.dto.CategoryDTO" alias="ProductCategoryDTO"/>
-      
         <typeAlias type="com.spring.FoodMate.product.dto.ProductRatingDTO" alias="ProductRatingDTO"/>
         <typeAlias type="com.spring.FoodMate.product.dto.ProductQnaDTO" alias="ProductQnaDTO"/>
 	</typeAliases>

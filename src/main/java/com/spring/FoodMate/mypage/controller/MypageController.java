@@ -17,6 +17,7 @@ import com.spring.FoodMate.common.SessionDTO;
 import com.spring.FoodMate.member.dto.BuyerDTO;
 import com.spring.FoodMate.member.dto.SellerDTO;
 import com.spring.FoodMate.mypage.dto.ProfileDTO;
+import com.spring.FoodMate.mypage.dto.SellerProfileDTO;
 import com.spring.FoodMate.mypage.dto.WishDTO;
 import com.spring.FoodMate.mypage.service.DeliveryService;
 import com.spring.FoodMate.mypage.service.MypageService;
@@ -404,6 +405,13 @@ public class MypageController {
 		return mav;
 	}
 	
+	@RequestMapping(value="/mypage_seller/sales_inquiry", method=RequestMethod.GET)
+	private ModelAndView sales_inquiry(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("title", "FoodMate - 판매자 마이페이지");
+		return mav;
+	}
+	
 	@RequestMapping(value="/mypage_seller/mypage_sell_productlist", method=RequestMethod.GET)
 	public ModelAndView seller_Mypage_productList(HttpSession session) throws Exception {
 	    SessionDTO sellerInfo = (SessionDTO)session.getAttribute("sessionDTO");
@@ -435,10 +443,10 @@ public class MypageController {
 			slr_id = sellerInfo.getSlr_id(); // byr_id 값 추출
 		}
 		
-//		ProfileDTO profileDTO = profileService.getBuyerProfile(byr_id);
+		SellerProfileDTO SprofileDTO = profileService.getSellerProfile(slr_id);
 		
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("profile", "");
+		mav.addObject("profile", SprofileDTO);
 		return mav;
 	}
 	
