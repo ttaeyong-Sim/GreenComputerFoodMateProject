@@ -125,7 +125,7 @@ public class MemberController {
 		
 		Map<String, String> loginMap = new HashMap<>();
 		// byr_id와 password 저장
-        loginMap.put("byr_Id", (String)userInfo.get("id"));
+        loginMap.put("byr_id", (String)userInfo.get("id"));
         loginMap.put("password", "sociallogin");
         
 		buyerDTO=memberService.login(loginMap);
@@ -150,7 +150,7 @@ public class MemberController {
 			
 		}else{
 			HttpSession session = request.getSession();
-			session.setAttribute("byr_Id", (String)userInfo.get("id"));
+			session.setAttribute("byr_id", (String)userInfo.get("id"));
 			session.setAttribute("password", "sociallogin");
 			session.setAttribute("nickname", (String)userInfo.get("nickname"));
 			session.setAttribute("profile_image", (String)userInfo.get("profile_link"));

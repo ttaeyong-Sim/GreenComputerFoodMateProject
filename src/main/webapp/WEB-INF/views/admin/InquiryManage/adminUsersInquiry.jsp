@@ -185,7 +185,7 @@
                             <td>김철수</td>
                             <td>사용자 A</td>
                             <td>댓글 신고</td>
-                            <td><a href="${contextPath}/admin/adminInquiryDetail.do" class="btn-detail">상세보기</a></td>
+                            <td><a href="${contextPath}/admin/InquiryManage/adminInquiryDetail.do" class="btn-detail">상세보기</a></td>
                         </tr>
                         <tr>
                             <td>2025-01-11</td>

@@ -190,7 +190,7 @@
                             <td>새 상품 등록 신청</td>
                             <td>2025-01-10</td>
                             <td>승인 대기</td>
-                            <td><a href="${contextPath}/admin/adminSellerInquiryDetail.do">상세보기</a></td>
+                            <td><a href="${contextPath}/admin/InquiryManage/adminSellerInquiryDetail.do">상세보기</a></td>
                         </tr>
                         <tr>
                             <td><img src="${contextPath}/resources/images/example1.png" class="thumbnail" alt="상품2"></td>
@@ -228,7 +228,7 @@
                             <td>가격 수정 요청</td>
                             <td>2025-01-12</td>
                             <td>승인 대기</td>
-                            <td><a href="${contextPath}/admin/adminSellerInquiryDetail.do">상세보기</a></td>
+                            <td><a href="${contextPath}/admin/InquiryManage/adminSellerInquiryDetail.do">상세보기</a></td>
                         </tr>
                         <tr>
                             <td><img src="${contextPath}/resources/images/example1.png" class="thumbnail" alt="상품4"></td>

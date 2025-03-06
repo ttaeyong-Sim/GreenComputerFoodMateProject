@@ -172,7 +172,7 @@
                         <td>admin1@example.com</td>
                         <td>슈퍼 관리자</td>
                         <td>활동 중</td>
-                        <td><a href="${contextPath}/admin/adminAdminDetail.do">보기</a></td>
+                        <td><a href="${contextPath}/admin/AdminManage/adminAdminDetail.do">보기</a></td>
                         
                     </tr>
                     <tr>

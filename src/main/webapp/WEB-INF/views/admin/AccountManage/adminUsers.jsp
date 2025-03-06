@@ -164,7 +164,7 @@
                     <tbody>
                         <tr>
                             <td><img src="${contextPath}/resources/images/example1.png" alt="사용자 1" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-                            <td><a href="${contextPath}/admin/adminUserDetail.do">사용자 1</a></td>
+                            <td><a href="${contextPath}/admin/AccountManage/adminUserDetail.do">사용자 1</a></td>
                             <td>user1@example.com</td>
                             <td>활동 중</td>
                             <td>2025-01-01</td>

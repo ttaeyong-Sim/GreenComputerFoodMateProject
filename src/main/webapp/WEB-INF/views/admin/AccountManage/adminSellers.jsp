@@ -163,7 +163,7 @@
                     <tbody>
                         <tr>
                             <td><img src="${contextPath}/resources/images/example1.png" alt="판매자 1" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-                            <td><a href="${contextPath}/admin/adminSellerDetail.do">판매자 1</a></td>
+                            <td><a href="${contextPath}/admin/AccountManage/adminSellerDetail.do">판매자 1</a></td>
                             <td>20개</td>
                             <td>500,000원</td>
                             <td>2023-06-25</td>
