@@ -154,7 +154,7 @@
     	]]>
 	</update>
 	
-		<update id="updateSeller" parameterType="sellerDTO">
+	<update id="updateSeller" parameterType="sellerDTO">
 	    <![CDATA[
 			update foodmate_seller
 			       set pw=#{password},
@@ -183,5 +183,15 @@
 			        and pw=#{password}
     	]]>
 	</update>
+	
+	<!-- Admin 페이지 사용 -->
+	
+	<select id="selectAdminBuyerInfo" resultType="buyerDTO">
+	    <![CDATA[
+			select fb.*, fbp.img_path
+				from foodmate_buyer fb
+				join foodmate_buyer_profile fbp on fb.byr_id = fbp.byr_id;
+		]]>
+	</select>
 	
 </mapper>

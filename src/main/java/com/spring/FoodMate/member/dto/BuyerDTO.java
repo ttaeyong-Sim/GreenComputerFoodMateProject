@@ -27,6 +27,9 @@ public class BuyerDTO {
 	private String birthyy;
 	private String birthmm;
 	private String birthdd;
+	
+	// 프로파일 이미지
+	private String img_path;
 
 	private MultipartFile profileImage;
 	
@@ -138,6 +141,13 @@ public class BuyerDTO {
 	public void setPoints(int points) {
 		this.points = points;
 	}
+	public String getImg_path() {
+		return img_path;
+	}
+	public void setImg_path(String img_path) {
+		this.img_path = img_path;
+	}
+	
 	
 	
 }
