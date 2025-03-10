@@ -74,9 +74,9 @@
 	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
 	</select>
 	
-		<!-- 대분류 카테고리 레시피 조회 -->
-	 <select id="selectRecipeByParent" resultType="recipeDTO">
-    SELECT 
+		 <!-- 대분류 카테고리 레시피 조회 -->
+    <select id="selectRecipeByParent" resultType="recipeDTO">
+        SELECT 
         R.RCP_ID, 
         R.BYR_ID, 
         BP.NICKNAME,
@@ -92,14 +92,16 @@
     FROM FOODMATE_RECIPE R
     LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
     LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
-    LEFT JOIN FOODMATE_RECIPE_category C ON R.CATEGORY_ID = C.CATEGORY_ID  <!-- 카테고리 테이블 조인 -->
+                            <!-- ▼레시피 카테고리를 조회하는거지만 실질적으로 '카테고리 테이블'의 parent_id에 해당하는 중분류 카테고리와 일치해야해서 -->
+    LEFT JOIN FOODMATE_RECIPE_CATEGORY C ON R.CATEGORY_ID = C.CATEGORY_ID 
     WHERE R.STATUS = 'Y' 
-    AND C.PARENT_ID = #{category_id}     <!-- PARENT_ID가 categoryId와 일치하는 카테고리만 필터링 -->
+    AND C.PARENT_ID = #{parent_id}  -- 서브쿼리 대신 여기에서 직접 필터링
     GROUP BY 
         R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
         R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
         R.STATUS, R.CREATE_DATE
     ORDER BY R.CREATE_DATE DESC
+
     </select>
 	
 	<!-- 중분류 카테고리의 레시피 조회 -->

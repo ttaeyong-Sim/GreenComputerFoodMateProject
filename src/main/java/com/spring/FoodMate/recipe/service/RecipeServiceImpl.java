@@ -60,8 +60,8 @@ public class RecipeServiceImpl implements RecipeService {
     }
     
     // 대분류 카테고리 레시피 조회
-    public List<RecipeDTO> selectRecipeByParent(int categoryId, int parentId) {
-        return recipeDAO.selectRecipeByParent(categoryId, parentId);  // 대분류 카테고리 조회
+    public List<RecipeDTO> selectRecipeByParent(int parent_id) {
+        return recipeDAO.selectRecipeByParent(parent_id);  // 대분류 카테고리 조회
     }
 
     // 중분류 카테고리 레시피 조회

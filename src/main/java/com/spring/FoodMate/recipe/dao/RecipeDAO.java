@@ -30,7 +30,7 @@ public interface RecipeDAO {
     List<RecipeDTO> selectRecipeList() throws Exception;
     
     //레시피 대분류 조회
-    public List<RecipeDTO> selectRecipeByParent(int categoryId, int parentId);
+    public List<RecipeDTO> selectRecipeByParent(int parent_id);
     
     //레시피 중분류 조회
     public List<RecipeDTO> selectRecipeByChild(int categoryId);
