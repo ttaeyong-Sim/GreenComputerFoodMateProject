@@ -38,7 +38,6 @@ public class AdminController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("result",result);
 		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
-
 		return mav;
 	}
 	
