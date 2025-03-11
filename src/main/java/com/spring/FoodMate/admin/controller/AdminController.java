@@ -50,7 +50,13 @@ public class AdminController {
 	}
 
 	@RequestMapping(value="/admin/AccountManage/adminUsers", method=RequestMethod.GET)
-	private ModelAndView AdminAccountAdminUsers(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, @RequestParam(value="tab", required=false) String tab, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ModelAndView AdminAccountAdminUsers(
+			@RequestParam(value="result", required=false) String result,
+			@RequestParam(value="action",required=false) String action,
+			@RequestParam(value="tab", required=false) String tab,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "searchtype", required = false, defaultValue = "") String searchtype,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String viewName = UtilMethod.getViewName(request);
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);

@@ -164,7 +164,7 @@
                 <table class="report-list">
                     <thead>
                         <tr>
-                            <th>이미지</th>
+                            <th>프로필 이미지</th>
                             <th>사용자 이름</th>
                             <th>이메일</th>
                             <th>상태</th>
@@ -211,29 +211,50 @@
 				</div>
             </div>
 
+			<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+			<c:set var="DELcurrentPage" value="${param.page != null ? param.page : 1}" />
+			<c:set var="DELitemsPerPage" value="6" />
+			<c:set var="DELstartIndex" value="${(DELcurrentPage - 1) * DELitemsPerPage}" />
+			<c:set var="DELendIndex" value="${DELcurrentPage * DELitemsPerPage}" />
+			
+			<%-- 전체 데이터 개수 구하기 --%>
+			<c:set var="DELtotalItems" value="${fn:length(DeletingmemberList)}" />
+			<fmt:parseNumber var="DELparsedTotalPages" value="${(DELtotalItems + DELitemsPerPage - 1) / DELitemsPerPage}" integerOnly="true" />
+			<c:set var="DELtotalPages" value="${DELparsedTotalPages}" />
+
             <!-- 탈퇴 신청 사용자 -->
             <div id="withdrawal" class="tab-pane">
                 <table class="report-list">
                     <thead>
-                        <tr>
-                            <th>이미지</th>
-                            <th>사용자 이름</th>
-                            <th>이메일</th>
-                            <th>상태</th>
-                            <th>가입일</th>
-                            <th>액션</th>
-                        </tr>
+						<tr>
+							<th>프로필 이미지</th>
+							<th>사용자 이름</th>
+							<th>이메일</th>
+							<th>상태</th>
+							<th>가입일</th>
+							<th>처리</th>
+						</tr>
                     </thead>
                     <tbody>
+                      <c:forEach var="delmember" items="${DeletingmemberList}" varStatus="status">
+			      		<c:if test="${status.index >= DELstartIndex && status.index < DELendIndex}">
                         <tr>
-                            <td><img src="${contextPath}/resources/images/example1.png" alt="사용자 A" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-                            <td><a href="${contextPath}/admin/AccountManage/adminUserDetail">사용자 A</a></td>
-                            <td>userA@example.com</td>
-                            <td>탈퇴 신청</td>
-                            <td>2025-01-03</td>
-                            <td><button class="btn btn-danger">탈퇴 처리</button></td>
+	                        <td><img src="${contextPath}/resources/images/${delmember.img_path}" alt="${delmember.name}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
+	                        <td><a href="${contextPath}/admin/AccountManage/adminUserDetail">${delmember.name}</a></td>
+	                        <td>${delmember.email}</td>
+                            <td><c:choose>
+						    <c:when test="${inactmember.status eq 'ACTIVE'}">활동 중</c:when>
+						    <c:when test="${inactmember.status eq 'DELETING'}">탈퇴 신청</c:when>
+						    <c:when test="${inactmember.status eq 'DELETED'}">탈퇴 완료</c:when>
+						    <c:when test="${inactmember.status eq 'SLEEP'}">휴면</c:when>
+						    <c:otherwise>알 수 없음</c:otherwise>
+						    </c:choose></td>
+                            <td>${inactmember.join_date}</td>
+                            <td><button class="btn btn-danger">탈퇴 처리</button> <button class="btn btn-secondary">탈퇴 취소</button></td>
                         </tr>
                         <!-- 추가적인 탈퇴 신청 사용자 카드들 -->
+                        </c:if>
+	                  </c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -253,7 +274,7 @@
                 <table class="report-list">
                     <thead>
                         <tr>
-                            <th>이미지</th>
+                            <th>프로필 이미지</th>
                             <th>사용자 이름</th>
                             <th>이메일</th>
                             <th>상태</th>
@@ -315,7 +336,7 @@
                 <table class="report-list">
                     <thead>
                         <tr>
-                            <th>이미지</th>
+                            <th>프로필 이미지</th>
                             <th>사용자 이름</th>
                             <th>이메일</th>
                             <th>상태</th>
