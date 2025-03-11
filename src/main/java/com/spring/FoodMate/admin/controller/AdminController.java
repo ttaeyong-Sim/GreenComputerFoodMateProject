@@ -1,23 +1,31 @@
 package com.spring.FoodMate.admin.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.FoodMate.admin.service.AdminService;
 import com.spring.FoodMate.common.UtilMethod;
+import com.spring.FoodMate.member.dto.BuyerDTO;
 
 
 @Controller
 public class AdminController {
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+	
+	@Autowired
+	private AdminService adminService;
 	
 	@RequestMapping(value="/admin/adminMain", method=RequestMethod.GET)
 	private ModelAndView main(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -46,12 +54,18 @@ public class AdminController {
 		String viewName = UtilMethod.getViewName(request);
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);
-		
-		
+		List<BuyerDTO> SleepingmemberList = adminService.getAdminBuyerInfo("sleeping");
+		List<BuyerDTO> DeletingmemberList = adminService.getAdminBuyerInfo("deleting");
+		List<BuyerDTO> ActivememberList = adminService.getAdminBuyerInfo("ACTIVE");
+		List<BuyerDTO> AllmemberList = adminService.getAdminBuyerInfo("");
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("result",result);
 		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
+		mav.addObject("AllmemberList", AllmemberList);
+		mav.addObject("ActivememberList", ActivememberList);
+		mav.addObject("DeletingmemberList", DeletingmemberList);
+		mav.addObject("SleepingmemberList", SleepingmemberList);
 		return mav;
 	}
 	

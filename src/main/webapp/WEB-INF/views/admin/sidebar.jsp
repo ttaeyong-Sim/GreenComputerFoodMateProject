@@ -71,7 +71,7 @@
             <div class="admin-area">
                 <h5><strong>계정 관리</strong></h5>
                 <ul>
-                    <li><a href="${contextPath}/admin/AccountManage/adminUsers">사용자 관리</a></li>
+                    <li><a href="${contextPath}/admin/AccountManage/adminUsers?tab=all">사용자 관리</a></li>
                     <li><a href="${contextPath}/admin/AccountManage/adminUsers?tab=withdrawal">탈퇴 신청 사용자</a></li>
                     <li><a href="${contextPath}/admin/AccountManage/adminUsers?tab=inactive">휴면 상태 사용자</a></li>
                     <li><a href="${contextPath}/admin/AccountManage/adminSellers">판매자 관리</a></li>
