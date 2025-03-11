@@ -630,7 +630,7 @@ $(document).ready(function() {
             type: "POST",
             data: formData,
             contentType: false,
-            processData: false,
+            processData: false,-
             success: function(response) {
                 alert('레시피가 성공적으로 등록되었습니다!');
                 $('#recipeForm')[0].reset();  // 폼 초기화

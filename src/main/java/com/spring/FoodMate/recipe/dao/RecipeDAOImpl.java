@@ -56,14 +56,14 @@ public class RecipeDAOImpl implements RecipeDAO {
     
     // 대분류 카테고리 레시피 조회
     @Override
-    public List<RecipeDTO> selectRecipeByParent(int categoryId, int parentId) {
-        return sqlSession.selectList("selectRecipeByParent", Map.of("categoryId", categoryId, "parentId", parentId));
+    public List<RecipeDTO> selectRecipeByParent(int parent_id) {
+        return sqlSession.selectList("selectRecipeByParent", Map.of("parent_id", parent_id));
     }
 
     // 중분류 카테고리 레시피 조회
     @Override
-    public List<RecipeDTO> selectRecipeByChild(int categoryId) {
-        return sqlSession.selectList("selectRecipeByChild", Map.of("categoryId", categoryId));
+    public List<RecipeDTO> selectRecipeByChild(int category_id) {
+        return sqlSession.selectList("selectRecipeByChild", Map.of("category_id", category_id));
     }
     
         // 레시피 목록 평점순으로 조회

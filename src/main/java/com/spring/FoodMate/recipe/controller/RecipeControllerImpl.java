@@ -114,18 +114,23 @@ public class RecipeControllerImpl implements RecipeController {
 	//레시피 카테고리별 조회
     @RequestMapping(value = "/recipe/selectRecipeByCategory", method = RequestMethod.GET)
     public ModelAndView selectRecipeByCategory(
-            @RequestParam(value = "category_id") int categoryId, 
-            @RequestParam(value = "parent_id", required = false) Integer parentId) throws Exception {
+            @RequestParam(value = "category_id") int category_id, 
+            @RequestParam(value = "parent_id", required = false) Integer parent_id) throws Exception {
 
         ModelAndView mav = new ModelAndView();
         List<RecipeDTO> recipeList;
 
-        if (parentId == null) {
-            // parent_id가 null이면 대분류 카테고리만 조회
-            recipeList = recipeService.selectRecipeByParent(categoryId, categoryId);  // 대분류 조회
+        if (parent_id == null) {
+        	        // 🔥 parent_id가 null이면 category_id를 parent_id로 사용해야함
+        	parent_id = category_id;        	        
+        	        // 🔥 대분류에 속한 모든 소분류 category_id를 조회
+        	        recipeList = recipeService.selectRecipeByParent(parent_id);
+            System.out.println("대분류의 category_id :"  + "중분류의 부모 카테고리:" + parent_id );
         } else {
             // parent_id가 있으면 중분류 카테고리만 조회
-            recipeList = recipeService.selectRecipeByChild(categoryId);  // 중분류 조회
+            recipeList = recipeService.selectRecipeByChild(category_id);  // 중분류 조회
+            System.out.println("중분류카테고리id:"  + category_id);
+            System.out.println("중분류부모카테고리id:"  + parent_id);
         }
         
         List<RecipeCategoryDTO> p_category = recipeService.getGrandCategoryList();  // 대분류 카테고리 조회 기존 레시피 작성시 있었던 메소드 활용
