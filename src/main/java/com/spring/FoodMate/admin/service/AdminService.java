@@ -23,4 +23,12 @@ public class AdminService {
     public List<BuyerDTO> getAdminBuyerInfo(String status) throws Exception {
         return adminDAO.getAdminBuyerInfo(status);
     }
+    
+    public void deleteAdminBuyer(String byr_id) throws Exception{
+    	adminDAO.deleteAdminBuyer(byr_id);
+    }
+    
+    public void setActiveAdminBuyer(String byr_id) throws Exception{
+    	adminDAO.setActiveAdminBuyer(byr_id);
+    }
 }

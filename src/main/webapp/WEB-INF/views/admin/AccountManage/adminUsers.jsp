@@ -243,14 +243,14 @@
 	                        <td><a href="${contextPath}/admin/AccountManage/adminUserDetail">${delmember.name}</a></td>
 	                        <td>${delmember.email}</td>
                             <td><c:choose>
-						    <c:when test="${inactmember.status eq 'ACTIVE'}">활동 중</c:when>
-						    <c:when test="${inactmember.status eq 'DELETING'}">탈퇴 신청</c:when>
-						    <c:when test="${inactmember.status eq 'DELETED'}">탈퇴 완료</c:when>
-						    <c:when test="${inactmember.status eq 'SLEEP'}">휴면</c:when>
+						    <c:when test="${delmember.status eq 'ACTIVE'}">활동 중</c:when>
+						    <c:when test="${delmember.status eq 'DELETING'}">탈퇴 신청</c:when>
+						    <c:when test="${delmember.status eq 'DELETED'}">탈퇴 완료</c:when>
+						    <c:when test="${delmember.status eq 'SLEEP'}">휴면</c:when>
 						    <c:otherwise>알 수 없음</c:otherwise>
 						    </c:choose></td>
-                            <td>${inactmember.join_date}</td>
-                            <td><button class="btn btn-danger">탈퇴 처리</button> <button class="btn btn-secondary">탈퇴 취소</button></td>
+                            <td>${delmember.join_date}</td>
+                            <td><button class="btn btn-danger action-btn" data-action="delete" data-id="${delmember.byr_id}">탈퇴 처리</button> <button class="btn btn-secondary action-btn" data-action="active" data-id="${delmember.byr_id}">탈퇴 취소</button></td>
                         </tr>
                         <!-- 추가적인 탈퇴 신청 사용자 카드들 -->
                         </c:if>
@@ -386,10 +386,10 @@
 
         
     </div>
-
     <script>
     $(document).ready(function() {
         var tab = "${tab}"; // 서버에서 받아온 tab 값
+        var contextPath = "${pageContext.request.contextPath}";
 
         if (tab) {
             activateTab(tab);
@@ -407,6 +407,31 @@
             $(".tab-item[data-tab='" + tabName + "']").addClass("active");
             $("#" + tabName).addClass("active");
         }
+        $(".action-btn").click(function() {
+            var action = $(this).data("action"); // delete 또는 active 값
+            var byr_id = $(this).data("id"); // JSP에서 가져온 byr_id
+
+            if (!byr_id) {
+                alert("회원 ID가 없습니다.");
+                return;
+            }
+
+            $.ajax({
+                url: contextPath + "/admin/AccountManage/Admindeletememberprocess",
+                type: "POST",
+                data: {
+                    byr_id: byr_id,
+                    action: action
+                },
+                success: function(response) {
+                	alert("요청된 처리를 완료했습니다.");
+                    location.reload(); // 처리 후 현재 페이지 새로고침
+                },
+                error: function(xhr, status, error) {
+                    alert("에러 발생: " + error);
+                }
+            });
+        });
     });
     </script>
 </body>

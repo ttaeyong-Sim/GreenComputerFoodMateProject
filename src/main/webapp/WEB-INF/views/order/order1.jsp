@@ -703,7 +703,8 @@ function execDaumPostcode() {
         <!-- 결제 버튼 -->
         <div class="button-container">
             <button type="submit" class="submit-btn" onclick="requestPay()">결제하기</button>
-            <button type="submit" class="submit-btn" onclick="requestOrder2()">결제패스</button>
+            <!-- 디버그 옵션이므로 최종버전에서는 비활성화처리 -->
+            <!--  <button type="submit" class="submit-btn" onclick="requestOrder2()">결제패스</button>-->
         </div>
         <%
     		String impUid = (String) request.getAttribute("impUid");

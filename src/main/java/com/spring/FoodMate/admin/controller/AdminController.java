@@ -9,7 +9,11 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.FoodMate.admin.service.AdminService;
 import com.spring.FoodMate.common.UtilMethod;
 import com.spring.FoodMate.member.dto.BuyerDTO;
+import com.spring.FoodMate.member.dto.SellerDTO;
 
 
 @Controller
@@ -60,8 +65,9 @@ public class AdminController {
 		String viewName = UtilMethod.getViewName(request);
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);
-		List<BuyerDTO> SleepingmemberList = adminService.getAdminBuyerInfo("sleeping");
-		List<BuyerDTO> DeletingmemberList = adminService.getAdminBuyerInfo("deleting");
+		List<BuyerDTO> SleepingmemberList = adminService.getAdminBuyerInfo("SLEEP");
+		List<BuyerDTO> DeletingmemberList = adminService.getAdminBuyerInfo("DELETING");
+		System.out.println(DeletingmemberList);
 		List<BuyerDTO> ActivememberList = adminService.getAdminBuyerInfo("ACTIVE");
 		List<BuyerDTO> AllmemberList = adminService.getAdminBuyerInfo("");
 		
@@ -73,6 +79,38 @@ public class AdminController {
 		mav.addObject("DeletingmemberList", DeletingmemberList);
 		mav.addObject("SleepingmemberList", SleepingmemberList);
 		return mav;
+	}
+	
+	@RequestMapping(value="/admin/AccountManage/Admindeletememberprocess" ,method = RequestMethod.POST)
+	public ResponseEntity Admindeletememberprocess(
+			@RequestParam("byr_id") String byr_id,
+	        @RequestParam("action") String action,
+			                HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("utf-8");
+		String message = null;
+		ResponseEntity resEntity = null;
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+		try {
+			if(action.equals("delete")) {
+				adminService.deleteAdminBuyer(byr_id);
+			} else {
+				adminService.setActiveAdminBuyer(byr_id);
+			}
+		    
+		    message  = "<script>";
+		    message +=" alert('요청된 처리를 완료했습니다.');";
+		    message += " </script>";
+		    
+		}catch(Exception e) {
+			message  = "<script>";
+		    message +=" alert('작업 중 오류가 발생했습니다. 다시 시도해 주세요.');";
+		    message += " </script>";
+			e.printStackTrace();
+		}
+		resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);
+		return resEntity;
 	}
 	
 	@RequestMapping(value="/admin/AdminManage/*", method=RequestMethod.GET)

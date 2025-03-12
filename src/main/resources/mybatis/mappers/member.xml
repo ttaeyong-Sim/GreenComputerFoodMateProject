@@ -195,4 +195,17 @@
 	    </if>
 	</select>
 	
+	<update id="setActiveAdminBuyer" parameterType="String">
+	    <![CDATA[
+			update foodmate_buyer
+			       set status='ACTIVE'
+		 	       where byr_id=#{byr_id}
+    	]]>
+	</update>
+	
+	<delete id="deleteAdminBuyer" parameterType="String">
+        DELETE FROM foodmate_buyer
+        WHERE byr_id = #{byr_id}
+    </delete>
+	
 </mapper>

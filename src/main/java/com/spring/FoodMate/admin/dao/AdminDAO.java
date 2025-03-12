@@ -22,4 +22,12 @@ public class AdminDAO {
         paramMap.put("status", status);
         return sqlSession.selectList("mapper.member.selectAdminBuyerInfo", paramMap);
     }
+    
+    public void deleteAdminBuyer(String byr_id) throws DataAccessException {
+    	sqlSession.delete("mapper.member.deleteAdminBuyer", byr_id);
+    }
+    
+    public void setActiveAdminBuyer(String byr_id) throws DataAccessException {
+    	sqlSession.update("mapper.member.setActiveAdminBuyer", byr_id);
+    }
 }
