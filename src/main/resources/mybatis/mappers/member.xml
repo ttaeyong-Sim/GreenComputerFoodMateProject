@@ -207,5 +207,14 @@
         DELETE FROM foodmate_buyer
         WHERE byr_id = #{byr_id}
     </delete>
+    
+    <select id="selectAdminSellerInfo" resultType="sellerDTO" parameterType="map">
+		select fs.*, fsp.img_path
+			from foodmate_seller fs
+			join foodmate_seller_profile fsp on fs.slr_id = fsp.slr_id
+			<if test="status != null and status != ''">
+	        <![CDATA[ WHERE fb.status = #{status} ]]>
+	    </if>
+	</select>
 	
 </mapper>
