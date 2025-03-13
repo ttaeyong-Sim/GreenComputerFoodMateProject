@@ -17,10 +17,20 @@ public class AdminDAO {
 	@Autowired
 	private SqlSession sqlSession;	
 	
-    public List<BuyerDTO> getAdminBuyerInfo(String status) throws DataAccessException {
+    public List<BuyerDTO> getAdminBuyerInfo(String status, String keyword, String searchType) throws DataAccessException {
     	Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("status", status);
+        paramMap.put("keyword", keyword);
+        paramMap.put("searchtype", searchType);
         return sqlSession.selectList("mapper.member.selectAdminBuyerInfo", paramMap);
+    }
+    
+    public List<SellerDTO> getAdminSellerInfo(String status, String keyword, String searchType) throws DataAccessException {
+    	Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("status", status);
+        paramMap.put("keyword", keyword);
+        paramMap.put("searchtype", searchType);
+        return sqlSession.selectList("mapper.member.selectAdminSellerInfo", paramMap);
     }
     
     public void deleteAdminBuyer(String byr_id) throws DataAccessException {

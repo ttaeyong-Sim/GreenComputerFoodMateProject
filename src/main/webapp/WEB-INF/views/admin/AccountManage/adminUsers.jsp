@@ -176,7 +176,7 @@
 			      		<c:if test="${status.index >= ACTstartIndex && status.index < ACTendIndex}">
 	                        <tr>
 	                            <td><img src="${contextPath}/resources/images/${actmember.img_path}" alt="${actmember.name}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-	                            <td><a href="${contextPath}/admin/AccountManage/adminUserDetail">${allmember.name}</a></td>
+	                            <td><a href="${contextPath}/admin/AccountManage/adminUserDetail">${actmember.name}</a></td>
 	                            <td>${actmember.email}</td>
 	                            <td><c:choose>
 						          <c:when test="${actmember.status eq 'ACTIVE'}">활동 중</c:when>
@@ -433,6 +433,18 @@
             });
         });
     });
+    function searchMember() {
+        var keyword = document.getElementById("searchInput").value;  // 검색어 입력 값
+        var searchType = document.getElementById("searchFilter").value; // 검색 유형 선택 값
+        var contextPath = "${pageContext.request.contextPath}";
+        
+        var urlParams = new URLSearchParams(window.location.search);
+        var tab = urlParams.get("tab") || ""; // tab이 없으면 빈 값 설정
+
+        var url = contextPath + "/admin/AccountManage/adminUsers?searchtype=" + encodeURIComponent(searchType) + "&keyword=" + encodeURIComponent(keyword) + "&tab=" + encodeURIComponent(tab);
+
+        window.location.href = url; // 검색 요청 실행
+    }
     </script>
 </body>
 </html>

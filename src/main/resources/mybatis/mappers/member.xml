@@ -191,8 +191,19 @@
 			from foodmate_buyer fb
 			join foodmate_buyer_profile fbp on fb.byr_id = fbp.byr_id
 			<if test="status != null and status != ''">
-	        <![CDATA[ WHERE fb.status = #{status} ]]>
-	    </if>
+	        	<![CDATA[ WHERE fb.status = #{status} ]]>
+	    	</if>
+	    <choose>
+		    <when test="searchtype == 'name' and keyword != null and keyword != ''">
+		        <![CDATA[ AND fb.name LIKE '%' || #{keyword} || '%' ]]>
+		    </when>
+		    <when test="searchtype == 'email' and keyword != null and keyword != ''">
+		        <![CDATA[ AND fb.email LIKE '%' || #{keyword} || '%' ]]>
+		    </when>
+		    <otherwise>
+		        <!-- keyword가 없으면 조건 추가하지 않음 -->
+		    </otherwise>
+		</choose>
 	</select>
 	
 	<update id="setActiveAdminBuyer" parameterType="String">
@@ -209,12 +220,41 @@
     </delete>
     
     <select id="selectAdminSellerInfo" resultType="sellerDTO" parameterType="map">
-		select fs.*, fsp.img_path
-			from foodmate_seller fs
-			join foodmate_seller_profile fsp on fs.slr_id = fsp.slr_id
-			<if test="status != null and status != ''">
-	        <![CDATA[ WHERE fb.status = #{status} ]]>
-	    </if>
+	    SELECT 
+	        fs.*,
+	        fsp.img_path,
+	        NVL(o.monthly_sales, 0) AS monthly_sales,  -- 이번 달 매출 (서브쿼리에서 미리 계산)
+	        NVL(p.product_count, 0) AS product_count  -- 판매 상품 개수
+	    FROM foodmate_seller fs
+	    JOIN foodmate_seller_profile fsp 
+	        ON fs.slr_id = fsp.slr_id
+	    LEFT JOIN (
+	        -- 판매된 상품 개수를 slr_id 기준으로 미리 계산
+	        SELECT slr_id, COUNT(DISTINCT pdt_id) AS product_count
+	        FROM foodmate_product
+	        GROUP BY slr_id
+	    ) p ON fs.slr_id = p.slr_id
+	    LEFT JOIN (
+	        -- 이번 달 매출을 slr_id 기준으로 미리 계산
+	        SELECT slr_id, SUM(tot_pdt_price) AS monthly_sales
+	        FROM foodmate_order
+	        WHERE create_date >= TRUNC(SYSDATE, 'MM') -- 이번 달 주문만 필터링
+	        GROUP BY slr_id
+	    ) o ON fs.slr_id = o.slr_id
+	    <where>
+	        <if test="status != null and status != ''">
+	            fs.status = #{status}
+	        </if>
+	    </where>
+	    <choose>
+	        <when test="searchtype == 'name' and keyword != null and keyword != ''">
+	            AND fs.name LIKE '%' || #{keyword} || '%'
+	        </when>
+	        <when test="searchtype == 'email' and keyword != null and keyword != ''">
+	            AND fs.email LIKE '%' || #{keyword} || '%'
+	        </when>
+	    </choose>
+	    ORDER BY fs.slr_id DESC
 	</select>
 	
 </mapper>

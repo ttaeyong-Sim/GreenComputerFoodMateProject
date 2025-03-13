@@ -20,8 +20,12 @@ public class AdminService {
 	@Autowired
 	private AdminDAO adminDAO;
 	
-    public List<BuyerDTO> getAdminBuyerInfo(String status) throws Exception {
-        return adminDAO.getAdminBuyerInfo(status);
+    public List<BuyerDTO> getAdminBuyerInfo(String status, String keyword, String searchType) throws Exception {
+        return adminDAO.getAdminBuyerInfo(status, keyword, searchType);
+    }
+    
+    public List<SellerDTO> getAdminSellerInfo(String status, String keyword, String searchType) throws Exception {
+        return adminDAO.getAdminSellerInfo(status, keyword, searchType);
     }
     
     public void deleteAdminBuyer(String byr_id) throws Exception{

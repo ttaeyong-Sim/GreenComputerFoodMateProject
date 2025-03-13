@@ -65,11 +65,10 @@ public class AdminController {
 		String viewName = UtilMethod.getViewName(request);
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);
-		List<BuyerDTO> SleepingmemberList = adminService.getAdminBuyerInfo("SLEEP");
-		List<BuyerDTO> DeletingmemberList = adminService.getAdminBuyerInfo("DELETING");
-		System.out.println(DeletingmemberList);
-		List<BuyerDTO> ActivememberList = adminService.getAdminBuyerInfo("ACTIVE");
-		List<BuyerDTO> AllmemberList = adminService.getAdminBuyerInfo("");
+		List<BuyerDTO> SleepingmemberList = adminService.getAdminBuyerInfo("SLEEP", keyword, searchtype);
+		List<BuyerDTO> DeletingmemberList = adminService.getAdminBuyerInfo("DELETING", keyword, searchtype);
+		List<BuyerDTO> ActivememberList = adminService.getAdminBuyerInfo("ACTIVE", keyword, searchtype);
+		List<BuyerDTO> AllmemberList = adminService.getAdminBuyerInfo("", keyword, searchtype);
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("result",result);
@@ -111,6 +110,28 @@ public class AdminController {
 		}
 		resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);
 		return resEntity;
+	}
+	
+	@RequestMapping(value="/admin/AccountManage/adminSellers", method=RequestMethod.GET)
+	private ModelAndView AdminAccountAdminSellers(
+			@RequestParam(value="result", required=false) String result,
+			@RequestParam(value="action",required=false) String action,
+			@RequestParam(value="tab", required=false) String tab,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "searchtype", required = false, defaultValue = "") String searchtype,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String viewName = UtilMethod.getViewName(request);
+		HttpSession session = request.getSession();
+		session.setAttribute("action", action);
+		List<SellerDTO> SleepingmemberList = adminService.getAdminSellerInfo("SLEEP", keyword, searchtype);
+		List<SellerDTO> AllmemberList = adminService.getAdminSellerInfo("", keyword, searchtype);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("result",result);
+		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
+		mav.addObject("AllmemberList", AllmemberList);
+		mav.addObject("SleepingmemberList", SleepingmemberList);
+		return mav;
 	}
 	
 	@RequestMapping(value="/admin/AdminManage/*", method=RequestMethod.GET)
