@@ -264,13 +264,27 @@
 
     <script>
         // 탭 클릭 시 해당 탭으로 이동
+        $(document).ready(function() {
+        var tab = "${tab}"; // 서버에서 받아온 tab 값
+        var contextPath = "${pageContext.request.contextPath}";
+
+        if (tab) {
+            activateTab(tab);
+        }
+
         $(".tab-item").on("click", function() {
             var tabId = $(this).data("tab");
-            $(".tab-item").removeClass("active");
-            $(this).addClass("active");
-            $(".tab-pane").removeClass("active");
-            $("#" + tabId).addClass("active");
+            activateTab(tabId);
+            history.pushState(null, null, "?tab=" + tabId);
         });
+
+        function activateTab(tabName) {
+            $(".tab-item").removeClass("active");
+            $(".tab-pane").removeClass("active");
+            $(".tab-item[data-tab='" + tabName + "']").addClass("active");
+            $("#" + tabName).addClass("active");
+        }
+    });
         
         function searchMember() {
             var keyword = document.getElementById("searchInput").value;  // 검색어 입력 값

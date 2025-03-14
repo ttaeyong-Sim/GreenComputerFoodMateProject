@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     request.setCharacterEncoding("UTF-8");
 %>
@@ -162,14 +164,23 @@
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="검색어를 입력하세요" />
             <select id="searchFilter">
-            	<option value="title">레시피 제목 + 작성자</option>
                 <option value="title">레시피 제목</option>
-                <option value="author">작성자</option>
-                <option value="date">등록일</option>
+                <option value="name">작성자</option>
             </select>
             <button onclick="searchRecipes()">검색</button>
         </div>
 
+
+		<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+		<c:set var="AllcurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="AllitemsPerPage" value="6" />
+		<c:set var="AllstartIndex" value="${(AllcurrentPage - 1) * AllitemsPerPage}" />
+		<c:set var="AllendIndex" value="${AllcurrentPage * AllitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="AlltotalItems" value="${fn:length(AllrecipeList)}" />
+		<fmt:parseNumber var="AllparsedTotalPages" value="${(AlltotalItems + AllitemsPerPage - 1) / AllitemsPerPage}" integerOnly="true" />
+		<c:set var="AlltotalPages" value="${AllparsedTotalPages}" />
         <!-- 탭 내용 -->
         <div class="tab-content">
             <!-- 등록된 레시피 -->
@@ -186,90 +197,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe1.jpg' />" alt="레시피1" class="recipe-image"></td>
-                            <td><a href="${contextPath}/admin/adminRecipeDetail.do" class="btn-detail">레시피 1</a></td>
-                            <td>홍길동</td>
-                            <td>150</td>
-                            <td>4.5</td>
-                            <td>2025-01-01</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe2.jpg' />" alt="레시피2" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 2</a></td>
-                            <td>김유진</td>
-                            <td>120</td>
-                            <td>4.0</td>
-                            <td>2025-01-02</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe3.jpg' />" alt="레시피3" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 3</a></td>
-                            <td>이수연</td>
-                            <td>180</td>
-                            <td>4.8</td>
-                            <td>2025-01-03</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe4.jpg' />" alt="레시피4" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 4</a></td>
-                            <td>김태호</td>
-                            <td>200</td>
-                            <td>4.2</td>
-                            <td>2025-01-04</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe5.jpg' />" alt="레시피5" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 5</a></td>
-                            <td>박지민</td>
-                            <td>230</td>
-                            <td>4.6</td>
-                            <td>2025-01-05</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe6.jpg' />" alt="레시피6" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 6</a></td>
-                            <td>김은수</td>
-                            <td>160</td>
-                            <td>4.3</td>
-                            <td>2025-01-06</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe7.jpg' />" alt="레시피7" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 7</a></td>
-                            <td>오민지</td>
-                            <td>140</td>
-                            <td>4.1</td>
-                            <td>2025-01-07</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe8.jpg' />" alt="레시피8" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 8</a></td>
-                            <td>윤서영</td>
-                            <td>110</td>
-                            <td>4.4</td>
-                            <td>2025-01-08</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe9.jpg' />" alt="레시피9" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 9</a></td>
-                            <td>송하은</td>
-                            <td>210</td>
-                            <td>4.7</td>
-                            <td>2025-01-09</td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipe10.jpg' />" alt="레시피10" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 10</a></td>
-                            <td>정유정</td>
-                            <td>250</td>
-                            <td>4.9</td>
-                            <td>2025-01-10</td>
-                        </tr>
+					<c:forEach var="allrecipe" items="${AllrecipeList}" varStatus="status">
+			      		<c:if test="${status.index >= AllstartIndex && status.index < AllendIndex}">
+	                        <tr>
+	                            <td><img src="${contextPath}/resources/images/${allrecipe.mainimg_path}" alt="레시피1" class="recipe-image"></td>
+	                            <td><a href="${contextPath}/recipe/recipe_Detail?rcp_id=${allrecipe.rcp_id}" class="btn-detail">${allrecipe.title}</a></td>
+	                            <td>${allrecipe.name}</td>
+	                            <td>${allrecipe.views}</td>
+	                            <td>${allrecipe.rating}</td>
+	                            <td>${allrecipe.create_date}</td>
+	                        </tr>
+	                    </c:if>
+	                </c:forEach>
                     </tbody>
                 </table>
+                <!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${AllcurrentPage > 1}">
+				        <a href="?tab=all&page=${AllcurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${AlltotalPages}">
+				        <a href="?tab=all&page=${i}" class="${i == AllcurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${AllcurrentPage < AlltotalPages}">
+				        <a href="?tab=all&page=${AllcurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
 
+		<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+		<c:set var="RecurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="ReitemsPerPage" value="6" />
+		<c:set var="RestartIndex" value="${(RecurrentPage - 1) * REitemsPerPage}" />
+		<c:set var="ReendIndex" value="${RecurrentPage * REitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="RetotalItems" value="${fn:length(ReportedrecipeList)}" />
+		<fmt:parseNumber var="ReparsedTotalPages" value="${(REtotalItems + REitemsPerPage - 1) / ReitemsPerPage}" integerOnly="true" />
             <!-- 미처리 레시피 -->
             <div id="unapproved" class="tab-pane">
                 <table class="report-list">
@@ -285,120 +254,78 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="RPrecipe" items="${ReportedrecipeList}" varStatus="status">
+			      		<c:if test="${status.index >= RestartIndex && status.index < ReendIndex}">
                         <tr>
-                            <td><img src="<c:url value='/resources/images/recipeA.jpg' />" alt="레시피A" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 A</a></td>
-                            <td>박세영</td>
-                            <td>80</td>
-                            <td>3.8</td>
-                            <td>2025-01-03</td>
+                            <td><img src="${contextPath}/resources/images/${RPrecipe.mainimg_path}" alt="레시피1" class="recipe-image"></td>
+	                        <td><a href="${contextPath}/recipe/recipe_Detail?rcp_id=${RPrecipe.rcp_id}" class="btn-detail">${RPrecipe.title}</a></td>
+	                        <td>${RPrecipe.name}</td>
+	                        <td>${RPrecipe.views}</td>
+	                        <td>${RPrecipe.rating}</td>
+	                        <td>${RPrecipe.create_date}</td>
                             <td><button class="btn btn-primary">처리</button></td>
                         </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeB.jpg' />" alt="레시피B" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 B</a></td>
-                            <td>김태호</td>
-                            <td>200</td>
-                            <td>4.8</td>
-                            <td>2025-01-04</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeC.jpg' />" alt="레시피C" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 C</a></td>
-                            <td>오지은</td>
-                            <td>130</td>
-                            <td>4.2</td>
-                            <td>2025-01-05</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeD.jpg' />" alt="레시피D" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 D</a></td>
-                            <td>박소연</td>
-                            <td>90</td>
-                            <td>3.9</td>
-                            <td>2025-01-06</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeE.jpg' />" alt="레시피E" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 E</a></td>
-                            <td>최윤정</td>
-                            <td>95</td>
-                            <td>4.3</td>
-                            <td>2025-01-07</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeF.jpg' />" alt="레시피F" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 F</a></td>
-                            <td>송지민</td>
-                            <td>120</td>
-                            <td>4.4</td>
-                            <td>2025-01-08</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeG.png' />" alt="레시피G" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 G</a></td>
-                            <td>김유진</td>
-                            <td>110</td>
-                            <td>4.6</td>
-                            <td>2025-01-09</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeH.jpg' />" alt="레시피H" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 H</a></td>
-                            <td>박수연</td>
-                            <td>105</td>
-                            <td>4.1</td>
-                            <td>2025-01-10</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeI.jpg' />" alt="레시피I" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 I</a></td>
-                            <td>정지민</td>
-                            <td>95</td>
-                            <td>4.2</td>
-                            <td>2025-01-11</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="<c:url value='/resources/images/recipeJ.jpg' />" alt="레시피J" class="recipe-image"></td>
-                            <td><a href="#" class="btn-detail">레시피 J</a></td>
-                            <td>임지은</td>
-                            <td>80</td>
-                            <td>3.9</td>
-                            <td>2025-01-12</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
+                    	</c:if>
+	                </c:forEach>
                     </tbody>
                 </table>
+				<!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${RecurrentPage > 1}">
+				        <a href="?tab=unapproved&page=${RecurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${RetotalPages}">
+				        <a href="?tab=unapproved&page=${i}" class="${i == RecurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${RecurrentPage < RetotalPages}">
+				        <a href="?tab=unapproved&page=${RecurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">...</a>
-            <a href="#">다음</a>
         </div>
     </div>
 
     <script>
         // 탭 클릭 시 해당 탭으로 이동
+        $(document).ready(function() {
+        var tab = "${tab}"; // 서버에서 받아온 tab 값
+        var contextPath = "${pageContext.request.contextPath}";
+
+        if (tab) {
+            activateTab(tab);
+        }
+
         $(".tab-item").on("click", function() {
             var tabId = $(this).data("tab");
-            $(".tab-item").removeClass("active");
-            $(this).addClass("active");
-            $(".tab-pane").removeClass("active");
-            $("#" + tabId).addClass("active");
+            activateTab(tabId);
+            history.pushState(null, null, "?tab=" + tabId);
         });
+
+        function activateTab(tabName) {
+            $(".tab-item").removeClass("active");
+            $(".tab-pane").removeClass("active");
+            $(".tab-item[data-tab='" + tabName + "']").addClass("active");
+            $("#" + tabName).addClass("active");
+        }
+    });
+        
+        function searchRecipes() {
+            var keyword = document.getElementById("searchInput").value;  // 검색어 입력 값
+            var searchType = document.getElementById("searchFilter").value; // 검색 유형 선택 값
+            var contextPath = "${pageContext.request.contextPath}";
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            var tab = urlParams.get("tab") || ""; // tab이 없으면 빈 값 설정
+
+            var url = contextPath + "/admin/RecipeProductManage/adminRecipe?searchtype=" + encodeURIComponent(searchType) + "&keyword=" + encodeURIComponent(keyword) + "&tab=" + encodeURIComponent(tab);
+
+            window.location.href = url; // 검색 요청 실행
+        }
     </script>
 </body>
 </html>

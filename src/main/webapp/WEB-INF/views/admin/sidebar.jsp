@@ -74,7 +74,7 @@
                     <li><a href="${contextPath}/admin/AccountManage/adminUsers?tab=all">사용자 관리</a></li>
                     <li><a href="${contextPath}/admin/AccountManage/adminUsers?tab=withdrawal">탈퇴 신청 사용자</a></li>
                     <li><a href="${contextPath}/admin/AccountManage/adminUsers?tab=inactive">휴면 상태 사용자</a></li>
-                    <li><a href="${contextPath}/admin/AccountManage/adminSellers">판매자 관리</a></li>
+                    <li><a href="${contextPath}/admin/AccountManage/adminSellers?tab=active">판매자 관리</a></li>
                 </ul>
             </div>
 
@@ -90,8 +90,8 @@
             <div class="admin-area">
                 <h5><strong>레시피/상품 관리</strong></h5>
                 <ul>
-                    <li><a href="${contextPath}/admin/RecipeProductManage/adminRecipe">등록된 레시피</a></li>
-                    <li><a href="${contextPath}/admin/RecipeProductManage/adminIngredients">등록된 상품</a></li>
+                    <li><a href="${contextPath}/admin/RecipeProductManage/adminRecipe?tab=registered">등록된 레시피</a></li>
+                    <li><a href="${contextPath}/admin/RecipeProductManage/adminProducts">등록된 상품</a></li>
                 </ul>
             </div>
 

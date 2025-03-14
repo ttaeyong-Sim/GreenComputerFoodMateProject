@@ -1,6 +1,7 @@
 package com.spring.FoodMate.recipe.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
+
 import org.springframework.stereotype.Component;
 
 @Component("recipeDTO")
@@ -13,7 +14,7 @@ public class RecipeDTO {
     private int category_id;
     private String req_time;
     private String description;
-    private LocalDateTime create_date;
+    private Date create_date;
     private String status;
     private int review_count;
     private int views;
@@ -21,6 +22,7 @@ public class RecipeDTO {
     // DB 컬럼에 맞춘 필드 
     
     private String nickname;
+    private String name;
     
     // 평점 출력을 레시피 목록 페이지에서 할라고 join사용하여 레시피 후기 테이블의 rating컬럼 값을 넣기 위한 필드
 	private double rating;
@@ -42,8 +44,8 @@ public class RecipeDTO {
 	public void setReq_time(String req_time) {		this.req_time = req_time;	}
 	public String getDescription() {		return description;	}
 	public void setDescription(String description) {		this.description = description;	}
-	public LocalDateTime getCreate_date() {		return create_date;	}
-	public void setCreate_date(LocalDateTime create_date) {		this.create_date = create_date;	}
+	public Date getCreate_date() {		return create_date;	}
+	public void setCreate_date(Date create_date) {		this.create_date = create_date;	}
 	public String getStatus() {		return status;	}
 	public void setStatus(String status) {		this.status = status;	}
 	public String getNickname() {		return nickname;	}
@@ -62,6 +64,13 @@ public class RecipeDTO {
 	public void setViews(int views) {
 		this.views = views;
 	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	
 	
 	

@@ -225,7 +225,23 @@
 	        fsp.img_path,
 	        NVL(o.monthly_sales, 0) AS monthly_sales,  -- 이번 달 매출 (서브쿼리에서 미리 계산)
 	        NVL(p.product_count, 0) AS product_count  -- 판매 상품 개수
-	    FROM foodmate_seller fs
+	    FROM (
+        -- 검색 조건을 먼저 적용하여 필요한 판매자만 선택
+        SELECT *
+        FROM foodmate_seller
+        WHERE 1=1
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <choose>
+            <when test="searchtype == 'name' and keyword != null and keyword != ''">
+                AND name LIKE '%' || #{keyword} || '%'
+            </when>
+            <when test="searchtype == 'email' and keyword != null and keyword != ''">
+                AND email LIKE '%' || #{keyword} || '%'
+            </when>
+        </choose>
+	    ) fs
 	    JOIN foodmate_seller_profile fsp 
 	        ON fs.slr_id = fsp.slr_id
 	    LEFT JOIN (
@@ -241,19 +257,6 @@
 	        WHERE create_date >= TRUNC(SYSDATE, 'MM') -- 이번 달 주문만 필터링
 	        GROUP BY slr_id
 	    ) o ON fs.slr_id = o.slr_id
-	    <where>
-	        <if test="status != null and status != ''">
-	            fs.status = #{status}
-	        </if>
-	    </where>
-	    <choose>
-	        <when test="searchtype == 'name' and keyword != null and keyword != ''">
-	            AND fs.name LIKE '%' || #{keyword} || '%'
-	        </when>
-	        <when test="searchtype == 'email' and keyword != null and keyword != ''">
-	            AND fs.email LIKE '%' || #{keyword} || '%'
-	        </when>
-	    </choose>
 	    ORDER BY fs.slr_id DESC
 	</select>
 	
