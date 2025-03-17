@@ -370,26 +370,27 @@ public class RecipeControllerImpl implements RecipeController {
 	}
 
 	
-	@RequestMapping(value="/recipe/getSubCategories/{category_id}", method=RequestMethod.GET)
+	@RequestMapping(value="/recipe/getSubCategories", method=RequestMethod.GET)
 	@ResponseBody
-	public List<RecipeCategoryDTO> getSubCategories(@PathVariable("category_id") int category_id) throws Exception {
+	public List<RecipeCategoryDTO> getSubCategories(@RequestParam("category_id") int category_id) throws Exception {
+		System.out.println("받아온 레시피 카테고리: " + category_id);
 	    // 데이터베이스에서 category_id에 해당하는 자식 카테고리 가져오기
 	    List<RecipeCategoryDTO> subCategories = recipeService.getChildCategoryList(category_id);
 	    return subCategories;
 	}
+
 	
-	@RequestMapping(value="/recipe/select_Sub_IngrdCategory/{ingrd_category_id}", method=RequestMethod.GET)
+	@RequestMapping(value="/recipe/select_Sub_IngrdCategory", method=RequestMethod.GET)
 	@ResponseBody
-	public List<CategoryDTO> select_Sub_IngrdCategory(@PathVariable("ingrd_category_id") int ingrd_category_id) throws Exception {
+	public List<CategoryDTO> select_Sub_IngrdCategory(@RequestParam("ingrd_category_id") int ingrd_category_id) throws Exception {
 	    // 데이터베이스에서 category_id에 해당하는 자식 카테고리 가져오기
 	    List<CategoryDTO> IngrdsubCategories = recipeService.select_Child_IngrdCategory(ingrd_category_id);
-	    System.out.println(ingrd_category_id);
-	    return IngrdsubCategories; 
+	    System.out.println("재료의 카테고리id: " + ingrd_category_id);
+	    return IngrdsubCategories;
 	}
+
 	
 	//레시피후기작성
-	
-
 	@RequestMapping("/recipe/addRecipeRating")
 	public String addRecipeRating(
 	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID

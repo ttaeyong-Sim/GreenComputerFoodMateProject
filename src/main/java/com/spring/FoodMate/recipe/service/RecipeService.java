@@ -89,13 +89,13 @@ public interface RecipeService {
     //답변 작성
     public void addRecipeQnaAnswer(RecipeQnaDTO answerDTO) throws Exception;
     
- // 레시피 검색
+    // 레시피 검색
     public List<RecipeDTO> searchRecipeList(String keyword) throws Exception;
     
     // 레시피 조회수
     public void setViewsCount(int rcp_id) throws Exception;
     
-        //레시피 질문,답변 수정
+    //레시피 질문,답변 수정
     public void updateRecipeQna(RecipeQnaDTO qnaDTO);
     
     //레시피 질문,답변 삭제

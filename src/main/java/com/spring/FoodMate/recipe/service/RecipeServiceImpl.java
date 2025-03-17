@@ -20,7 +20,7 @@ import com.spring.FoodMate.recipe.dto.RecipeStepDTO;
 import com.spring.FoodMate.recipe.exception.RecipeException;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class RecipeServiceImpl implements RecipeService {
 
     @Autowired

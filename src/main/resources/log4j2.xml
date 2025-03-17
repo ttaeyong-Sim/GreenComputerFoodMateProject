@@ -18,7 +18,7 @@
 
     <!-- 로깅의 루트 레벨을 설정하는 부분 -->
     <Loggers>
-	    <Logger name="com.spring.FoodMate.interceptor.CommonInterceptor" level="info">
+	    <Logger name="com.spring.FoodMate.interceptor.CommonInterceptor" level="warn">
 	        <AppenderRef ref="Console"/>
 	        <AppenderRef ref="File"/>
 	    </Logger>

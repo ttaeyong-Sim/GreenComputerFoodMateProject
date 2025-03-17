@@ -43,7 +43,7 @@ $(document).ready(function() {
             type: "POST",
             data: JSON.stringify({ "b_no": [businessNumber] }), // 사업자번호 배열
             dataType: "json",
-            contentType: "application/json",
+            contentType: "application/json; charset:UTF-8",
             accept: "application/json",
             success: function(result) {
                 console.log("조회 결과:", result);

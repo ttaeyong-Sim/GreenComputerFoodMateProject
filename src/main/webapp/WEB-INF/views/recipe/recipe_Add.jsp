@@ -11,8 +11,7 @@
     <!-- jQuery 예시 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<style>
-
+<style>	
 	body {
 	background-color: #f1e9e0;
 	}
@@ -358,7 +357,7 @@ $(document).ready(function() {
 
     // 하위 카테고리 로드 함수
     function loadSubCategories(parentCategoryId, level) {
-        var url = contextPath + '/recipe/getSubCategories/' + parentCategoryId;
+        var url = contextPath + '/recipe/getSubCategories?category_id=' + parentCategoryId;  // 쿼리 스트링 방식으로 변경
 
         $.ajax({
             url: url,
@@ -369,7 +368,7 @@ $(document).ready(function() {
                     var select = $('<select>')
                         .attr('name', 'category_' + level)
                         .attr('id', 'category_' + level);
- 																				//카테고리명 외에 구분은 선택하지 못하도록 처리했습니다. 2단계구분 표시만해주고 선택은못하게
+
                     select.append($('<option>', { value: '', text: level + '단계분류', disabled: true, selected: true }));
 
                     $.each(data, function(index, category) {
@@ -432,7 +431,7 @@ $(document).ready(function() {
 
     // 하위 재료 카테고리 로드 함수
     function loadSubIngrdCategories(parentIngrdCategoryId, level) {
-        var url = contextPath + '/recipe/select_Sub_IngrdCategory/' + parentIngrdCategoryId;
+    	 var url = contextPath + '/recipe/select_Sub_IngrdCategory?ingrd_category_id=' + parentIngrdCategoryId;
 
         $.ajax({ //실시간 해당 페이지에서 변경이 되어야해서 ajax사용
             url: url,
@@ -536,8 +535,8 @@ $(document).ready(function() {
     }
 
     // 하위 카테고리 로딩 함수
-    function loadSubIngrdCategories(parentCategoryId, ingredientNumber) {
-        var url = `${contextPath}/recipe/select_Sub_IngrdCategory/${parentCategoryId}`;
+   function loadSubIngrdCategories(parentCategoryId, ingredientNumber) {
+	   var url = contextPath + '/recipe/select_Sub_IngrdCategory?ingrd_category_id=' + parentIngrdCategoryId;
 
         $.ajax({
             url: url,

@@ -13,6 +13,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <style>
+		html, body {
+		    height: 100%;
+		    margin: 0;
+		    display: flex;
+		    flex-direction: column;
+		}
+		
+		.container {
+		    flex: 1; /* 본문 영역이 남은 공간을 차지하도록 함 */
+		}
+		
+		footer {
+		    margin-top: auto; /* 푸터를 아래로 밀어넣음 */
+		}
         .header, .footer {
             background-color: #ffffff;
             color: white;
