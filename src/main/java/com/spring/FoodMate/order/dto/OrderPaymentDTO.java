@@ -13,7 +13,10 @@ public class OrderPaymentDTO {
     private String pg_id;	// PG사에서 발급하는 결제 ID
     private Date pay_Date; // 결제일 (디폴트 SYSDATE)
     private int used_point;
-
+    
+    // Admin 옵션
+    private int ord_stat; // 주문 상태 0 : 결제 대기 / 1 : 결제 완료, 배송 준비 / 2 : 배송 중 / 3 : 배송 완료 / 4 : 구매 확정 / 5 : 주문 취소 / 6 : 반품
+    
     // 기본 생성자
     public OrderPaymentDTO() {}
 
@@ -82,6 +85,14 @@ public class OrderPaymentDTO {
 
 	public void setUsed_point(int used_point) {
 		this.used_point = used_point;
+	}
+
+	public int getOrd_stat() {
+		return ord_stat;
+	}
+
+	public void setOrd_stat(int ord_stat) {
+		this.ord_stat = ord_stat;
 	}
 
 	@Override

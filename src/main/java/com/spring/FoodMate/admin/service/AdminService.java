@@ -13,6 +13,7 @@ import com.spring.FoodMate.cart.dto.CartDTO;
 import com.spring.FoodMate.member.dao.MemberDAO;
 import com.spring.FoodMate.member.dto.BuyerDTO;
 import com.spring.FoodMate.member.dto.SellerDTO;
+import com.spring.FoodMate.product.dto.ProductDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 
 @Service("adminService")
@@ -31,6 +32,10 @@ public class AdminService {
     
     public List<RecipeDTO> getAdminRecipeInfo(String status, String keyword, String searchType) throws Exception {
         return adminDAO.getAdminRecipeInfo(status, keyword, searchType);
+    }
+    
+    public List<ProductDTO> getAdminProductInfo(String status, String keyword, String searchType) throws Exception {
+        return adminDAO.getAdminProductInfo(status, keyword, searchType);
     }
     
     public void deleteAdminBuyer(String byr_id) throws Exception{

@@ -23,6 +23,7 @@ import com.spring.FoodMate.admin.service.AdminService;
 import com.spring.FoodMate.common.UtilMethod;
 import com.spring.FoodMate.member.dto.BuyerDTO;
 import com.spring.FoodMate.member.dto.SellerDTO;
+import com.spring.FoodMate.product.dto.ProductDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 
 
@@ -202,6 +203,30 @@ public class AdminController {
 		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
 		mav.addObject("AllrecipeList", AllrecipeList);
 		mav.addObject("ReportedrecipeList", ReportedrecipeList);
+		return mav;
+	}
+	
+	@RequestMapping(value="/admin/RecipeProductManage/adminProducts", method=RequestMethod.GET)
+	private ModelAndView AdminProductsManage(
+			@RequestParam(value="result", required=false) String result,
+			@RequestParam(value="action",required=false) String action,
+			@RequestParam(value="tab", required=false) String tab,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "searchtype", required = false, defaultValue = "") String searchtype,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String viewName = UtilMethod.getViewName(request);
+		HttpSession session = request.getSession();
+		session.setAttribute("action", action);
+		List<ProductDTO> StoppedProductList = adminService.getAdminProductInfo("N", keyword, searchtype);
+		List<ProductDTO> ReportedProductList = adminService.getAdminProductInfo("Reported", keyword, searchtype);
+		List<ProductDTO> AllProductList = adminService.getAdminProductInfo("Y", keyword, searchtype);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("result",result);
+		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
+		mav.addObject("AllProductList", AllProductList);
+		mav.addObject("ReportedProductList", ReportedProductList);
+		mav.addObject("StoppedProductList", StoppedProductList);
 		return mav;
 	}
 	

@@ -200,7 +200,7 @@
 					<c:forEach var="allrecipe" items="${AllrecipeList}" varStatus="status">
 			      		<c:if test="${status.index >= AllstartIndex && status.index < AllendIndex}">
 	                        <tr>
-	                            <td><img src="${contextPath}/resources/images/${allrecipe.mainimg_path}" alt="레시피1" class="recipe-image"></td>
+	                            <td><img src="${contextPath}/resources/images/${allrecipe.mainimg_path}" alt="${allrecipe.name}이미지" class="recipe-image"></td>
 	                            <td><a href="${contextPath}/recipe/recipe_Detail?rcp_id=${allrecipe.rcp_id}" class="btn-detail">${allrecipe.title}</a></td>
 	                            <td>${allrecipe.name}</td>
 	                            <td>${allrecipe.views}</td>
@@ -233,12 +233,12 @@
 		<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
 		<c:set var="RecurrentPage" value="${param.page != null ? param.page : 1}" />
 		<c:set var="ReitemsPerPage" value="6" />
-		<c:set var="RestartIndex" value="${(RecurrentPage - 1) * REitemsPerPage}" />
-		<c:set var="ReendIndex" value="${RecurrentPage * REitemsPerPage}" />
+		<c:set var="RestartIndex" value="${(RecurrentPage - 1) * ReitemsPerPage}" />
+		<c:set var="ReendIndex" value="${RecurrentPage * ReitemsPerPage}" />
 			
 		<%-- 전체 데이터 개수 구하기 --%>
 		<c:set var="RetotalItems" value="${fn:length(ReportedrecipeList)}" />
-		<fmt:parseNumber var="ReparsedTotalPages" value="${(REtotalItems + REitemsPerPage - 1) / ReitemsPerPage}" integerOnly="true" />
+		<fmt:parseNumber var="ReparsedTotalPages" value="${(RetotalItems + ReitemsPerPage - 1) / ReitemsPerPage}" integerOnly="true" />
             <!-- 미처리 레시피 -->
             <div id="unapproved" class="tab-pane">
                 <table class="report-list">
@@ -257,7 +257,7 @@
                     <c:forEach var="RPrecipe" items="${ReportedrecipeList}" varStatus="status">
 			      		<c:if test="${status.index >= RestartIndex && status.index < ReendIndex}">
                         <tr>
-                            <td><img src="${contextPath}/resources/images/${RPrecipe.mainimg_path}" alt="레시피1" class="recipe-image"></td>
+                            <td><img src="${contextPath}/resources/images/${RPrecipe.mainimg_path}" alt="${RPrecipe.name}이미지" class="recipe-image"></td>
 	                        <td><a href="${contextPath}/recipe/recipe_Detail?rcp_id=${RPrecipe.rcp_id}" class="btn-detail">${RPrecipe.title}</a></td>
 	                        <td>${RPrecipe.name}</td>
 	                        <td>${RPrecipe.views}</td>

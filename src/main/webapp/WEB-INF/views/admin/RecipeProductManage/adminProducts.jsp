@@ -159,14 +159,22 @@
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="검색어를 입력하세요" />
             <select id="searchFilter">
-            	<option value="title">상품명 + 판매자</option>
-                <option value="title">상품명</option>
-                <option value="author">판매자</option>
-                <option value="date">등록일</option>
+            	<option value="title">상품명</option>
+                <option value="name">판매자</option>
             </select>
-            <button onclick="searchRecipes()">검색</button>
+            <button onclick="searchProducts()">검색</button>
         </div>
-
+        
+		<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+		<c:set var="AllcurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="AllitemsPerPage" value="6" />
+		<c:set var="AllstartIndex" value="${(AllcurrentPage - 1) * AllitemsPerPage}" />
+		<c:set var="AllendIndex" value="${AllcurrentPage * AllitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="AlltotalItems" value="${fn:length(AllProductList)}" />
+		<fmt:parseNumber var="AllparsedTotalPages" value="${(AlltotalItems + AllitemsPerPage - 1) / AllitemsPerPage}" integerOnly="true" />
+		<c:set var="AlltotalPages" value="${AllparsedTotalPages}" />
         <!-- 탭 내용 -->
         <div class="tab-content">
             <!-- 판매 중인 상품 -->
@@ -185,31 +193,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example.png" alt="상품 1" style="width: 100px; height: 100px;object-fit: cover;
-            border-radius: 5px;"></td>
-                            <td><a href="#" class="btn-detail">상품 1</a></td>
-                            <td>회사 A</td>
-                            <td>50,000원</td>
-                            <td>4.5</td>
-                            <td>20개</td>
-                            <td>2025-01-01</td>
-                        </tr>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example.png" alt="상품 2" style="width: 100px; height: 100px;object-fit: cover;
-            border-radius: 5px;"></td>
-                            <td><a href="#" class="btn-detail">상품 2</a></td>
-                            <td>회사 B</td>
-                            <td>35,000원</td>
-                            <td>4.0</td>
-                            <td>50개</td>
-                            <td>2025-01-02</td>
-                        </tr>
-                        <!-- 추가 상품 카드들... -->
+					<c:forEach var="allproduct" items="${AllProductList}" varStatus="status">
+			      		<c:if test="${status.index >= AllstartIndex && status.index < AllendIndex}">
+	                        <tr>
+	                            <td><img src="${contextPath}/resources/images/${allproduct.img_path}" alt="${allproduct.name} 이미지" style="width: 100px; height: 100px;object-fit: cover; border-radius: 5px;"></td>
+	                            <td><a href="${contextPath}/product/pdtdetail?pdt_id=${allproduct.pdt_id}" class="btn-detail">${allproduct.name}</a></td>
+	                            <td>${allproduct.slr_nickname}</td>
+	                            <td><fmt:formatNumber value="${allproduct.price}" pattern="#,###"/>원</td>
+	                            <td>${allproduct.avg_rating}</td>
+	                            <td>${allproduct.stock}개</td>
+	                            <td>2025-03-17</td>
+	                        </tr>
+	                        <!-- 추가 상품 카드들... -->
+	                     </c:if>
+	                </c:forEach>
                     </tbody>
                 </table>
+                <!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${AllcurrentPage > 1}">
+				        <a href="?tab=selling&page=${AllcurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${AlltotalPages}">
+				        <a href="?tab=selling&page=${i}" class="${i == AllcurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${AllcurrentPage < AlltotalPages}">
+				        <a href="?tab=selling&page=${AllcurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
-
+            
+		<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+		<c:set var="RecurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="ReitemsPerPage" value="6" />
+		<c:set var="RestartIndex" value="${(RecurrentPage - 1) * REitemsPerPage}" />
+		<c:set var="ReendIndex" value="${RecurrentPage * REitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="RetotalItems" value="${fn:length(ReportedrecipeList)}" />
+		<fmt:parseNumber var="ReparsedTotalPages" value="${(REtotalItems + REitemsPerPage - 1) / ReitemsPerPage}" integerOnly="true" />
             <!-- 미승인 상품 -->
             <div id="unapproved" class="tab-pane">
                 <h3>신고 처리 중 상품</h3>
@@ -225,29 +252,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example.png" alt="상품 A" style="width: 100px; height: 100px;object-fit: cover;
-            border-radius: 5px;"></td>
-                            <td><a href="#" class="btn-detail">상품 A</a></td>
-                            <td>회사 A</td>
-                            <td>10,000원</td>
-                            <td>2025-01-10</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example.png" alt="상품 B" style="width: 100px; height: 100px;object-fit: cover;
-            border-radius: 5px;"></td>
-                            <td><a href="#" class="btn-detail">상품 B</a></td>
-                            <td>회사 B</td>
-                            <td>30,000원</td>
-                            <td>2025-01-10</td>
-                            <td><button class="btn btn-primary">처리</button></td>
-                        </tr>
-                        <!-- 추가 미승인 상품 카드들... -->
+                    <c:forEach var="RPproduct" items="${ReportedProductList}" varStatus="status">
+			      		<c:if test="${status.index >= RestartIndex && status.index < ReendIndex}">
+	                        <tr>
+	                            <td><img src="${contextPath}/resources/images/${RPproduct.img_path}" alt="${RPproduct.name} 이미지" style="width: 100px; height: 100px;object-fit: cover; border-radius: 5px;"></td>
+	                            <td><a href="${contextPath}/product/pdtdetail?pdt_id=${RPproduct.pdt_id}" class="btn-detail">${RPproduct.name}</a></td>
+	                            <td>${RPproduct.slr_nickname}</td>
+	                            <td><fmt:formatNumber value="${RPproduct.price}" pattern="#,###"/>원</td>
+	                            <td>2025-01-10</td>
+	                            <td><button class="btn btn-primary">처리</button></td>
+	                        </tr>
+	                        <!-- 추가 미승인 상품 카드들... -->
+			      		</c:if>
+			      	</c:forEach>
                     </tbody>
                 </table>
+                <!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${RecurrentPage > 1}">
+				        <a href="?tab=unapproved&page=${RecurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${RetotalPages}">
+				        <a href="?tab=unapproved&page=${i}" class="${i == RecurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${RecurrentPage < RetotalPages}">
+				        <a href="?tab=unapproved&page=${RecurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
 
+		<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+		<c:set var="STcurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="STitemsPerPage" value="6" />
+		<c:set var="STstartIndex" value="${(STcurrentPage - 1) * STitemsPerPage}" />
+		<c:set var="STendIndex" value="${STcurrentPage * STitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="STtotalItems" value="${fn:length(StoppedProductList)}" />
+		<fmt:parseNumber var="STparsedTotalPages" value="${(STtotalItems + STitemsPerPage - 1) / STitemsPerPage}" integerOnly="true" />
             <!-- 판매 중지 상품 -->
             <div id="stopped" class="tab-pane">
                 <h3>판매 중지 상품</h3>
@@ -263,49 +310,78 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example.png" alt="상품 X" style="width: 100px; height: 100px;object-fit: cover;
-            border-radius: 5px;"></td>
-                            <td><a href="#" class="btn-detail">상품 X</a></td>
-                            <td>회사 X</td>
-                            <td>90,000원</td>
-                            <td>2025-01-10</td>
-                            <td><button class="btn btn-warning">판매 재개</button></td>
-                        </tr>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example.png" alt="상품 Y" style="width: 100px; height: 100px;object-fit: cover;
-            border-radius: 5px;"></td>
-                            <td><a href="#" class="btn-detail">상품 Y</a></td>
-                            <td>칸예</td>
-                            <td>189,000원</td>
-                            <td>2025-01-10</td>
-                            <td><button class="btn btn-warning">판매 재개</button></td>
-                        </tr>
-                        <!-- 추가 판매 중지 상품 카드들... -->
+                    <c:forEach var="STproduct" items="${StoppedProductList}" varStatus="status">
+			      		<c:if test="${status.index >= STstartIndex && status.index < STendIndex}">
+	                        <tr>
+	                            <td><img src="${contextPath}/resources/images/${STproduct.img_path}" alt="${STproduct.name} 이미지" style="width: 100px; height: 100px;object-fit: cover; border-radius: 5px;"></td>
+	                            <td><a href="${contextPath}/product/pdtdetail?pdt_id=${STproduct.pdt_id}" class="btn-detail">${STproduct.name}</a></td>
+	                            <td>${STproduct.slr_nickname}</td>
+	                            <td><fmt:formatNumber value="${STproduct.price}" pattern="#,###"/>원</td>
+	                            <td>2025-01-10</td>
+	                            <td><button class="btn btn-warning">판매 재개</button></td>
+	                        </tr>
+	                        <!-- 추가 판매 중지 상품 카드들... -->
+			      		</c:if>
+			      	</c:forEach>
                     </tbody>
                 </table>
+				<!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${STcurrentPage > 1}">
+				        <a href="?tab=stopped&page=${STcurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${STtotalPages}">
+				        <a href="?tab=stopped&page=${i}" class="${i == STcurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${STcurrentPage < STtotalPages}">
+				        <a href="?tab=stopped&page=${STcurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">...</a>
-            <a href="#">다음</a>
         </div>
     </div>
 
     <script>
-        // 탭 클릭 시 해당 탭으로 이동
-        $(".tab-item").on("click", function() {
-            var tabId = $(this).data("tab");
-            $(".tab-item").removeClass("active");
-            $(this).addClass("active");
-            $(".tab-pane").removeClass("active");
-            $("#" + tabId).addClass("active");
-        });
+	    // 탭 클릭 시 해당 탭으로 이동
+	    $(document).ready(function() {
+	    var tab = "${tab}"; // 서버에서 받아온 tab 값
+	    var contextPath = "${pageContext.request.contextPath}";
+	
+	    if (tab) {
+	        activateTab(tab);
+	    }
+	
+	    $(".tab-item").on("click", function() {
+	        var tabId = $(this).data("tab");
+	        activateTab(tabId);
+	        history.pushState(null, null, "?tab=" + tabId);
+	    });
+	
+	    function activateTab(tabName) {
+	        $(".tab-item").removeClass("active");
+	        $(".tab-pane").removeClass("active");
+	        $(".tab-item[data-tab='" + tabName + "']").addClass("active");
+	        $("#" + tabName).addClass("active");
+	    }
+	});
+	    
+        function searchProducts() {
+            var keyword = document.getElementById("searchInput").value;  // 검색어 입력 값
+            var searchType = document.getElementById("searchFilter").value; // 검색 유형 선택 값
+            var contextPath = "${pageContext.request.contextPath}";
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            var tab = urlParams.get("tab") || ""; // tab이 없으면 빈 값 설정
+
+            var url = contextPath + "/admin/RecipeProductManage/adminProducts?searchtype=" + encodeURIComponent(searchType) + "&keyword=" + encodeURIComponent(keyword) + "&tab=" + encodeURIComponent(tab);
+
+            window.location.href = url; // 검색 요청 실행
+        }
     </script>
 </body>
 </html>

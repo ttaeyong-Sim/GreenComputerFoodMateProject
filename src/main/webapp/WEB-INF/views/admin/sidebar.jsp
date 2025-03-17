@@ -91,7 +91,7 @@
                 <h5><strong>레시피/상품 관리</strong></h5>
                 <ul>
                     <li><a href="${contextPath}/admin/RecipeProductManage/adminRecipe?tab=registered">등록된 레시피</a></li>
-                    <li><a href="${contextPath}/admin/RecipeProductManage/adminProducts">등록된 상품</a></li>
+                    <li><a href="${contextPath}/admin/RecipeProductManage/adminProducts?tab=selling">등록된 상품</a></li>
                 </ul>
             </div>
 
