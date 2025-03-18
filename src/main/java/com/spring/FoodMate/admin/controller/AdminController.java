@@ -23,6 +23,7 @@ import com.spring.FoodMate.admin.service.AdminService;
 import com.spring.FoodMate.common.UtilMethod;
 import com.spring.FoodMate.member.dto.BuyerDTO;
 import com.spring.FoodMate.member.dto.SellerDTO;
+import com.spring.FoodMate.order.dto.OrderPaymentDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 
@@ -161,13 +162,39 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/admin/PaymentManage/*", method=RequestMethod.GET)
-	private ModelAndView AdminPaymentManage(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, @RequestParam(value="tab", required=false) String tab, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ModelAndView AdminPaymentCommon(@RequestParam(value="result", required=false) String result, @RequestParam(value="action",required=false) String action, @RequestParam(value="tab", required=false) String tab, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String viewName = UtilMethod.getViewName(request);
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("result",result);
 		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
+
+		return mav;
+	}
+	
+	@RequestMapping(value="/admin/PaymentManage/adminPayments", method=RequestMethod.GET)
+	private ModelAndView AdminPaymentManage(
+			@RequestParam(value="result", required=false) String result,
+			@RequestParam(value="action",required=false) String action,
+			@RequestParam(value="tab", required=false) String tab,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "searchtype", required = false, defaultValue = "") String searchtype,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String viewName = UtilMethod.getViewName(request);
+		HttpSession session = request.getSession();
+		session.setAttribute("action", action);
+		List<OrderPaymentDTO> PaymentHistoryList = adminService.getAdminPaymentInfo("All", keyword, searchtype);
+		List<OrderPaymentDTO> PaymentMonthStateList = adminService.getAdminMonthPaymentInfo("Month", keyword, searchtype);
+		List<OrderPaymentDTO> PaymentRefundList = adminService.getAdminPaymentInfo("Refund", keyword, searchtype);
+		
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("result",result);
+		mav.addObject("tab", tab); // tab 값 추가하여 JSP에서 활용 가능
+		mav.addObject("PaymentHistoryList", PaymentHistoryList);
+		mav.addObject("PaymentMonthStateList", PaymentMonthStateList);
+		mav.addObject("PaymentRefundList", PaymentRefundList);
 
 		return mav;
 	}
@@ -196,7 +223,7 @@ public class AdminController {
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);
 		List<RecipeDTO> ReportedrecipeList = adminService.getAdminRecipeInfo("Reported", keyword, searchtype);
-		List<RecipeDTO> AllrecipeList = adminService.getAdminRecipeInfo("", keyword, searchtype);
+		List<RecipeDTO> AllrecipeList = adminService.getAdminRecipeInfo("Y", keyword, searchtype);
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("result",result);

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     request.setCharacterEncoding("UTF-8");
 %>
@@ -116,6 +118,12 @@
         background-color: #0056b3;
     }
 
+	.status-payment { background-color: #ffcc00; } /* 결제 완료 (노랑) */
+	.status-shipping { background-color: #3399ff; } /* 배송중 (파랑) */
+	.status-delivered { background-color: #33cc33; } /* 배송완료 (초록) */
+	.status-confirmed { background-color: #ff3333; } /* 구매 확정 (빨강) */
+    
+
     /* 페이지네이션 */
     .pagination {
         display: flex;
@@ -165,15 +173,22 @@
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="검색어를 입력하세요" />
             <select id="searchFilter">
-            	<option value="title">사용자 이름</option>
-                <option value="title">레시피 제목</option>
-                <option value="author">작성자</option>
-                <option value="date">등록일</option>
+            	<option value="name">사용자 이름</option>
             </select>
-            <button onclick="searchRecipes()">검색</button>
+            <button onclick="searchPayment()">검색</button>
         </div>
 
         <!-- 탭 내용 -->
+       	<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+		<c:set var="HTcurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="HTitemsPerPage" value="6" />
+		<c:set var="HTstartIndex" value="${(HTcurrentPage - 1) * HTitemsPerPage}" />
+		<c:set var="HTendIndex" value="${HTcurrentPage * HTitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="HTtotalItems" value="${fn:length(PaymentHistoryList)}" />
+		<fmt:parseNumber var="HTparsedTotalPages" value="${(HTtotalItems + HTitemsPerPage - 1) / HTitemsPerPage}" integerOnly="true" />
+		<c:set var="HTtotalPages" value="${HTparsedTotalPages}" />
         <!-- 전체 결제 내역 -->
         <div id="paymentHistory" class="tab-pane active">
             <h2>전체 결제 내역</h2>
@@ -188,36 +203,48 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>2025-01-01</td>
-                        <td>사용자 1</td>
-                        <td>₩100,000</td>
-                        <td><button class="btn">구매 확정</button></td>
-                        <td><a href="${contextPath}/admin/PaymentManage/adminPaymentDetail">상세 보기</a></td>                        
-                    </tr>
-                    <tr>
-                        <td>2025-01-02</td>
-                        <td>사용자 2</td>
-                        <td>₩50,000</td>
-                        <td><button class="btn">구매 확정</button></td>
-                        <td><button class="btn">상세 보기</button></td>
-                    </tr>
-                    <tr>
-                        <td>2025-01-03</td>
-                        <td>사용자 3</td>
-                        <td>₩150,000</td>
-                        <td><button class="btn">배송 중</button></td>
-                        <td><button class="btn">상세 보기</button></td>
-                    </tr>
-                    <tr>
-                        <td>2025-01-04</td>
-                        <td>사용자 4</td>
-                        <td>₩200,000</td>
-                        <td><button class="btn">배송 준비 중</button></td>
-                        <td><button class="btn">상세 보기</button></td>
-                    </tr>
+                <c:forEach var="paymentHS" items="${PaymentHistoryList}" varStatus="status">
+			      	<c:if test="${status.index >= HTstartIndex && status.index < HTendIndex}">
+	                    <tr>
+	                        <td>${paymentHS.pay_Date}</td>
+	                        <td>${paymentHS.name}</td>
+	                        <td>₩<fmt:formatNumber value="${paymentHS.tot_Pdt_Price + paymentHS.ship_Fee}" pattern="#,###"/></td>
+	                        <td><c:when test="${paymentHS.ord_stat == 1}">
+							    <button class="btn status-payment">결제 완료</button>
+								</c:when>
+								<c:when test="${paymentHS.ord_stat == 2}">
+								    <button class="btn status-shipping">배송중</button>
+								</c:when>
+								<c:when test="${paymentHS.ord_stat == 3}">
+								    <button class="btn status-delivered">배송완료</button>
+								</c:when>
+								<c:when test="${paymentHS.ord_stat == 4}">
+								    <button class="btn status-confirmed">구매 확정</button>
+								</c:when>
+							</td>
+	                        <td><a href="${contextPath}/admin/PaymentManage/adminPaymentDetail">상세 보기</a></td>                        
+	                    </tr>
+	                 </c:if>
+	            </c:forEach>
                 </tbody>
             </table>
+            <!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${HTcurrentPage > 1}">
+				        <a href="?tab=paymentHistory&page=${HTcurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${HTtotalPages}">
+				        <a href="?tab=paymentHistory&page=${i}" class="${i == HTcurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${HTcurrentPage < HTtotalPages}">
+				        <a href="?tab=paymentHistory&page=${HTcurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
         </div>
 
         <!-- 결제 금액 관리 -->
@@ -292,15 +319,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">...</a>
-            <a href="#">다음</a>
         </div>
     </div>
 

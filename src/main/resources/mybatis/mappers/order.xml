@@ -244,10 +244,24 @@
 	<!-- Admin 옵션 -->
 		<!-- 구매자 마이페이지, 정상 주문만 출력 -->
 	<select id="selectAdminPaymentInfo" parameterType="map" resultType="OrderPaymentDTO">
-        SELECT O.*, P.used_point
+        SELECT O.ord_id,
+        	   O.tot_pdt_price,
+        	   O.ship_fee,
+        	   O.ord_stat,
+        	   O.create_date,
+        	   P.*,
+        	   B.name
         FROM FOODMATE_ORDER O
         LEFT JOIN FOODMATE_PAYMENT P ON O.ORD_ID = P.ORD_ID
-        WHERE BYR_ID = #{byr_id} AND ORD_STAT IN (1, 2, 3, 4)
+        INNER JOIN FOODMATE_BUYER B ON O.BYR_ID = B.BYR_ID
+        <choose>
+            <when test="type == 'All'">
+                WHERE O.ORD_STAT IN (1, 2, 3, 4, 7)
+            </when>
+            <when test="type == 'Refund'">
+                WHERE O.ORD_STAT IN (5,6)
+            </when>
+        </choose>
         ORDER BY O.CREATE_DATE DESC
     </select>
 </mapper>

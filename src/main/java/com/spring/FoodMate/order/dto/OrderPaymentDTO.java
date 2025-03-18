@@ -1,6 +1,6 @@
 package com.spring.FoodMate.order.dto;
 
-import java.util.Date;
+import java.sql.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -16,6 +16,9 @@ public class OrderPaymentDTO {
     
     // Admin 옵션
     private int ord_stat; // 주문 상태 0 : 결제 대기 / 1 : 결제 완료, 배송 준비 / 2 : 배송 중 / 3 : 배송 완료 / 4 : 구매 확정 / 5 : 주문 취소 / 6 : 반품
+    private int tot_Pdt_Price; // 총 상품 가격
+    private int ship_Fee; // 배송비
+    private String name;
     
     // 기본 생성자
     public OrderPaymentDTO() {}
@@ -93,6 +96,31 @@ public class OrderPaymentDTO {
 
 	public void setOrd_stat(int ord_stat) {
 		this.ord_stat = ord_stat;
+	}
+
+	public int getTot_Pdt_Price() {
+		return tot_Pdt_Price;
+	}
+
+	public void setTot_Pdt_Price(int tot_Pdt_Price) {
+		this.tot_Pdt_Price = tot_Pdt_Price;
+	}
+
+	public int getShip_Fee() {
+		return ship_Fee;
+	}
+
+	public void setShip_Fee(int ship_Fee) {
+		this.ship_Fee = ship_Fee;
+	}
+	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override

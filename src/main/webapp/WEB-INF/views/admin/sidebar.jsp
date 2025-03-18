@@ -98,7 +98,7 @@
             <div class="admin-area">
                 <h5><strong>결제 내역 관리</strong></h5>
                 <ul>
-                    <li><a href="${contextPath}/admin/PaymentManage/adminPayments">전체 결제 내역</a></li>
+                    <li><a href="${contextPath}/admin/PaymentManage/adminPayments?tab=paymentHistory">전체 결제 내역</a></li>
                     <li><a href="${contextPath}/admin/PaymentManage/adminPayments?tab=paymentStats">결제 금액 관리</a></li>
                     <li><a href="${contextPath}/admin/PaymentManage/adminPayments?tab=refundManagement">환불 관리</a></li>
                 </ul>

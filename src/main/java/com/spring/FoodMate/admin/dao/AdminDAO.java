@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.spring.FoodMate.member.dto.BuyerDTO;
 import com.spring.FoodMate.member.dto.SellerDTO;
+import com.spring.FoodMate.order.dto.OrderPaymentDTO;
 import com.spring.FoodMate.product.dto.ProductDTO;
 import com.spring.FoodMate.recipe.dto.RecipeDTO;
 
@@ -49,6 +50,22 @@ public class AdminDAO {
         paramMap.put("keyword", keyword);
         paramMap.put("searchtype", searchType);
         return sqlSession.selectList("mapper.product.selectAdminProductList", paramMap);
+    }
+    
+    public List<OrderPaymentDTO> getAdminPaymentInfo(String type, String keyword, String searchType) throws DataAccessException {
+    	Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("type", type);
+        paramMap.put("keyword", keyword);
+        paramMap.put("searchtype", searchType);
+        return sqlSession.selectList("mapper.order.selectAdminPaymentInfo", paramMap);
+    }
+    
+    public List<OrderPaymentDTO> getAdminMonthPaymentInfo(String status, String keyword, String searchType) throws DataAccessException {
+    	Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("status", status);
+        paramMap.put("keyword", keyword);
+        paramMap.put("searchtype", searchType);
+        return sqlSession.selectList("mapper.order.selectAdminPaymentInfo", paramMap);
     }
     
     public void deleteAdminBuyer(String byr_id) throws DataAccessException {
