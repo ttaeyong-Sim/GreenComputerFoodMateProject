@@ -270,14 +270,17 @@ public class RecipeControllerImpl implements RecipeController {
 	    @RequestParam(value = "ingrd_name") List<String> ingredientsNames,
 	    @RequestParam(value = "ingrd_qty") List<Integer> ingredientsQty,
 	    @RequestParam(value = "unit") List<String> ingredientsUnits,
+	    @RequestParam(value = "ingrd_category_id") List<Integer> ingredientsCategoryIds,
+	    
 	    @RequestParam(value = "rcp_step") List<Integer> stepNumbers,
 	    @RequestParam(value = "step_desc") List<String> stepDescriptions,
 	    @RequestParam(value = "stepimg_path") List<MultipartFile> stepImages,
-	    @RequestParam(value = "ingrd_category_id") List<Integer> ingredientsCategoryIds, 
+	    
+
 	    HttpSession session
 	) throws Exception {
-	    System.out.println("가져온 레시피 카테고리 id 숫자는" + category_id);
-	    System.out.println("가져온 재료 카테고리 id 숫자는" + ingredientsCategoryIds);
+	    System.out.println("가져온 레시피 카테고리 id : " + category_id);
+	    System.out.println("가져온 재료 카테고리 id : " + ingredientsCategoryIds);
 	    
 	    
 	    BuyerDTO buyerDTO = (BuyerDTO) session.getAttribute("buyerInfo");

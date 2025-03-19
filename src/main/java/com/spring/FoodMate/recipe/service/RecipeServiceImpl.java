@@ -20,22 +20,26 @@ import com.spring.FoodMate.recipe.dto.RecipeStepDTO;
 import com.spring.FoodMate.recipe.exception.RecipeException;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
     private RecipeDAO recipeDAO;
    
 
-    // 레시피 등록 후 recipeId 반환
-    @Transactional
+    
     @Override
     public int addRecipe(RecipeDTO recipe) throws Exception {
-        // 레시피 등록
+        // 1. 먼저 NEXTVAL을 조회하여 미리 레시피 ID 확보
+        int RecipeId = recipeDAO.selectLastInsertedRecipeId();
+        recipe.setRcp_id(RecipeId);  // 미리 확보한 ID 설정
+
+        // 2. 확보한 ID로 레시피 INSERT
         recipeDAO.insertRecipe(recipe);
 
-        // 레시피 ID 반환
-        return recipeDAO.selectLastInsertedRecipeId();
+        // 3. 트랜잭션 확인용 로그
+        System.out.println("레시피 INSERT 완료, 사용한 레시피 ID: " + RecipeId);
+
+        return RecipeId;  // 확보한 ID를 그대로 반환
     }
 
     // 재료 삽입

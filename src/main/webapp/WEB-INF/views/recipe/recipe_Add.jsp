@@ -196,7 +196,7 @@
 	<div class="recipe-form-container">
 	<h2>📖레시피 작성</h2>
 
-		<form id="recipeForm" action="${contextPath}/recipe/addNewRecipe" method="POST" enctype="multipart/form-data">
+		<form id="recipeForm" enctype="multipart/form-data">
 		    <!-- 레시피 기본 정보 -->
 		     <!-- 작성자 정보 (수정 불가) -->
 			<%
@@ -270,7 +270,7 @@
 		        <div>
 		        <!-- 첫 번째 재료 카테고리 입력 -->
 				<section id="select_category">
-				    <label for="category">재료 카테고리:</label>
+				    <label for="ingrd_category">재료 카테고리:</label>
 				    <p>&#8251;재료의 카테고리를 선택하세요.</p>
 				    			<!--▼2단계분류에선 여기 name값이 끝이 2 class도 마찬가지로 2가 되는거 분류별로 증가 ajax 요청 참조  -->
 				    <select name="ingrd_category_1" class="ingrd_category_1"> <!--  -->
@@ -283,7 +283,8 @@
 				        <!-- 자식 카테고리들을 넣을 div -->
 				    </div>
 				</section>
-				<input type="number" class="ingrd_category_id" name="ingrd_category_id" readonly>
+				
+					<input type="number" class="ingrd_category_id" name="ingrd_category_id" readonly>
 		            
 		            <label for="ingrd_name">재료 이름:</label>
 		            <input type="text" name="ingrd_name" placeholder="재료 이름 입력" required>
@@ -296,10 +297,7 @@
 		    <button type="button" class="btn ingredient-add-btn" onclick="addIngredient()">재료 추가</button>
 		    
 		    
-		    
-		    
-		    
-		    
+		 
 		    <!-- 레시피 단계 -->
 		    <br>
 		    <h3>레시피 단계별 조리법</h3>
@@ -316,7 +314,7 @@
 		    </div>
 		    <button type="button" class="btn step-add-btn" onclick="addStep()">단계 추가</button>
 		
-		    <button type="submit" class="btn submit-btn">레시피 등록</button>
+		    <button type="submit" id="submitBtn" class="btn submit-btn">레시피 등록</button>
 		</form>
 	</div>
 	
@@ -401,7 +399,14 @@ $(document).ready(function() {
 	
 	
 	
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	
+	<!--  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼위에는 안건드려도됨▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+	<!--  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+	<!--  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+	<!--  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+	
+
 
 <script>
 <!-- 재료 부모 카테고리의 자식 카테고리 불러오기 -->
@@ -475,7 +480,8 @@ $(document).ready(function() {
 
 
 <script>
-<!-- 동적으로 추가된 폼 재료 부모 카테고리의 자식 카테고리 불러오기 -->
+	<!-- 동적으로 추가된 폼 재료 부모 카테고리의 자식 카테고리 불러오기 -->
+
     var ingredientCount = 2; // 재료 번호
     var stepCount = 2; // 단계 번호
 
@@ -485,58 +491,55 @@ $(document).ready(function() {
         var newIngredientDiv = document.createElement('div');
 
         newIngredientDiv.innerHTML = `
-            <section id="select_category_${ingredientCount}">
-                <label for="ingrd_category_${ingredientCount}">재료 카테고리:</label>
+            <section id="select_category_` + ingredientCount + `">
+                <label for="ingrd_category_` + ingredientCount + `">재료 카테고리:</label>
                 <p>&#8251;재료의 카테고리를 선택하세요.</p>
-                <select name="ingrd_category" class="ingrd_category_${ingredientCount}">
+                <select class="ingrd_category_` + ingredientCount + `">
                     <option value="" disabled selected>1단계 분류</option>
                     <c:forEach var="ingrd_category" items="${ingrd_categories}">
                         <option value="${ingrd_category.category_id}">${ingrd_category.name}</option>
                     </c:forEach>
                 </select>
-                <div class="ingrd_category_container_${ingredientCount}">
+                <div class="ingrd_category_container_` + ingredientCount + `">
                     <!-- 자식 카테고리들을 넣을 div -->
                 </div>
             </section>
-            <input type="number" class="ingrd_category_id_${ingredientCount}" name="ingrd_category_id" readonly>  <!-- 카테고리 ID hidden input -->
+            
+            <input type="number" class="ingrd_category_id_` + ingredientCount + `" name="ingrd_category_id" readonly>  <!-- 카테고리 ID hidden input -->
 
-            
-            
-            
-            <label for="ingrd_name_${ingredientCount}">재료 이름:</label>
-            <input type="text" name="ingrd_name_${ingredientCount}" placeholder="재료 이름 입력" required>
-            <label for="ingrd_qty_${ingredientCount}">재료 수량:</label>
-            <input type="number" name="ingrd_qty_${ingredientCount}" placeholder="재료 수량 입력" required>
-            <label for="unit_${ingredientCount}">단위:</label>
-            <input type="text" name="unit_${ingredientCount}" placeholder="단위 입력" required>
+            <label for="ingrd_name_` + ingredientCount + `">재료 이름:</label>
+            <input type="text" id="ingrd_name_` + ingredientCount + `" name="ingrd_name" placeholder="재료 이름 입력" required>
+            <label for="ingrd_qty_` + ingredientCount + `">재료 수량:</label>
+            <input type="number" id="ingrd_qty_` + ingredientCount + `" name="ingrd_qty" placeholder="재료 수량 입력" required>
+            <label for="unit_` + ingredientCount + `">단위:</label>
+            <input type="text" id="unit_` + ingredientCount + `" name="unit" placeholder="단위 입력" required>
 
             <button type="button" class="removeIngredientBtn" onclick="removeIngredient(this)">삭제</button>
         `;
-        
+
         ingredientsDiv.appendChild(newIngredientDiv);
         ingredientCount++; // 재료 추가 시마다 번호 증가
 
         // 동적으로 생성된 카테고리 선택에 대한 이벤트 리스너 추가
-        bindCategoryChangeEvent(ingredientCount - 1);
+        bindCategoryChangeEvent();
     }
 
     // 재료 카테고리 변경 시 동적으로 자식 카테고리 로딩
-    function bindCategoryChangeEvent(ingredientNumber) {
-        $(`.ingrd_category_${ingredientNumber}`).on('change', function() {
+    function bindCategoryChangeEvent() {
+        $('.ingrd_category_' + (ingredientCount - 1)).change(function() {
             var selectedCategoryId = $(this).val();
-            var categoryContainer = $(`.ingrd_category_container_${ingredientNumber}`);
+            var categoryContainer = $('.ingrd_category_container_' + (ingredientCount - 1));
 
             categoryContainer.empty();  // 기존 하위 카테고리 제거
 
             if (selectedCategoryId) {
-                loadSubIngrdCategories(selectedCategoryId, ingredientNumber);
+                loadSubIngrdCategories(selectedCategoryId, ingredientCount - 1, 1); // 1단계부터 시작
             }
         });
     }
 
-    // 하위 카테고리 로딩 함수
-   function loadSubIngrdCategories(parentCategoryId, ingredientNumber) {
-	   var url = contextPath + '/recipe/select_Sub_IngrdCategory?ingrd_category_id=' + parentIngrdCategoryId;
+    function loadSubIngrdCategories(parentCategoryId, ingredientNumber, level) {
+        var url = contextPath + '/recipe/select_Sub_IngrdCategory?ingrd_category_id=' + parentCategoryId;
 
         $.ajax({
             url: url,
@@ -544,17 +547,38 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(data) {
                 if (data.length > 0) {
-                    var select = $('<select>')
-                        .attr('name', `ingrd_category_${ingredientNumber}_sub`)
-                        .attr('class', `ingrd_category_${ingredientNumber}_sub`);
+                    // 이전 하위 카테고리 제거
+                    $('.ingrd_category_' + (ingredientNumber) + '_level_' + (level + 1)).remove();
 
-                    select.append($('<option>', { value: '', text: '2단계 분류', disabled: true, selected: true }));
+                    // 2단계, 3단계 등 레벨에 맞게 분류명 설정
+                    var select = $('<select>')
+                        .attr('name', 'ingrd_category_' + ingredientNumber + '_level_' + (level + 1))  // 레벨을 동적으로 추가
+                        .attr('class', 'ingrd_category_' + ingredientNumber + '_level_' + (level + 1));  // 레벨 기반 클래스 설정
+
+                    select.append($('<option>', { value: '', text: (level + 1) + '단계 분류', disabled: true, selected: true }));
 
                     $.each(data, function(index, ingrd_category) {
                         select.append($('<option>', { value: ingrd_category.category_id, text: ingrd_category.name }));
                     });
 
-                    $(`.ingrd_category_container_${ingredientNumber}`).append(select);
+                    $('.ingrd_category_container_' + ingredientNumber).append(select);
+
+                    // 하위 카테고리 선택 후 히든 input에 값 설정
+                    select.on('change', function() {
+                        var selectedSubCategory = $(this).val();  // 선택된 하위 카테고리
+
+                        if (selectedSubCategory) {
+                            // 선택된 하위 카테고리 값이 있을 때
+                            $('.ingrd_category_id_' + ingredientNumber).val(selectedSubCategory);
+                        }
+
+                        // 선택된 카테고리의 하위 카테고리 확인
+                        loadSubIngrdCategories(selectedSubCategory, ingredientNumber, level + 1);  // 레벨 증가
+                    });
+                } else {
+                    // 더 이상 하위 카테고리가 없으면 최종 카테고리로 처리
+                    var selectedCategoryId = $('.ingrd_category_' + ingredientNumber + '_level_' + level).val();
+                    $('.ingrd_category_id_' + ingredientNumber).val(selectedCategoryId);  // 최종 카테고리 값 설정
                 }
             },
             error: function(xhr, status, error) {
@@ -562,6 +586,7 @@ $(document).ready(function() {
             }
         });
     }
+
 
     // 재료 삭제 함수
     function removeIngredient(button) {
@@ -573,13 +598,15 @@ $(document).ready(function() {
         var stepsDiv = document.getElementById('steps');
         var newStepDiv = document.createElement('div');
         
-        newStepDiv.innerHTML = `
-            <label for="rcp_step_${stepCount}">단계 번호:</label>
-            <input type="number" name="rcp_step_${stepCount}" placeholder="단계 번호" required>
-            <label for="step_desc_${stepCount}">단계 설명:</label>
-            <textarea name="step_desc_${stepCount}" placeholder="단계 설명 입력" required></textarea>
-            <label for="stepimg_path_${stepCount}">단계 이미지:</label>
-            <input type="file" name="stepimg_path_${stepCount}">
+        newStepDiv.innerHTML = `       	 
+            <label for="rcp_step_` + stepCount + `">단계 번호:</label>
+            	<input type="number" id="rcp_step_` + stepCount + `" name="rcp_step" placeholder="단계 번호" required>
+            	
+            <label for="step_desc_` + stepCount + `">단계 설명:</label>
+            	<textarea id="step_desc_` + stepCount + `" name="step_desc" placeholder="단계 설명 입력" required></textarea>
+            	
+            <label for="stepimg_path_` + stepCount + `">단계 이미지:</label>
+            	<input type="file" id="stepimg_path_` + stepCount + `" name="stepimg_path">
             <button type="button" class="removeStepBtn" onclick="removeStep(this)">삭제</button>
         `;
         stepsDiv.appendChild(newStepDiv);
@@ -591,11 +618,11 @@ $(document).ready(function() {
         button.parentElement.remove(); // 버튼이 속한 div를 삭제
     }
 
-    // 폼 데이터 서버로 전송 함수
+ // 폼 데이터 서버로 전송 함수
     $('#recipeForm').submit(function(event) {
         event.preventDefault();  // 기본 폼 제출을 막음
 
-        var formData = new FormData(this);
+        var formData = new FormData(this);  // 폼 데이터(FormData 객체) 받기
 
         // 재료 목록 처리
         $('#ingredients > div').each(function() {
@@ -605,10 +632,10 @@ $(document).ready(function() {
             var category = $(this).find('select[name^="ingrd_category"]').val();
 
             // 기존 name 그대로 사용하면서 FormData에 추가
-            formData.append('ingrd_name[]', name);
-            formData.append('ingrd_qty[]', qty);
-            formData.append('unit[]', unit);
-            formData.append('ingrd_category[]', category);
+            formData.append('ingrd_name', name);
+            formData.append('ingrd_qty', qty);
+            formData.append('unit', unit);
+            formData.append('ingrd_category', category);
         });
 
         // 단계 목록 처리
@@ -618,10 +645,11 @@ $(document).ready(function() {
             var image = $(this).find('input[name^="stepimg_path"]')[0].files[0];
 
             // 기존 name 그대로 사용하면서 FormData에 추가
-            formData.append('rcp_step[]', stepNumber);
-            formData.append('step_desc[]', description);
-            if (image) formData.append('stepimg_path[]', image);
+            formData.append('rcp_step', stepNumber);
+            formData.append('step_desc', description);
+            if (image) formData.append('stepimg_path', image);
         });
+
 
         // 서버로 전송
         $.ajax({
@@ -629,11 +657,16 @@ $(document).ready(function() {
             type: "POST",
             data: formData,
             contentType: false,
-            processData: false,-
+            processData: false,
             success: function(response) {
-                alert('레시피가 성공적으로 등록되었습니다!');
-                $('#recipeForm')[0].reset();  // 폼 초기화
-                window.location.href = `${contextPath}/recipe/recipe_list`;  // 리다이렉트
+                // 서버에서 보낸 응답 메시지 확인
+                if (response.status === "success") {
+                    alert(response.message);  // 서버에서 전달한 메시지를 알림창에 띄움
+                    $('#recipeForm')[0].reset();  // 폼 초기화
+                    window.location.href = `${contextPath}/recipe/recipe_list`;  // 목록 페이지로 리다이렉션
+                } else {
+                    alert('레시피 등록에 실패했습니다. 다시 시도해주세요.');
+                }
             },
             error: function(error) {
                 console.log(error);
@@ -641,6 +674,7 @@ $(document).ready(function() {
             }
         });
     });
+
 </script>
 </body>
 </html>
