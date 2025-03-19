@@ -2,7 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "../mybatis-3-mapper.dtd">
 
 <mapper namespace="mapper.recipe">
-
+	<!-- 생성된 RCP_ID 값을 반환하는 SELECT 쿼리 -->
+    <select id="selectLastInsertedRecipeId" resultType="int">
+        SELECT FOODMATE_RECIPE_SEQ.NEXTVAL FROM DUAL
+    </select>
+    
     <!-- 레시피 추가 -->
     <insert id="insertRecipe" parameterType="recipeDTO">
         INSERT INTO FOODMATE_RECIPE (
@@ -16,7 +20,7 @@
             DESCRIPTION
         ) 
         VALUES (
-            FOODMATE_RECIPE_SEQ.NEXTVAL,  <!-- 시퀀스를 사용하여 RCP_ID 값 자동 생성 -->
+            #{rcp_id},  <!-- 시퀀스를 사용하여 RCP_ID 값 자동 생성 -->
             #{byr_id},                    <!-- 사용자 ID -->
             #{title},                     <!-- 레시피 제목 -->
             #{mainimg_path},              <!-- 레시피 이미지 경로 -->
@@ -27,10 +31,7 @@
         )
     </insert>
 
-    <!-- 생성된 RCP_ID 값을 반환하는 SELECT 쿼리 -->
-    <select id="selectLastInsertedRecipeId" resultType="int">
-        SELECT FOODMATE_RECIPE_SEQ.CURRVAL FROM DUAL
-    </select>
+
 
     <!-- 재료 배치 삽입 -->
 	<insert id="insertRecipeIngredients" parameterType="recipeIngredientDTO">

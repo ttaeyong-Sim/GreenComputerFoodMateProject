@@ -36,10 +36,12 @@ public interface RecipeController {
             List<String> ingredientsNames,
             List<Integer> ingredientsQty, 
             List<String> ingredientsUnits, 
+            List<Integer> ingredientsCategoryIds, // 재료 카테고리 ID
+            
             List<Integer> stepNumbers, 
             List<String> stepDescriptions,
             List<MultipartFile> stepImages, 
-            List<Integer> ingredientsCategoryIds, // 재료 카테고리 ID
+            
             HttpSession session
         ) throws Exception;
     
