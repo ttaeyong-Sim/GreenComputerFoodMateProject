@@ -154,7 +154,7 @@
     	]]>
 	</update>
 	
-		<update id="updateSeller" parameterType="sellerDTO">
+	<update id="updateSeller" parameterType="sellerDTO">
 	    <![CDATA[
 			update foodmate_seller
 			       set pw=#{password},
@@ -183,5 +183,81 @@
 			        and pw=#{password}
     	]]>
 	</update>
+	
+	<!-- Admin 페이지 사용 -->
+	
+	<select id="selectAdminBuyerInfo" resultType="buyerDTO" parameterType="map">
+		select fb.*, fbp.img_path
+			from foodmate_buyer fb
+			join foodmate_buyer_profile fbp on fb.byr_id = fbp.byr_id
+			<if test="status != null and status != ''">
+	        	<![CDATA[ WHERE fb.status = #{status} ]]>
+	    	</if>
+	    <choose>
+		    <when test="searchtype == 'name' and keyword != null and keyword != ''">
+		        <![CDATA[ AND fb.name LIKE '%' || #{keyword} || '%' ]]>
+		    </when>
+		    <when test="searchtype == 'email' and keyword != null and keyword != ''">
+		        <![CDATA[ AND fb.email LIKE '%' || #{keyword} || '%' ]]>
+		    </when>
+		    <otherwise>
+		        <!-- keyword가 없으면 조건 추가하지 않음 -->
+		    </otherwise>
+		</choose>
+	</select>
+	
+	<update id="setActiveAdminBuyer" parameterType="String">
+	    <![CDATA[
+			update foodmate_buyer
+			       set status='ACTIVE'
+		 	       where byr_id=#{byr_id}
+    	]]>
+	</update>
+	
+	<delete id="deleteAdminBuyer" parameterType="String">
+        DELETE FROM foodmate_buyer
+        WHERE byr_id = #{byr_id}
+    </delete>
+    
+    <select id="selectAdminSellerInfo" resultType="sellerDTO" parameterType="map">
+	    SELECT 
+	        fs.*,
+	        fsp.img_path,
+	        NVL(o.monthly_sales, 0) AS monthly_sales,  -- 이번 달 매출 (서브쿼리에서 미리 계산)
+	        NVL(p.product_count, 0) AS product_count  -- 판매 상품 개수
+	    FROM (
+        -- 검색 조건을 먼저 적용하여 필요한 판매자만 선택
+        SELECT *
+        FROM foodmate_seller
+        WHERE 1=1
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <choose>
+            <when test="searchtype == 'name' and keyword != null and keyword != ''">
+                AND name LIKE '%' || #{keyword} || '%'
+            </when>
+            <when test="searchtype == 'email' and keyword != null and keyword != ''">
+                AND email LIKE '%' || #{keyword} || '%'
+            </when>
+        </choose>
+	    ) fs
+	    JOIN foodmate_seller_profile fsp 
+	        ON fs.slr_id = fsp.slr_id
+	    LEFT JOIN (
+	        -- 판매된 상품 개수를 slr_id 기준으로 미리 계산
+	        SELECT slr_id, COUNT(DISTINCT pdt_id) AS product_count
+	        FROM foodmate_product
+	        GROUP BY slr_id
+	    ) p ON fs.slr_id = p.slr_id
+	    LEFT JOIN (
+	        -- 이번 달 매출을 slr_id 기준으로 미리 계산
+	        SELECT slr_id, SUM(tot_pdt_price) AS monthly_sales
+	        FROM foodmate_order
+	        WHERE create_date >= TRUNC(SYSDATE, 'MM') -- 이번 달 주문만 필터링
+	        GROUP BY slr_id
+	    ) o ON fs.slr_id = o.slr_id
+	    ORDER BY fs.slr_id DESC
+	</select>
 	
 </mapper>

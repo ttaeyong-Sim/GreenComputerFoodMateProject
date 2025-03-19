@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     request.setCharacterEncoding("UTF-8");
 %>
@@ -138,14 +140,22 @@
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="검색어를 입력하세요" />
             <select id="searchFilter">
-            	<option value="title">판매자 이름</option>
-                <option value="title">레시피 제목</option>
-                <option value="author">작성자</option>
-                <option value="date">등록일</option>
+            	<option value="name">판매자 이름</option>
+                <option value="email">이메일</option>
             </select>
-            <button onclick="searchRecipes()">검색</button>
+            <button onclick="searchMember()">검색</button>
         </div>
 
+        <%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+        <c:set var="AllcurrentPage" value="${param.page != null ? param.page : 1}" />
+		<c:set var="AllitemsPerPage" value="6" />
+		<c:set var="AllstartIndex" value="${(AllcurrentPage - 1) * AllitemsPerPage}" />
+		<c:set var="AllendIndex" value="${AllcurrentPage * AllitemsPerPage}" />
+			
+		<%-- 전체 데이터 개수 구하기 --%>
+		<c:set var="AlltotalItems" value="${fn:length(AllmemberList)}" />
+		<fmt:parseNumber var="AllparsedTotalPages" value="${(AlltotalItems + AllitemsPerPage - 1) / AllitemsPerPage}" integerOnly="true" />
+		<c:set var="AlltotalPages" value="${AllparsedTotalPages}" />
         <!-- 탭 내용 -->
         <div class="tab-content">
             <!-- 활동 중인 판매자 -->
@@ -153,33 +163,57 @@
                 <table class="report-list">
                     <thead>
                         <tr>
-                            <th>이미지</th>
+                            <th>프로필 이미지</th>
                             <th>판매자 이름</th>
                             <th>판매 상품 수</th>
-                            <th>매출</th>
+                            <th>달 매출</th>
                             <th>가입일</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example1.png" alt="판매자 1" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-                            <td><a href="${contextPath}/admin/AccountManage/adminSellerDetail.do">판매자 1</a></td>
-                            <td>20개</td>
-                            <td>500,000원</td>
-                            <td>2023-06-25</td>
-                        </tr>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example1.png" alt="판매자 2" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-                            <td><a href="#">판매자 2</a></td>
-                            <td>15개</td>
-                            <td>300,000원</td>
-                            <td>2024-01-10</td>
-                        </tr>
+                    <c:forEach var="allmember" items="${AllmemberList}" varStatus="status">
+			      		<c:if test="${status.index >= AllstartIndex && status.index < AllendIndex}">
+		                        <tr>
+		                            <td><img src="${contextPath}/resources/images/${allmember.img_path}" alt="${allmember.name}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
+		                            <td><a href="${contextPath}/admin/AccountManage/adminSellerDetail.do">${allmember.name}</a></td>
+		                            <td>${allmember.product_count}개</td>
+		                            <td><fmt:formatNumber value="${allmember.monthly_sales}" type="number" groupingUsed="true" />원</td>
+		                            <td>${allmember.join_date}</td>
+		                        </tr>
                         <!-- 추가 활동 중인 판매자들 -->
+                        </c:if>
+	                </c:forEach>
                     </tbody>
                 </table>
+                <!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${AllcurrentPage > 1}">
+				        <a href="?tab=all&page=${AllcurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${AlltotalPages}">
+				        <a href="?tab=all&page=${i}" class="${i == AllcurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${AllcurrentPage < AlltotalPages}">
+				        <a href="?tab=all&page=${AllcurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
 
+			<%-- 현재 페이지 정보 가져오기 (기본값: 1페이지) --%>
+			<c:set var="INACTcurrentPage" value="${param.page != null ? param.page : 1}" />
+			<c:set var="INACTitemsPerPage" value="6" />
+			<c:set var="INACTstartIndex" value="${(INACTcurrentPage - 1) * INACTitemsPerPage}" />
+			<c:set var="INACTendIndex" value="${INACTcurrentPage * INACTitemsPerPage}" />
+			
+			<%-- 전체 데이터 개수 구하기 --%>
+			<c:set var="INACTtotalItems" value="${fn:length(SleepingmemberList)}" />
+			<fmt:parseNumber var="INACTparsedTotalPages" value="${(INACTtotalItems + INACTitemsPerPage - 1) / INACTitemsPerPage}" integerOnly="true" />
+			<c:set var="INACTtotalPages" value="${INACTparsedTotalPages}" />
             <!-- 휴면 상태 판매자 -->
             <div id="inactive" class="tab-pane">
                 <table class="report-list">
@@ -188,43 +222,82 @@
                             <th>이미지</th>
                             <th>판매자 이름</th>
                             <th>판매 상품 수</th>
-                            <th>매출</th>
+                            <th>달 매출</th>
                             <th>가입일</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><img src="${contextPath}/resources/images/example1.png" alt="판매자 3" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
-                            <td><a href="#">판매자 3</a></td>
-                            <td>5개</td>
-                            <td>100,000원</td>
-                            <td>2023-02-15</td>
-                        </tr>
+                    <c:forEach var="inactmember" items="${SleepingmemberList}" varStatus="status">
+			      		<c:if test="${status.index >= INACTstartIndex && status.index < INACTendIndex}">
+		                        <tr>
+		                            <td><img src="${contextPath}/resources/images/${inactmember.img_path}" alt="${inactmember.name}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"></td>
+		                            <td><a href="${contextPath}/admin/AccountManage/adminSellerDetail.do">${inactmember.name}</a></td>
+		                            <td>${inactmember.product_count}개</td>
+		                            <td><fmt:formatNumber value="${inactmember.monthly_sales}" type="number" groupingUsed="true" />원</td>
+		                            <td>${inactmember.join_date}</td>
+		                        </tr>
                         <!-- 추가 휴면 상태 판매자들 -->
+                        </c:if>
+	                </c:forEach>
                     </tbody>
                 </table>
+                <!-- 페이지네이션 -->
+				<div class="pagination">
+				    <%-- 이전 페이지 버튼 --%>
+				    <c:if test="${INACTcurrentPage > 1}">
+				        <a href="?tab=inactive&page=${INACTcurrentPage - 1}">이전</a>
+				    </c:if>
+				
+				    <%-- 페이지 번호 표시 --%>
+				    <c:forEach var="i" begin="1" end="${INACTtotalPages}">
+				        <a href="?tab=inactive&page=${i}" class="${i == INACTcurrentPage ? 'active' : ''}">${i}</a>
+				    </c:forEach>
+				
+				    <%-- 다음 페이지 버튼 --%>
+				    <c:if test="${INACTcurrentPage < INACTtotalPages}">
+				        <a href="?tab=inactive&page=${INACTcurrentPage + 1}">다음</a>
+				    </c:if>
+				</div>
             </div>
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">...</a>
-            <a href="#">다음</a>
         </div>
     </div>
 
     <script>
         // 탭 클릭 시 해당 탭으로 이동
+        $(document).ready(function() {
+        var tab = "${tab}"; // 서버에서 받아온 tab 값
+        var contextPath = "${pageContext.request.contextPath}";
+
+        if (tab) {
+            activateTab(tab);
+        }
+
         $(".tab-item").on("click", function() {
             var tabId = $(this).data("tab");
-            $(".tab-item").removeClass("active");
-            $(this).addClass("active");
-            $(".tab-pane").removeClass("active");
-            $("#" + tabId).addClass("active");
+            activateTab(tabId);
+            history.pushState(null, null, "?tab=" + tabId);
         });
+
+        function activateTab(tabName) {
+            $(".tab-item").removeClass("active");
+            $(".tab-pane").removeClass("active");
+            $(".tab-item[data-tab='" + tabName + "']").addClass("active");
+            $("#" + tabName).addClass("active");
+        }
+    });
+        
+        function searchMember() {
+            var keyword = document.getElementById("searchInput").value;  // 검색어 입력 값
+            var searchType = document.getElementById("searchFilter").value; // 검색 유형 선택 값
+            var contextPath = "${pageContext.request.contextPath}";
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            var tab = urlParams.get("tab") || ""; // tab이 없으면 빈 값 설정
+
+            var url = contextPath + "/admin/AccountManage/adminSellers?searchtype=" + encodeURIComponent(searchType) + "&keyword=" + encodeURIComponent(keyword) + "&tab=" + encodeURIComponent(tab);
+
+            window.location.href = url; // 검색 요청 실행
+        }
     </script>
 </body>
 </html>

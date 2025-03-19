@@ -1,5 +1,7 @@
 package com.spring.FoodMate.member.dto;
 
+import java.sql.Date;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +16,7 @@ public class SellerDTO {
 	private String phone_num;
 	private String status;
 	private String nickname;
+	private Date join_date;
 
 	// 회원가입 요소
 	private String password_confirm;
@@ -25,6 +28,9 @@ public class SellerDTO {
 	private String bsnum3;
 
 	private MultipartFile profileImage;
+	private String img_path;
+	private int monthly_sales;
+	private int product_count;
 
 	public String getSlr_id() { return slr_id; }
 	public void setSlr_id(String slr_id) { this.slr_id = slr_id; }
@@ -58,5 +64,32 @@ public class SellerDTO {
 	public void setBsnum3(String bsnum3) { this.bsnum3 = bsnum3; }
 	public MultipartFile getProfileImage() { return profileImage; }
 	public void setProfileImage(MultipartFile profileImage) { this.profileImage = profileImage; }
+	public String getImg_path() {
+		return img_path;
+	}
+	public void setImg_path(String img_path) {
+		this.img_path = img_path;
+	}
+	public int getMonthly_sales() {
+		return monthly_sales;
+	}
+	public void setMonthly_sales(int monthly_sales) {
+		this.monthly_sales = monthly_sales;
+	}
+	public int getProduct_count() {
+		return product_count;
+	}
+	public void setProduct_count(int product_count) {
+		this.product_count = product_count;
+	}
+	public Date getJoin_date() {
+		return join_date;
+	}
+	public void setJoin_date(Date join_date) {
+		this.join_date = join_date;
+	}
+	
+	
+	
 
 }

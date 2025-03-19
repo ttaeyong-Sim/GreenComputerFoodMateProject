@@ -1,5 +1,7 @@
 package com.spring.FoodMate.member.dto;
 
+import java.sql.Date;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +17,7 @@ public class BuyerDTO {
 	private String phone_num;
 	private int points;
 	private String status;
+	private Date join_date;
 	
 	// 회원가입 요소
 	private String password_confirm;
@@ -27,6 +30,9 @@ public class BuyerDTO {
 	private String birthyy;
 	private String birthmm;
 	private String birthdd;
+	
+	// 프로파일 이미지
+	private String img_path;
 
 	private MultipartFile profileImage;
 	
@@ -138,6 +144,21 @@ public class BuyerDTO {
 	public void setPoints(int points) {
 		this.points = points;
 	}
+	public String getImg_path() {
+		return img_path;
+	}
+	public void setImg_path(String img_path) {
+		this.img_path = img_path;
+	}
+	public Date getJoin_date() {
+		return join_date;
+	}
+	public void setJoin_date(Date join_date) {
+		this.join_date = join_date;
+	}
+	
+	
+	
 	
 	
 }

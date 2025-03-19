@@ -103,7 +103,6 @@
 	ORDER BY R.CREATE_DATE DESC
 	
 	</select>
-
 	
 	<!-- 중분류 카테고리의 레시피 조회 -->
 	<select id="selectRecipeByChild" resultType="recipeDTO">
@@ -466,5 +465,45 @@
 	    DELETE FROM FOODMATE_RECIPE_QNA
 	    WHERE CMT_RCP_QNA_ID = #{cmt_rcp_qna_id}
 	</delete>
+	
+	
+	<!-- admin 옵션 -->
+	<!-- 레시피 조회 -->
+	<select id="selectAdminRecipeList" resultType="recipeDTO" parameterType="map">
+	    SELECT 
+	        R.RCP_ID, 
+	        R.BYR_ID, 
+	        BR.NAME,  -- 닉네임 추가
+	        R.CATEGORY_ID, 
+	        R.TITLE, 
+	        R.MAINIMG_PATH, 
+	        R.FOOD_NAME, 
+	        R.REQ_TIME, 
+	        R.DESCRIPTION, 
+	        R.STATUS, 
+	        R.CREATE_DATE,
+	        R.VIEWS,
+	        COUNT(rr.rcp_id) AS REVIEW_COUNT,
+	        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING <!-- 평점이 없으면 0을 대신하고, 평균 평점 계산 (소수 첫째 자리에서 둘째자리를 기준 반올림)-->
+	    FROM FOODMATE_RECIPE R
+	    LEFT JOIN FOODMATE_BUYER BR ON R.BYR_ID = BR.BYR_ID  -- 닉네임 조인
+	    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID  -- 평점 조인
+	    <if test="status != null and status != ''">
+	        <![CDATA[ WHERE R.STATUS = #{status} ]]>
+	    </if>
+	    <choose>
+            <when test="searchtype == 'name' and keyword != null and keyword != ''">
+                AND BR.NAME LIKE '%' || #{keyword} || '%'
+            </when>
+            <when test="searchtype == 'title' and keyword != null and keyword != ''">
+                AND R.FOOD_NAME LIKE '%' || #{keyword} || '%'
+            </when>
+        </choose>
+	    GROUP BY 
+	        R.RCP_ID, R.BYR_ID, BR.NAME, R.CATEGORY_ID, R.TITLE, 
+	        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
+	        R.STATUS, R.CREATE_DATE, R.VIEWS
+	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
+	</select>
 
 </mapper>

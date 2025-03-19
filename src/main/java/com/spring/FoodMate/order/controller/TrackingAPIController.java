@@ -33,16 +33,17 @@ public class TrackingAPIController {
         headers.set("Authorization", "TRACKQL-API-KEY " + TRACKING_CLIENT_ID + ":" + TRACKING_CLIENT_SECRET);  // API Key를 Authorization 헤더에 추가
         
         String query = """
-                query Track($carrierId: ID!, $trackingNumber: String!) {
-                  track(carrierId: $carrierId, trackingNumber: $trackingNumber) {
-                    lastEvent {
-                      time
-                      status {
-                        code
-                      }
-                    }
-                  }
-                }""";
+        	    query Track($carrierId: ID!, $trackingNumber: String!) {
+        	      track(carrierId: $carrierId, trackingNumber: $trackingNumber) {
+        	        lastEvent {
+        	          time
+        	          status {
+        	            code
+        	          }
+        	        }
+        	      }
+        	    }
+        	    """;
         
         // 요청 본문에 포함될 쿼리 및 변수 설정
         // 쿼리 내용은 외부 API에서 요청할 데이터를 결정하는 GraphQL 쿼리문
