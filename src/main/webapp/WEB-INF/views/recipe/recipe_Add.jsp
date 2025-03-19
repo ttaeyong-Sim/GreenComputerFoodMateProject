@@ -526,67 +526,75 @@ $(document).ready(function() {
 
     // 재료 카테고리 변경 시 동적으로 자식 카테고리 로딩
     function bindCategoryChangeEvent() {
-        $('.ingrd_category_' + (ingredientCount - 1)).change(function() {
-            var selectedCategoryId = $(this).val();
-            var categoryContainer = $('.ingrd_category_container_' + (ingredientCount - 1));
+    $('.ingrd_category_' + (ingredientCount - 1)).change(function() {
+        var selectedCategoryId = $(this).val();
+        var ingredientNumber = ingredientCount - 1;
+        var categoryContainer = $('.ingrd_category_container_' + ingredientNumber);
 
-            categoryContainer.empty();  // 기존 하위 카테고리 제거
+        categoryContainer.empty();  // 기존 하위 카테고리 제거
 
-            if (selectedCategoryId) {
-                loadSubIngrdCategories(selectedCategoryId, ingredientCount - 1, 1); // 1단계부터 시작
-            }
-        });
-    }
-
-    function loadSubIngrdCategories(parentCategoryId, ingredientNumber, level) {
-        var url = contextPath + '/recipe/select_Sub_IngrdCategory?ingrd_category_id=' + parentCategoryId;
-
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                if (data.length > 0) {
-                    // 이전 하위 카테고리 제거
-                    $('.ingrd_category_' + (ingredientNumber) + '_level_' + (level + 1)).remove();
-
-                    // 2단계, 3단계 등 레벨에 맞게 분류명 설정
-                    var select = $('<select>')
-                        .attr('name', 'ingrd_category_' + ingredientNumber + '_level_' + (level + 1))  // 레벨을 동적으로 추가
-                        .attr('class', 'ingrd_category_' + ingredientNumber + '_level_' + (level + 1));  // 레벨 기반 클래스 설정
-
-                    select.append($('<option>', { value: '', text: (level + 1) + '단계 분류', disabled: true, selected: true }));
-
-                    $.each(data, function(index, ingrd_category) {
-                        select.append($('<option>', { value: ingrd_category.category_id, text: ingrd_category.name }));
-                    });
-
-                    $('.ingrd_category_container_' + ingredientNumber).append(select);
-
-                    // 하위 카테고리 선택 후 히든 input에 값 설정
-                    select.on('change', function() {
-                        var selectedSubCategory = $(this).val();  // 선택된 하위 카테고리
-
-                        if (selectedSubCategory) {
-                            // 선택된 하위 카테고리 값이 있을 때
-                            $('.ingrd_category_id_' + ingredientNumber).val(selectedSubCategory);
-                        }
-
-                        // 선택된 카테고리의 하위 카테고리 확인
-                        loadSubIngrdCategories(selectedSubCategory, ingredientNumber, level + 1);  // 레벨 증가
-                    });
-                } else {
-                    // 더 이상 하위 카테고리가 없으면 최종 카테고리로 처리
-                    var selectedCategoryId = $('.ingrd_category_' + ingredientNumber + '_level_' + level).val();
-                    $('.ingrd_category_id_' + ingredientNumber).val(selectedCategoryId);  // 최종 카테고리 값 설정
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('하위 카테고리 로딩 실패:', error);
-            }
-        });
-    }
-
+        if (selectedCategoryId) {
+            // 1단계 선택 시, 해당 ID를 input에 바로 설정
+            $('.ingrd_category_id_' + ingredientNumber).val(selectedCategoryId);
+            
+            // 하위 카테고리 로딩
+            loadSubIngrdCategories(selectedCategoryId, ingredientNumber, 1);
+        } else {
+            // 선택 해제 시 input 초기화
+            $('.ingrd_category_id_' + ingredientNumber).val('');
+        }
+    });
+	}
+	
+	function loadSubIngrdCategories(parentCategoryId, ingredientNumber, level) {
+	    var url = contextPath + '/recipe/select_Sub_IngrdCategory?ingrd_category_id=' + parentCategoryId;
+	
+	    $.ajax({
+	        url: url,
+	        type: 'GET',
+	        dataType: 'json',
+	        success: function(data) {
+	            // 기존 하위 카테고리 삭제
+	            $('.ingrd_category_' + ingredientNumber + '_level_' + (level + 1)).remove();
+	
+	            if (data.length > 0) {
+	                // 하위 카테고리 추가
+	                var select = $('<select>')
+	                    .attr('name', 'ingrd_category_' + ingredientNumber + '_level_' + (level + 1))
+	                    .attr('class', 'ingrd_category_' + ingredientNumber + '_level_' + (level + 1));
+	
+	                select.append($('<option>', { value: '', text: (level + 1) + '단계 분류', disabled: true, selected: true }));
+	
+	                $.each(data, function(index, ingrd_category) {
+	                    select.append($('<option>', { value: ingrd_category.category_id, text: ingrd_category.name }));
+	                });
+	
+	                $('.ingrd_category_container_' + ingredientNumber).append(select);
+	
+	                // 하위 카테고리 변경 이벤트 리스너
+	                select.on('change', function() {
+	                    var selectedSubCategory = $(this).val();
+	
+	                    if (selectedSubCategory) {
+	                        $('.ingrd_category_id_' + ingredientNumber).val(selectedSubCategory);
+	                    } else {
+	                        // 값이 선택되지 않으면, 가장 최근 선택된 상위 카테고리 값을 설정
+	                        $('.ingrd_category_id_' + ingredientNumber).val(parentCategoryId);
+	                    }
+	
+	                    // 재귀적으로 다음 단계 하위 카테고리 로딩
+	                    loadSubIngrdCategories(selectedSubCategory, ingredientNumber, level + 1);
+	                });
+	            } else {
+	                // 더 이상 하위 카테고리가 없으면 최종 선택된 값으로 설정
+	                $('.ingrd_category_id_' + ingredientNumber).val(parentCategoryId);
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error('하위 카테고리 로딩 실패:', error);
+	        }
+	    });
+	}
 
     // 재료 삭제 함수
     function removeIngredient(button) {

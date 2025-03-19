@@ -365,7 +365,7 @@ public class RecipeControllerImpl implements RecipeController {
 	public List<CategoryDTO> select_Sub_IngrdCategory(@RequestParam("ingrd_category_id") int ingrd_category_id) throws Exception {
 	    // 데이터베이스에서 category_id에 해당하는 자식 카테고리 가져오기
 	    List<CategoryDTO> IngrdsubCategories = recipeService.select_Child_IngrdCategory(ingrd_category_id);
-	    System.out.println("재료의 카테고리id: " + ingrd_category_id);
+	    System.out.println("받아온 재료의 카테고리id: " + ingrd_category_id);
 	    return IngrdsubCategories;
 	}
 
