@@ -590,7 +590,7 @@ $(document).ready(function() {
 	                $('.ingrd_category_id_' + ingredientNumber).val(parentCategoryId);
 	            }
 	        },
-	        error: function(xhr, status, error) {
+	        error: function(xhr, status, error) { 
 	            console.error('하위 카테고리 로딩 실패:', error);
 	        }
 	    });
