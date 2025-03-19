@@ -28,6 +28,7 @@ public class RecipeServiceImpl implements RecipeService {
    
 
     // 레시피 등록 후 recipeId 반환
+    @Transactional
     @Override
     public int addRecipe(RecipeDTO recipe) throws Exception {
         // 레시피 등록

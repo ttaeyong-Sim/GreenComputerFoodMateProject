@@ -7,7 +7,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>레시피 작성 페이지</title>
+    <title>레시피 작성 폼 페이지</title>
     <!-- jQuery 예시 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>

@@ -38,29 +38,6 @@ public class RecipeControllerImpl implements RecipeController {
     @Autowired
     private RecipeService recipeService;
     
-    /*
-    @RequestMapping("/recipe/selectRecipeByCategory")
-    public ModelAndView selectRecipeByCategory(@RequestParam("categoryId") int categoryId, HttpServletRequest request) throws Exception {
-        String viewName = (String) request.getAttribute("viewName");
-        HttpSession session = request.getSession();
-
-        // 카테고리 아이디에 맞는 레시피를 조회
-        List<RecipeVO> recipeList = categoryService.getRecipesByCategory(categoryId);
-
-        // 최근 본 레시피 리스트 갱신
-        RecentRecipeView(categoryId, recipeList, session);
-
-        // 업데이트된 recentRecipeList를 jsp에 전달
-        List<RecipeVO> recentRecipeList = (List<RecipeVO>) session.getAttribute("recentRecipeList");
-        ModelAndView mav = new ModelAndView(viewName);
-        mav.setViewName("common/layout");
-        mav.addObject("recipeList", recipeList);
-        mav.addObject("recentRecipeList", recentRecipeList);
-        mav.addObject("showNavbar", true);
-        mav.addObject("title", "카테고리별 레시피");
-        mav.addObject("body", "/WEB-INF/views/recipe/recipeList.jsp"); 
-        return mav;
-    }*/
 
 
     // 레시피 수정 폼
