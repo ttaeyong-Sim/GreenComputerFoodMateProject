@@ -142,6 +142,10 @@ public class MemberController {
 				session=request.getSession();
 				session.setAttribute("isBuyerLogOn", true);
 				session.setAttribute("buyerInfo", buyerDTO);
+				SessionDTO sdto = new SessionDTO();
+				sdto.setUserId((String)userInfo.get("id"));
+				sdto.setUserRole("buyer");
+				session.setAttribute("sessionDTO", sdto);
 				
 				message  = "<script>";
 			    message += " location.href='"+request.getContextPath()+"/main';";

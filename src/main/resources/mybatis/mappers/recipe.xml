@@ -74,35 +74,35 @@
 	    ORDER BY R.CREATE_DATE DESC -- 최신순 정렬
 	</select>
 	
-		 <!-- 대분류 카테고리 레시피 조회 -->
-    <select id="selectRecipeByParent" resultType="recipeDTO">
-        SELECT 
-        R.RCP_ID, 
-        R.BYR_ID, 
-        BP.NICKNAME,
-        R.CATEGORY_ID, 
-        R.TITLE, 
-        R.MAINIMG_PATH, 
-        R.FOOD_NAME, 
-        R.REQ_TIME, 
-        R.DESCRIPTION, 
-        R.STATUS, 
-        R.CREATE_DATE,
-        ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING
-    FROM FOODMATE_RECIPE R
-    LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
-    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
-                            <!-- ▼레시피 카테고리를 조회하는거지만 실질적으로 '카테고리 테이블'의 parent_id에 해당하는 중분류 카테고리와 일치해야해서 -->
-    LEFT JOIN FOODMATE_RECIPE_CATEGORY C ON R.CATEGORY_ID = C.CATEGORY_ID 
-    WHERE R.STATUS = 'Y' 
-    AND C.PARENT_ID = #{parent_id}  -- 서브쿼리 대신 여기에서 직접 필터링
-    GROUP BY 
-        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
-        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
-        R.STATUS, R.CREATE_DATE
-    ORDER BY R.CREATE_DATE DESC
-
-    </select>
+		<!-- 대분류 카테고리 레시피 조회 -->
+	<select id="selectRecipeByParent" resultType="recipeDTO">
+	    SELECT 
+	    R.RCP_ID, 
+	    R.BYR_ID, 
+	    BP.NICKNAME,
+	    R.CATEGORY_ID, 
+	    R.TITLE, 
+	    R.MAINIMG_PATH, 
+	    R.FOOD_NAME, 
+	    R.REQ_TIME, 
+	    R.DESCRIPTION, 
+	    R.STATUS, 
+	    R.CREATE_DATE,
+	    ROUND(COALESCE(AVG(RR.RATING), 0), 1) AS RATING
+	FROM FOODMATE_RECIPE R
+	LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
+	LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
+							<!-- ▼레시피 카테고리를 조회하는거지만 실질적으로 '카테고리 테이블'의 parent_id에 해당하는 중분류 카테고리와 일치해야해서 -->
+	LEFT JOIN FOODMATE_RECIPE_CATEGORY C ON R.CATEGORY_ID = C.CATEGORY_ID 
+	WHERE R.STATUS = 'Y' 
+	AND C.PARENT_ID = #{parent_id}  -- 서브쿼리 대신 여기에서 직접 필터링
+	GROUP BY 
+	    R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
+	    R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 
+	    R.STATUS, R.CREATE_DATE
+	ORDER BY R.CREATE_DATE DESC
+	
+	</select>
 	
 	<!-- 중분류 카테고리의 레시피 조회 -->
 	<select id="selectRecipeByChild" resultType="recipeDTO">
@@ -123,7 +123,7 @@
 	    LEFT JOIN FOODMATE_BUYER_PROFILE BP ON R.BYR_ID = BP.BYR_ID
 	    LEFT JOIN FOODMATE_RECIPE_RATING RR ON R.RCP_ID = RR.RCP_ID
 	    WHERE R.STATUS = 'Y' 
-	    AND R.CATEGORY_ID = #{categoryId}  <!-- 중분류 카테고리로 필터링 -->
+	    AND R.CATEGORY_ID = #{category_id}<!--등록된 레시피의 카테고리id랑 카테고리 항목클릭시 받아온 필드의 category_id가같은거끼리 --><!-- 중분류 카테고리로 필터링 -->
 	    GROUP BY 
 	        R.RCP_ID, R.BYR_ID, BP.NICKNAME, R.CATEGORY_ID, R.TITLE, 
 	        R.MAINIMG_PATH, R.FOOD_NAME, R.REQ_TIME, R.DESCRIPTION, 

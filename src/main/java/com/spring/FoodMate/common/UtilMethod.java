@@ -58,17 +58,20 @@ public class UtilMethod {
 	// 그린컴퓨터학원 - 송태호 자리
 	private static final String imagePath2 = "C:/Users/confl/git/GreenComputerFoodMateProject/src/main/webapp/resources/images";
 	// 송태호 자택의 경로.
-	private static final String imagePath = "C:/Web/FoodMate/src/main/webapp/resources/images";
+	private static final String imagePath =  "C:/Web/FoodMate/src/main/webapp/resources/images";
 	// 강규진 자택 경로
 	private static final String imagePath4 = "E:/GreenComputerProject/GreenComputerFoodMateProject/src/main/webapp/resources/images";
+	// 그린컴퓨터학원 - 심태용 자리
+	private static final String imagePath5 = "C:/Users/Administrator/git/GreenComputerFoodMateProject/src/main/webapp/resources/images";
+
 	
 	public static String savePdtImage(MultipartFile file, int type) throws Exception {
 	    // 저장할 디렉토리 경로 설정
 		String uploadDir = null;
 		if(type == 1) {
-			uploadDir = imagePath + "/pdt";
+			uploadDir = imagePath5 + "/pdt";
 		} else {
-			uploadDir = imagePath + "/pdt/description";
+			uploadDir = imagePath5 + "/pdt/description";
 		}
 
 	    File dir = new File(uploadDir);
@@ -109,7 +112,7 @@ public class UtilMethod {
 	
 	public static String saveRecipeImage(MultipartFile file) throws Exception {
 	    // 저장할 디렉토리 경로 설정
-		String uploadDir = imagePath + "/recipe";
+		String uploadDir = imagePath5 + "/recipe";
 
 	    File dir = new File(uploadDir);
 	    // 디렉토리가 존재하지 않으면 생성
@@ -142,7 +145,7 @@ public class UtilMethod {
 	
 	public static String saveProfileImage(MultipartFile file, String id) throws Exception {
 	    // 저장할 디렉토리 경로 설정
-		String uploadDir = imagePath + "/profile";
+		String uploadDir = imagePath5 + "/profile";
 
 	    File dir = new File(uploadDir);
 	    // 디렉토리가 존재하지 않으면 생성

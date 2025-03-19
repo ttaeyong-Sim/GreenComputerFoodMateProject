@@ -38,29 +38,6 @@ public class RecipeControllerImpl implements RecipeController {
     @Autowired
     private RecipeService recipeService;
     
-    /*
-    @RequestMapping("/recipe/selectRecipeByCategory")
-    public ModelAndView selectRecipeByCategory(@RequestParam("categoryId") int categoryId, HttpServletRequest request) throws Exception {
-        String viewName = (String) request.getAttribute("viewName");
-        HttpSession session = request.getSession();
-
-        // 카테고리 아이디에 맞는 레시피를 조회
-        List<RecipeVO> recipeList = categoryService.getRecipesByCategory(categoryId);
-
-        // 최근 본 레시피 리스트 갱신
-        RecentRecipeView(categoryId, recipeList, session);
-
-        // 업데이트된 recentRecipeList를 jsp에 전달
-        List<RecipeVO> recentRecipeList = (List<RecipeVO>) session.getAttribute("recentRecipeList");
-        ModelAndView mav = new ModelAndView(viewName);
-        mav.setViewName("common/layout");
-        mav.addObject("recipeList", recipeList);
-        mav.addObject("recentRecipeList", recentRecipeList);
-        mav.addObject("showNavbar", true);
-        mav.addObject("title", "카테고리별 레시피");
-        mav.addObject("body", "/WEB-INF/views/recipe/recipeList.jsp"); 
-        return mav;
-    }*/
 
 
     // 레시피 수정 폼
@@ -121,12 +98,16 @@ public class RecipeControllerImpl implements RecipeController {
         List<RecipeDTO> recipeList;
 
         if (parent_id == null) {
-            // parent_id가 null이면 대분류 카테고리만 조회
-        	parent_id = category_id;
-            recipeList = recipeService.selectRecipeByParent(parent_id);  // 대분류 조회
+        	        // 🔥 parent_id가 null이면 category_id를 parent_id로 사용해야함
+        	parent_id = category_id;        	        
+        	        // 🔥 대분류에 속한 모든 소분류 category_id를 조회
+        	        recipeList = recipeService.selectRecipeByParent(parent_id);
+            System.out.println("대분류의 category_id :"  + "중분류의 부모 카테고리:" + parent_id );
         } else {
             // parent_id가 있으면 중분류 카테고리만 조회
             recipeList = recipeService.selectRecipeByChild(category_id);  // 중분류 조회
+            System.out.println("중분류카테고리id:"  + category_id);
+            System.out.println("중분류부모카테고리id:"  + parent_id);
         }
         
         List<RecipeCategoryDTO> p_category = recipeService.getGrandCategoryList();  // 대분류 카테고리 조회 기존 레시피 작성시 있었던 메소드 활용
@@ -366,26 +347,27 @@ public class RecipeControllerImpl implements RecipeController {
 	}
 
 	
-	@RequestMapping(value="/recipe/getSubCategories/{category_id}", method=RequestMethod.GET)
+	@RequestMapping(value="/recipe/getSubCategories", method=RequestMethod.GET)
 	@ResponseBody
-	public List<RecipeCategoryDTO> getSubCategories(@PathVariable("category_id") int category_id) throws Exception {
+	public List<RecipeCategoryDTO> getSubCategories(@RequestParam("category_id") int category_id) throws Exception {
+		System.out.println("받아온 레시피 카테고리: " + category_id);
 	    // 데이터베이스에서 category_id에 해당하는 자식 카테고리 가져오기
 	    List<RecipeCategoryDTO> subCategories = recipeService.getChildCategoryList(category_id);
 	    return subCategories;
 	}
+
 	
-	@RequestMapping(value="/recipe/select_Sub_IngrdCategory/{ingrd_category_id}", method=RequestMethod.GET)
+	@RequestMapping(value="/recipe/select_Sub_IngrdCategory", method=RequestMethod.GET)
 	@ResponseBody
-	public List<CategoryDTO> select_Sub_IngrdCategory(@PathVariable("ingrd_category_id") int ingrd_category_id) throws Exception {
+	public List<CategoryDTO> select_Sub_IngrdCategory(@RequestParam("ingrd_category_id") int ingrd_category_id) throws Exception {
 	    // 데이터베이스에서 category_id에 해당하는 자식 카테고리 가져오기
 	    List<CategoryDTO> IngrdsubCategories = recipeService.select_Child_IngrdCategory(ingrd_category_id);
-	    System.out.println(ingrd_category_id);
-	    return IngrdsubCategories; 
+	    System.out.println("재료의 카테고리id: " + ingrd_category_id);
+	    return IngrdsubCategories;
 	}
+
 	
 	//레시피후기작성
-	
-
 	@RequestMapping("/recipe/addRecipeRating")
 	public String addRecipeRating(
 	        @RequestParam("rcp_id") int rcp_id,  // 레시피 ID
