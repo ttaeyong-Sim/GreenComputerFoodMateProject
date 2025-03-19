@@ -598,7 +598,7 @@ $(document).ready(function() {
 
     // 재료 삭제 함수
     function removeIngredient(button) {
-        button.parentElement.remove(); // 버튼이 속한 div를 삭제
+        button.parentElement.remove(); // 버튼이 속한 div를 삭제.
     }
 
     // 단계 추가 함수
